@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<!--[if lt IE 7]>      <html class="no-js lt-ie9 lt-ie8 lt-ie7"> <![endif]-->
+<!--[if IE 7]>         <html class="no-js lt-ie9 lt-ie8"> <![endif]-->
+<!--[if IE 8]>         <html class="no-js lt-ie9"> <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js"> <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+  <title>angular-tour demo</title>
+  <base href=".."></base>
+  <link href='http://fonts.googleapis.com/css?family=Open+Sans' rel='stylesheet' type='text/css'>
+  <style>
+      body {
+          font-family: 'Open Sans', sans-serif;
+      }
+  </style>
+
+  <script type="text/javascript" src="bower_components/angular/angular.js"></script>
+  <!-- angular tour specfiic initilization-->
+    <script src="dist/angular-tour-tpls.min.js"></script>
+    <link rel="stylesheet" href="dist/angular-tour.css">
+    <script type="text/javascript">
+      angular.module('demoApp', ['angular-tour.tour']);
+    </script>
+  <!-- -->
+</head>
+<body ng-app="demoApp">
+  <tour-tip></tour-tip>
+</body>
+</html>

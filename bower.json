@@ -1,0 +1,39 @@
+{
+  "name": "angular-tour",
+  "version": "0.0.0",
+  "description": "An AngularJS module",
+  "keywords": [
+    "angularjs",
+    "angular",
+    "module"
+  ],    
+  "homepage": "https://github.com/DaftMonk/angular-tour",
+  "bugs": "https://github.com/DaftMonk/angular-tour/issues",
+  "author": {
+    "name": "Tyler Henkel",
+    "email": "",
+    "url": "https://github.com/DaftMonk"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/DaftMonk/angular-tour.git"
+  },
+  "main": "./dist/angular-tour-tpls.min.js",
+  "ignore": [
+    ".*",
+    "node_modules",
+    "bower_components",
+    "demo*",
+    "src*",
+    "GruntFile.js",
+    "karma.conf.js",
+    "package.json"
+  ],
+  "dependencies": {
+    "angular": "~1.2.x"
+  },
+  "devDependencies": {
+    "angular-mocks": "~1.x"
+  },
+  "license": "MIT"
+}

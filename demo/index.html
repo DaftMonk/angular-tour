@@ -10,31 +10,83 @@
   <base href=".."></base>
   <link href='http://fonts.googleapis.com/css?family=Open+Sans' rel='stylesheet' type='text/css'>
   <style>
-      body {
-          font-family: 'Open Sans', sans-serif;
-      }
+    body {
+      font-family: 'Open Sans', sans-serif;
+    }
+    .left {
+      position: absolute;
+      width: 200px;
+      height: 50px;
+      background: #eee;
+      left: 100px;
+      top: 200px;
+    }
+    .right{
+      position: absolute;
+      width: 200px;
+      height: 50px;
+      background: #eee;
+      right: 500px;
+      top: 200px;
+    }
+    .bottom{
+      position: absolute;
+      width: 200px;
+      height: 50px;
+      background: #eee;
+      bottom: 100px;
+      left: 500px;
+    }
+    .far-bottom{
+      position: absolute;
+      width: 200px;
+      height: 50px;
+      background: #eee;
+      bottom: -500px;
+      left: 500px;
+    }
   </style>
 
   <script type="text/javascript" src="bower_components/jquery/jquery.js"></script>
   <script type="text/javascript" src="bower_components/angular/angular.js"></script>
-  <!-- angular tour specfiic initilization-->
+  <script type="text/javascript" src="bower_components/angular-cookies/angular-cookies.js"></script>
     <!-- build:js dist/angular-tour-tpls.min.js -->
     <script type="text/javascript" src="tour/tour.js"></script>
+    <script type="text/javascript">
+      angular.module('angular-tour', ['angular-tour.tour']);
+    </script>
     <!-- /build -->
+    <script type="text/javascript">
+      angular.module('demoApp', ['angular-tour'])
+        .controller('DemoCtrl', function($scope,$timeout) {
+
+        });
+    </script>
     <!-- build:css dist/angular-tour.css -->
     <link rel="stylesheet" href="styles/tour/tour.css">
     <!-- /build -->
-    <script type="text/javascript">
-      angular.module('demoApp', ['angular-tour.tour']);
-    </script>
-  <!-- -->
 </head>
-<body ng-app="demoApp">
+<body ng-app="demoApp" ng-controller="DemoCtrl">
   <tour>
-    <button tour-tip="On the Top!" tour-step="0" tour-btn="Next" tour-placement="top" class="btn">
-      Important box
-      <a href="#" tour-next></a>
-    </button>
+    <a href="#" ng-click="openTour()">Open Tour</a>
+    <a href="#" ng-click="closeTour()">Close Tour</a>
+    <span tour-tip="feature 2!" step="1" next-label="Next" placement="top">
+      <div class="left">
+        Another website feature
+      </div>
+    </span>
+    <span tour-tip="feature 1!" step="0" next-label="Next" placement="bottom">
+      <div class="right">Important website feature</div>
+      <a tour-next></a>
+    </span>
+    <span tour-tip="feature 3!" next-label="Next" placement="left">
+      <div class="bottom"> Another website feature</div>
+    </span>
+    <span tour-tip="feature 4!">
+      <div class="far-bottom"> Another website feature</div>
+    </span>
   </tour>
+
+  <div style="position: absolute; bottom: -800px;">Bottom of the page</div>
 </body>
 </html>

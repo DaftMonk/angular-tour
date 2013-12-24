@@ -1,12 +1,13 @@
 {
   "name": "angular-tour",
   "version": "0.0.0",
-  "description": "An AngularJS module",
+  "description": "An AngularJS directive for showcasing features of your website",
   "keywords": [
     "angularjs",
+    "directive",
     "angular",
     "module"
-  ],    
+  ],
   "homepage": "https://github.com/DaftMonk/angular-tour",
   "bugs": "https://github.com/DaftMonk/angular-tour/issues",
   "author": {
@@ -30,7 +31,9 @@
     "package.json"
   ],
   "dependencies": {
-    "angular": "~1.2.x"
+    "angular": "~1.2.x",
+    "angular-cookies": "~1.2.5",
+    "jquery": "~2.0.3"
   },
   "devDependencies": {
     "angular-mocks": "~1.x"

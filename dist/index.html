@@ -1,0 +1,367 @@
+<!DOCTYPE html>
+<!--[if lt IE 7]>      <html class="no-js lt-ie9 lt-ie8 lt-ie7"> <![endif]-->
+<!--[if IE 7]>         <html class="no-js lt-ie9 lt-ie8"> <![endif]-->
+<!--[if IE 8]>         <html class="no-js lt-ie9"> <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js"> <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+  <title>angular-tour demo</title>
+  <link href='http://fonts.googleapis.com/css?family=Open+Sans' rel='stylesheet' type='text/css'>
+  <script src="//cdnjs.cloudflare.com/ajax/libs/rainbow/1.2.0/js/rainbow.min.js"></script>
+  <script src="//cdnjs.cloudflare.com/ajax/libs/rainbow/1.2.0/js/language/html.js"></script>
+  <link href="//cdnjs.cloudflare.com/ajax/libs/rainbow/1.2.0/themes/github.css" rel='stylesheet' type='text/css'>
+  <style>
+    html {
+      background: -webkit-linear-gradient(bottom, #6DBCDB 20%, #639AC9 100%);
+      background: -ms-linear-gradient(bottom, #6DBCDB 20%, #639AC9 100%);
+      background: linear-gradient(to bottom, #6DBCDB 20%, #639AC9 100%);
+    }
+
+    html, body {
+      font-family: 'Open Sans', sans-serif;
+      margin: 0;
+      padding: 0;
+      position: relative;
+      color: #464637;
+      min-height: 100%;
+      font-size: 20px;
+      font-weight: 300;
+    }
+
+    h1 {
+      color: #fff;
+      font-size: 20px;
+      font-weight: 300;
+      text-align: center;
+    }
+
+    ul {
+      margin: 0;
+      padding: 0;
+      list-style: none;
+    }
+
+    .logo {
+      display: block;
+      padding-top: 55px;
+      margin-left: 30px;
+    }
+
+    .container {
+      margin: auto;
+      padding: 30px;
+      min-width: 1100px;
+      max-width: 1300px;
+    }
+
+    @media (min-width: 750px) and (max-width: 970px){
+      .container {
+        min-width: 750px;
+      }
+    }
+
+    .row {
+      margin-left: -15px;
+      margin-right: -15px;
+      margin-bottom: 30px;
+    }
+
+    .row:before, .row:after {
+      content: " ";
+      display: table;
+    }
+
+    .row:after {
+      clear: both;
+    }
+
+    .col-4, .col-6, .col-12 {
+      float: left;
+    }
+
+    .col-4 {
+      width: 33.33333333333333%;
+    }
+
+    .col-6 {
+      width: 50%;
+    }
+
+    .col-12 {
+      width: 100%;
+    }
+
+    .title {
+      color: #fff;
+      padding: 3px 10px;
+      display: inline-block;
+      position: relative;
+      background-color: #3D5580;
+      z-index: 3;
+    }
+    .title-xl {
+      padding: 3px 15px;
+      font-size: 40px;
+    }
+
+    .title-row:before, .title-row:after {
+      content: " ";
+      display: table;
+    }
+
+    .title-row:after {
+      clear: both;
+    }
+
+    .button {
+      color: #fff;
+      margin: 8px 20px 10px 0;
+      padding: 5px 10px;
+      min-width: 10px;
+      background-color: #5F9EDF;
+      text-align: center;
+      text-decoration: none;
+      transition: background-color 300ms ease-out;
+    }
+
+    .button:hover {
+      background-color: #477edf;
+    }
+
+    .tile {
+      margin-top: 15px;
+      margin-left: 15px;
+      margin-right: 15px;
+      background-color: #fff;
+      vertical-align: top;
+      min-height: 80px;
+    }
+    .tile-title {
+      color: #FF7270;
+      text-align: center;
+      padding: 20px 0 0px;
+    }
+    .tile-content {
+      padding: 20px 40px 40px;
+    }
+
+    .block {
+      padding: 20px 0;
+      margin-top: -8px;
+      margin-left: 15px;
+      margin-right: 15px;
+      min-height: 215px;
+      background-color: #fff;
+    }
+
+    .list {
+      list-style: square;
+      padding: 0px 60px;
+    }
+
+    .list li {
+      padding: 10px 0px;
+    }
+
+    .block-list li {
+      padding: 10px 40px;
+    }
+
+    code {
+      font-size: 16px;
+    }
+
+  </style>
+
+  <script src="lib/jquery/jquery.js"></script>
+  <script src="lib/angular/angular.js"></script>
+  <script src="lib/jquery-cookie/jquery.cookie.js"></script>
+    <script src="angular-tour-tpls.min.js"></script>
+    <script type="text/javascript">
+      angular.module('demoApp', ['angular-tour'])
+        .controller('DemoCtrl', function($scope,$timeout) {
+        });
+    </script>
+    <link rel="stylesheet" href="angular-tour.css">
+</head>
+<body ng-app="demoApp" ng-controller="DemoCtrl">
+<tour>
+  <a tourtip="Thanks for reading. Head over to the github page for more info."
+     tourtip-next-label="Finish"
+     tourtip-placement="left"
+     tourtip-offset="60"
+     tourtip-step="12"
+     href="https://github.com/DaftMonk/angular-tour"><img style="position: absolute; top: 0; right: 0; border: 0;" src="https://s3.amazonaws.com/github/ribbons/forkme_right_red_aa0000.png" alt="Fork me on GitHub"></a>
+  <div class="container">
+    <div>
+      <a class="logo" href="#"
+         tourtip="Angular Tour allows you to give an interactive tour to showcase the features of your website."
+         tourtip-next-label="Learn more"
+         tourtip-placement="right"
+         tourtip-offset="60"
+         tourtip-step="0"><img src="assets/logo.png"/></a>
+      <h1> </h1>
+    </div>
+
+    <div class="row">
+      <div class="col-6" style="float: left">
+        <div class="title">Features</div>
+
+        <div class="block"
+            tourtip="Angular tour has some cool features."
+            tourtip-next-label="Continue"
+            tourtip-placement="right"
+            tourtip-offset="100"
+            tourtip-step="1">
+            <ul class="list">
+              <li>Easy to use</li>
+              <li>Responsive to window resizes</li>
+              <li>Cookies remember your place in the tour</li>
+              <li>Smoothly scrolls to each step</li>
+              <li>Control the placement for each tour tip</li>
+            </ul>
+        </div>
+      </div>
+      <div class="col-6">
+        <div class="title">Supported Browsers</div>
+        <div class="block">
+          <ul class="list"
+              tourtip="And is tested in all major browsers."
+              tourtip-next-label="Continue"
+              tourtip-placement="bottom"
+              tourtip-offset="200"
+              tourtip-step="2">
+            <li>Chrome</li>
+            <li>Firefox</li>
+            <li>Safari</li>
+            <li>Internet Explorer 10+</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="title-row"><div class="title title-xl">Customizable</div></div>
+
+      <div class="col-4">
+        <div class="tile">
+          <div class="tile-title">Configuring Defaults</div>
+          <div class="tile-content"
+               tourtip="Configuration is easy, for more info check the github page."
+               tourtip-next-label="Continue"
+               tourtip-placement="bottom"
+               tourtip-offset="130"
+               tourtip-step="5">
+            <span tourtip="You can also go backwards through the DOM, like we just did."
+                  tourtip-next-label="Cool. How do I use it?"
+                  tourtip-placement="bottom"
+                  tourtip-offset="130"
+                  tourtip-step="6"></span>
+            You can inject the <code>tourConfig</code> service into your app and modify the defaults.
+          </div>
+        </div>
+      </div>
+
+      <div class="col-4">
+        <div class="tile">
+          <div class="tile-title">Customizing HTML</div>
+          <div class="tile-content"
+               tourtip="You can use your own markup."
+               tourtip-next-label="Continue"
+               tourtip-placement="bottom"
+               tourtip-offset="60"
+               tourtip-step="4">
+            HTML templates are cleanly separated, and you can easily substitute your own template.
+          </div>
+        </div>
+      </div>
+
+      <div class="col-4">
+        <div class="tile">
+          <div class="tile-title">Customizing CSS</div>
+          <div class="tile-content"
+               tourtip="Easily change the look and feel."
+               tourtip-next-label="Continue"
+               tourtip-placement="bottom"
+               tourtip-offset="60"
+               tourtip-step="3">
+            A default CSS can be used for your convenience, but feel free to use your own css!
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="row">
+      <div class="title-row"><div class="title title-xl">Example</div></div>
+
+      <div class="col-12">
+        <div class="tile">
+          <div class="tile-content">
+            <div tourtip='Just add the tourtip attribute wherever you want a tip, and wrap your tourtips in a &lt;tour>.'
+                 tourtip-next-label="Continue"
+                 tourtip-placement="right"
+                 tourtip-offset="-400"
+                 tourtip-step="7">Usage example</div>
+              <pre><code data-language="html">&lt;tour>
+  &lt;span tourtip="tip 1"> Highlighted &lt;/span>
+  &lt;span tourtip="tip 2"> Elements &lt;/span>
+  &lt;input tourtip="You can use it as an attribute on your element" />
+  &lt;span tourtip="Full options"
+        tourtip-step="3"
+        tourtip-next-label="Next"
+        tourtip-placement="right"
+        tourtip-offset="60">Full options&lt;/span>
+&lt;/tour></code></pre>
+        Inside your <code>&lt;tour></code> you have access to two scope methods for ending and starting the tour.
+<pre><code data-language="html"><a ng-click="openTour()">Open Tour</a>
+<a ng-click="closeTour()">Close Tour</a></code></pre>
+            <a class="button" href="" ng-click="openTour()">Open Tour</a>
+            <a class="button" href="" ng-click="closeTour()"
+               tourtip="You can include buttons inside your tour to open and close it."
+               tourtip-next-label="How about installation?"
+               tourtip-placement="right"
+               tourtip-offset="80"
+               tourtip-step="8">Close Tour</a>
+          </div>
+
+        </div>
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="title-row"><div class="title title-xl">How to install</div></div>
+
+      <div class="col-12">
+        <div class="tile">
+          <div class="tile-content">
+            <div><span tourtip="Use bower to download all the dependencies"
+                       tourtip-next-label="Continue"
+                       tourtip-placement="right"
+                       tourtip-offset="60"
+                       tourtip-step="9">Install with bower using</span></div>
+              <pre>bower install angular-tour</pre>
+            <div><span tourtip="Then add those to your index.html"
+                       tourtip-next-label="Continue"
+                       tourtip-placement="right"
+                       tourtip-offset="260"
+                       tourtip-step="10">Add the dependencies to your html file</span></div>
+              <pre><code data-language="html">&lt;script src="bower_components/jquery/jquery.js">&lt;/script>
+&lt;script src="bower_components/angular/angular.js">&lt;/script>
+&lt;script src="bower_components/jquery-cookie/jquery.cookie.js">&lt;/script>
+&lt;script src="bower_components/angular-tour/angular-tour-tpls.min.js">&lt;/script></code></pre>
+            <div>You'll also probably want to add the default stylesheet.</div>
+              <pre><code data-language="html">&lt;link rel="bower_components/angular-tour/angular-tour.css"/></code></pre>
+            <div><span tourtip="Lastly, add angular-tour to your module and you're good to go!"
+                       tourtip-next-label="Continue"
+                       tourtip-placement="right"
+                       tourtip-offset="100"
+                       tourtip-step="11">Lastly, add angular-tour as a dependency to your angular module</span></div>
+              <pre><code data-language="javascript">angular.module('myApp', ['angular-tour']);</pre></code>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</tour>
+</body>
+</html>

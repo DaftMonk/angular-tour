@@ -8,13 +8,12 @@
   left: 2.5%;
   font-family: inherit;
   font-weight: 400;
-  width: 95%;
-  max-width: 800px;
+  max-width: 400px;
   border-radius: 10px;
   p {
     color: #CBD0D4;
-    font-size: 1.125em;
-    line-height: 1.3;
+    font-size: .9em;
+    line-height: 1.5em;
     margin: 0 0 1.125em;
   }
   button, .button {
@@ -29,12 +28,12 @@
     text-decoration: none;
     text-align: center;
     display: inline-block;
-    font-size: 1em;
+    font-size: .8em;
     color: #FFF;
     border-style: solid;
     border-width: 0;
     margin: 0 0 1.25em;
-    padding: .75em 1.5em .8125em;
+    padding: .5em 1.25em .6em;
     border-radius: 8px;
     small {
       padding-top: .625em;
@@ -46,24 +45,27 @@
     }
   }  
   .tour-arrow {
-    &.top {
-      border-top-style: solid;
+    &.tt-top {
+      border-style: solid;
+      bottom: -27px;
+      border-color: #1C252E transparent transparent!important;
+    }
+    &.tt-bottom {
+      border-style: solid;
       top: -28px;
       border-color: transparent transparent #1C252E!important;
     }
-    &.bottom {
-      border-bottom-style: solid;
-      bottom: -28px;
-      border-color: #1C252E transparent transparent!important;
-    }
-    &.right {
-      right: -28px;
-      bottom: -150px;
-      border-color: transparent transparent transparent #1C252E!important;
-    }
-    &.left {
-      left: -28px;
+    &.tt-right {
+      border-style: solid;
+      left: -27px;
+      top: 28px;
       border-color: transparent #1C252E transparent transparent!important;
+    }
+    &.tt-left {
+      border-style: solid;
+      left: 100%;
+      top: 28px;
+      border-color: transparent transparent transparent #1c252e!important;
     }
     display: block;
     position: absolute;
@@ -73,7 +75,6 @@
     border: inset 14px;
   }
   .tour-content-wrapper {
-    width: 100%;
     padding: 1.125em 1.25em 1.5em;
 
     .button {
@@ -89,8 +90,9 @@
     font-size: 30px;
     font-weight: 400;
     line-height: .5!important;
+    cursor: pointer;
     &:hover, &:focus {
       color: #eee!important;
-    }  
+    }
   }
 }

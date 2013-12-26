@@ -41,8 +41,7 @@ module.exports = function (grunt) {
         tasks: ['jshint:all']
       },
       jsTest: {
-        files: ['<%= yeoman.src %>/**/*.spec.js',
-                '<%= yeoman.src %>/**/*.js'],
+        files: ['<%= yeoman.src %>/**/*.spec.js'],
         tasks: ['karma']
       },
       compass: {
@@ -94,7 +93,10 @@ module.exports = function (grunt) {
       },
       dist: {
         options: {
-          base: '<%= yeoman.dist %>'
+          base: [
+            '<%= yeoman.dist %>',
+            ''
+          ]
         }
       }
     },
@@ -339,7 +341,7 @@ module.exports = function (grunt) {
     processhtml: {
       dist: {
         files: {
-          'dist/demo.html': ['demo/index.html']
+          'dist/index.html': ['demo/index.html']
         }
       }
     },
@@ -480,13 +482,15 @@ module.exports = function (grunt) {
     'processhtml'
   ]);
 
-  grunt.registerTask('serve', [
-    'clean:server',
-    'concurrent:server',
-    'autoprefixer',
-    'connect:livereload',
-    'watch'
-  ]);
+  grunt.registerTask('serve', function (target) {
+    grunt.task.run([
+      'clean:server',
+      'concurrent:server',
+      'autoprefixer',
+      'connect:livereload',
+      'watch'
+    ]);
+  });
 
   grunt.registerTask('default', ['test', 'build']);
 };

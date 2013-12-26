@@ -52,15 +52,13 @@ Lastly, you'll need to include the module in your angular app
 
 To begin your tour you'll need a `<tour>` element to contain all of your tour tips.
 
-Surround the elements you want to highlight with a `<tour-tip>` element.
+Add the tourtip attribute wherever you want a tip.
 
 Example markup:
 
     <tour>
       <span tourtip="tip 1"> Highlighted </span>
       <span tourtip="tip 2"> Elements </span>
-      <span tourtip="tip 3"> Go </span>
-      <span tourtip="tip 4"> Here </span>
       <input tourtip="or add it as an attribute to your element" />
     </tour>
 

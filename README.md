@@ -79,7 +79,7 @@ Inside your tour, you also have access to two scope methods for ending and start
     <a ng-click="openTour()">Open Tour</a>
     <a ng-click="closeTour()">Close Tour</a>
 
-## Further Customization
+## Customization
 
 ### Defaults
 

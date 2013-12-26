@@ -5,7 +5,7 @@ angular.module('angular-tour.tour', [])
     placement        : 'top',                  // default placement relative to target. 'top', 'right', 'left', 'bottom'
     animation        : true,                   // if tips fade in
     nextLabel        : 'Next',                 // default text in the next tip button
-    scrollSpeed      : 200,                    // page scrolling speed in milliseconds
+    scrollSpeed      : 500,                    // page scrolling speed in milliseconds
     offset           : 28,                     // how many pixels offset the tip is from the target
     cookies          : true,                   // if cookies are used, may help to disable during development
     cookieName       : 'ngTour',               // choose your own cookie name
@@ -93,8 +93,6 @@ angular.module('angular-tour.tour', [])
     self.select = function(nextStep) {
       var nextIndex = steps.indexOf(nextStep);
 
-      console.log(currentStep);
-      console.log(currentIndex);
       function goNext() {
         if(currentStep) {
           currentStep.tt_open = false;
@@ -108,7 +106,7 @@ angular.module('angular-tour.tour', [])
         goNext();
       } else {
         self.tourCompleted();
-      };
+      }
     };
 
     self.addStep = function(step) {
@@ -278,57 +276,71 @@ angular.module('angular-tour.tour', [])
             targetElement = element;
           }
 
-          // Get the position of the directive element
-          position = targetElement.position() || element.position();
+          var updatePosition = function() {
+            // Get the position of the directive element
+            position = targetElement.position();
 
-          ttWidth = tourtip.width();
-          ttHeight = tourtip.height();
+            ttWidth = tourtip.width();
+            ttHeight = tourtip.height();
 
-          width = targetElement.width();
-          height = targetElement.height();
+            width = targetElement.width();
+            height = targetElement.height();
 
-          // Calculate the tourtip's top and left coordinates to center it
-          switch ( scope.tt_placement ) {
-          case 'right':
-            scrollTo(targetElement);
-            ttPosition = {
-              top: position.top,
-              left: position.left + width + scope.tt_offset
-            };
-            break;
-          case 'bottom':
-            scrollTo(targetElement);
-            ttPosition = {
-              top: position.top + height + scope.tt_offset,
-              left: position.left
-            };
-            break;
-          case 'left':
-            scrollTo(targetElement);
-            ttPosition = {
-              top: position.top,
-              left: position.left - ttWidth - scope.tt_offset
-            };
-            break;
-          default:
-            scrollTo(targetElement, 200);
-            ttPosition = {
-              top: position.top - ttHeight - scope.tt_offset,
-              left: position.left
-            };
-            break;
-          }
+            // Calculate the tourtip's top and left coordinates to center it
+            switch ( scope.tt_placement ) {
+            case 'right':
+              ttPosition = {
+                top: position.top,
+                left: position.left + width + scope.tt_offset
+              };
+              break;
+            case 'bottom':
+              ttPosition = {
+                top: position.top + height + scope.tt_offset,
+                left: position.left
+              };
+              break;
+            case 'left':
+              ttPosition = {
+                top: position.top,
+                left: position.left - ttWidth - scope.tt_offset
+              };
+              break;
+            default:
+              ttPosition = {
+                top: position.top - ttHeight - scope.tt_offset,
+                left: position.left
+              };
+              break;
+            }
 
-          ttPosition.top += 'px';
-          ttPosition.left += 'px';
+            ttPosition.top += 'px';
+            ttPosition.left += 'px';
 
-          // Now set the calculated positioning.
-          tourtip.css( ttPosition );
+            // Now set the calculated positioning.
+            tourtip.css( ttPosition );
+
+            // Scroll to the tour tip
+            scrollTo(tourtip, -200, -300, tourConfig.scrollSpeed);
+          };
+
+          angular.element($window).bind('resize.' + scope.$id, function() {
+            updatePosition();
+          });
+          updatePosition();
         }
 
         function hide() {
           tourtip.detach();
+          angular.element($window).unbind('resize.' + scope.$id);
         }
+
+        // Make sure tooltip is destroyed and removed.
+        scope.$on('$destroy', function onDestroyTourtip() {
+          angular.element($window).unbind('resize.' + scope.$id);
+          tourtip.remove();
+          tourtip = null;
+        });
       }
     };
   })
@@ -424,11 +436,12 @@ angular.module('angular-tour.tour', [])
   })
 
   .factory('scrollTo', function() {
-    return function(target, offset, speed) {
+    return function(target, offsetY, offsetX, speed) {
       if(target) {
-        offset = offset || 100;
+        offsetY = offsetY || -100;
+        offsetX = offsetX || -100;
         speed = speed || 500;
-        $('html,body').stop().animate({scrollTop: target.offset().top - offset, scrollLeft: target.offset().left - offset}, speed);
+        $('html,body').stop().animate({scrollTop: target.offset().top + offsetY, scrollLeft: target.offset().left + offsetX}, speed);
       } else {
         $('html,body').stop().animate({scrollTop: 0}, speed);
       }

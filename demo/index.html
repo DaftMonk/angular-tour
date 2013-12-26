@@ -13,9 +13,9 @@
   <link href="//cdnjs.cloudflare.com/ajax/libs/rainbow/1.2.0/themes/github.css" rel='stylesheet' type='text/css'>
   <style>
     html {
-      background-image: -webkit-linear-gradient(bottom, #6DBCDB 20%, #639AC9 100%);
-      background-image: -ms-linear-gradient(bottom, #6DBCDB 20%, #639AC9 100%);
-      background-image: linear-gradient(to bottom, #6DBCDB 20%, #639AC9 100%);
+      background: -webkit-linear-gradient(bottom, #6DBCDB 20%, #639AC9 100%);
+      background: -ms-linear-gradient(bottom, #6DBCDB 20%, #639AC9 100%);
+      background: linear-gradient(to bottom, #6DBCDB 20%, #639AC9 100%);
     }
 
     html, body {
@@ -228,10 +228,11 @@
             tourtip-offset="100"
             tourtip-step="1">
             <ul class="list">
-              <li>Cookies remember your step, or if you complete the tour</li>
-              <li>Takes minutes to get up and running</li>
-              <li>Customizable, use your own css or html markup</li>
-              <li>Tested against all major browsers</li>
+              <li>Easy to use</li>
+              <li>Responsive to window resizes</li>
+              <li>Cookies remember your place in the tour</li>
+              <li>Smoothly scrolls to each step</li>
+              <li>Control the placement for each tour tip</li>
             </ul>
         </div>
       </div>
@@ -310,7 +311,7 @@
         <div class="tile">
           <div class="tile-content">
             <div tourtip='Just add the tourtip attribute wherever you want a tip, and wrap your tourtips in a &lt;tour>.'
-                 tourtip-next-label="How about installation?"
+                 tourtip-next-label="Continue"
                  tourtip-placement="right"
                  tourtip-offset="-400"
                  tourtip-step="7">Usage example</div>
@@ -330,7 +331,7 @@
             <a class="button" href="" ng-click="openTour()">Open Tour</a>
             <a class="button" href="" ng-click="closeTour()"
                tourtip="You can include buttons inside your tour to open and close it."
-               tourtip-next-label="What browsers does it support?"
+               tourtip-next-label="How about installation?"
                tourtip-placement="right"
                tourtip-offset="80"
                tourtip-step="8">Close Tour</a>
@@ -366,7 +367,7 @@
             <div><span tourtip="Lastly, add angular-tour to your module and you're good to go!"
                        tourtip-next-label="Continue"
                        tourtip-placement="right"
-                       tourtip-offset="160"
+                       tourtip-offset="100"
                        tourtip-step="11">Lastly, add angular-tour as a dependency to your angular module</span></div>
               <pre><code data-language="javascript">angular.module('myApp', ['angular-tour']);</pre></code>
           </div>

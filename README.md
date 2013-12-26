@@ -2,7 +2,7 @@
 
 ## Demo
 
-See it in action
+Want to see it in action? Visit <http://daftmonk.github.io/angular-tour/>
 
 ## Showcase features of your website
 

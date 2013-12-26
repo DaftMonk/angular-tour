@@ -308,7 +308,7 @@ describe('Directive: tour', function () {
       scope = $rootScope.$new();
       scrollTo = _scrollTo_;
 
-      target = angular.element("<div id=\"target\" style=\"position:absolute; top:200px;\"></div>");
+      target = angular.element('<div id=\"target\" style=\"position:absolute; top:200px;\"></div>');
       $('body').height(window.innerHeight*2).append(target);
       window.scrollTo(0, 0);
     }));

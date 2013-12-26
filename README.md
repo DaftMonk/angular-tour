@@ -8,10 +8,11 @@ Want to see it in action? Visit <http://daftmonk.github.io/angular-tour/>
 
 Give an interactive tour to showcase the features of your website. 
 
-  * Uses cookies to remember your last step, or if you've complete the tour
-  * Easy to use, takes minutes to get up and running
-  * Customizable, use your own stylesheet or html markup
-  * Fully tested against all major browsers
+  * Easy to use
+  * Responsive to window resizes
+  * Cookies remember your place in the tour
+  * Smoothly scrolls to each step
+  * Control the placement for each tour tip
 
 ## Supported browsers
 
@@ -89,7 +90,7 @@ If you'd like to edit the defaults for all your tour, you can inject tourConfig 
       placement        : 'top',                  // default placement relative to target. 'top', 'right', 'left', 'bottom'
       animation        : true,                   // if tips fade in
       nextLabel        : 'Next',                 // default text in the next tip button
-      scrollSpeed      : 200,                    // page scrolling speed in milliseconds
+      scrollSpeed      : 500,                    // page scrolling speed in milliseconds
       offset           : 28,                     // how many pixels offset the tip is from the target
       cookies          : true,                   // if cookies are used, may help to disable during development
       cookieName       : 'ngTour',               // choose your own cookie name

@@ -38,11 +38,11 @@ Once bower has downloaded those dependencies for you, you'll need to make sure y
     <script src="bower_components/jquery/jquery.js"></script>
     <script src="bower_components/angular/angular.js"></script>
     <script src="bower_components/jquery-cookie/jquery.cookie.js"></script>
-    <script src="bower_components/angular-tour/angular-tour-tpls.min.js"></script>
+    <script src="bower_components/angular-tour/dist/angular-tour-tpls.min.js"></script>
 
 You'll also probably want to include the default stylesheet for angular tour. (You can replace this with your own stylesheet.)
 
-    <link rel="bower_components/angular-tour/angular-tour.css"/>
+    <link rel="bower_components/angular-tour/dist/angular-tour.css"/>
 
 Lastly, you'll need to include the module in your angular app
 

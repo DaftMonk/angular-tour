@@ -21,7 +21,7 @@
 
 .tour-tip button,
 .tour-tip .button {
-  background-color: #18AF90;
+  background-color: #189DAF;
   box-shadow: 0 1px 0 rgba(255, 255, 255, 0.5) inset;
   transition: background-color 300ms ease-out;
   cursor: pointer;
@@ -50,7 +50,7 @@
 
 .tour-tip button:hover,
 .tour-tip .button:hover {
-  background-color: #0892af;
+  background-color: #0A87A1;
 }
 
 .tour-tip .tour-arrow {

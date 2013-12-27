@@ -172,6 +172,23 @@
       font-size: 16px;
     }
 
+    .social {
+      margin-top: 1em;
+      padding: 15px 0;
+    }
+
+    .social-buttons {
+      margin-left: 0;
+      margin-bottom: 0;
+      padding-left: 0;
+      list-style: none;
+    }
+
+    .social-buttons li {
+      display: inline-block;
+      padding: 5px 8px;
+      line-height: 1;
+    }
   </style>
 
   <script src="lib/jquery/jquery.js"></script>
@@ -201,7 +218,47 @@
          tourtip-placement="right"
          tourtip-offset="60"
          tourtip-step="0"><img src="assets/logo.png"/></a>
-      <h1> </h1>
+              <div class="social">
+                <ul class="social-buttons">
+                    <li>
+                        <iframe src="http://ghbtns.com/github-btn.html?user=daftmonk&repo=angular-tour&type=watch&count=true"
+                                allowtransparency="true" frameborder="0" scrolling="0" width="110" height="20"></iframe>
+                    </li>
+                    <li>
+                        <iframe src="http://ghbtns.com/github-btn.html?user=daftmonk&repo=angular-tour&type=fork&count=true"
+                                allowtransparency="true" frameborder="0" scrolling="0" width="95" height="20"></iframe>
+                    </li>
+                    <li>
+                        <a href="https://twitter.com/share" class="twitter-share-button"
+                           data-hashtags="angularjs">Tweet</a>
+                        <script>!function (d, s, id) {
+                            var js, fjs = d.getElementsByTagName(s)[0];
+                            if (!d.getElementById(id)) {
+                                js = d.createElement(s);
+                                js.id = id;
+                                js.src = "//platform.twitter.com/widgets.js";
+                                fjs.parentNode.insertBefore(js, fjs);
+                            }
+                        }(document, "script", "twitter-wjs");</script>
+                    </li>
+                    <li>
+                        <!-- Place this tag where you want the +1 button to render. -->
+                        <div class="g-plusone" data-size="medium"></div>
+
+                        <!-- Place this tag after the last +1 button tag. -->
+                        <script type="text/javascript">
+                            (function () {
+                                var po = document.createElement('script');
+                                po.type = 'text/javascript';
+                                po.async = true;
+                                po.src = 'https://apis.google.com/js/plusone.js';
+                                var s = document.getElementsByTagName('script')[0];
+                                s.parentNode.insertBefore(po, s);
+                            })();
+                        </script>
+                    </li>
+                </ul>
+            </div>
     </div>
 
     <div class="row">
@@ -348,9 +405,9 @@
               <pre><code data-language="html">&lt;script src="bower_components/jquery/jquery.js">&lt;/script>
 &lt;script src="bower_components/angular/angular.js">&lt;/script>
 &lt;script src="bower_components/jquery-cookie/jquery.cookie.js">&lt;/script>
-&lt;script src="bower_components/angular-tour/angular-tour-tpls.min.js">&lt;/script></code></pre>
+&lt;script src="bower_components/angular-tour/dist/angular-tour-tpls.min.js">&lt;/script></code></pre>
             <div>You'll also probably want to add the default stylesheet.</div>
-              <pre><code data-language="html">&lt;link rel="bower_components/angular-tour/angular-tour.css"/></code></pre>
+              <pre><code data-language="html">&lt;link rel="bower_components/angular-tour/dist/angular-tour.css"/></code></pre>
             <div><span tourtip="Lastly, add angular-tour to your module and you're good to go!"
                        tourtip-next-label="Continue"
                        tourtip-placement="right"

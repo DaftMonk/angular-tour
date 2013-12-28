@@ -21,7 +21,7 @@ Has been tested in
 * Chrome
 * Firefox
 * Safari
-* Internet Explorer 10+
+* Internet Explorer 9+
 
 ## Installation
 
@@ -110,7 +110,7 @@ The easiest way to add your own template is to use the script directive:
           <div class="tour-content-wrapper">
               <p ng-bind="content"></p>
               <a ng-click="nextAction()" ng-bind="nextLabel" class="small button tour-next-tip"></a>
-              <a ng-click="closeAction()" class="tour-close-tip">×</a>
+              <a ng-click="closeAction()" class="tour-close-tip">ï¿½</a>
           </div>
       </div>  
     </script>

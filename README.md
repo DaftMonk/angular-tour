@@ -64,7 +64,7 @@ Example markup:
 
 There are additional attributes that allow you to customize each tour-tip.
 
-`tourtip-step` **(Default: "null")**: tour tip play from step 0 onwards, you can specify a specific order, e.g.
+`tourtip-step` **(Default: "null")**: tour tips play from step 0 onwards, or in the order they were added. You can specify a specific order, e.g.
 
     <span tourtip="tip 2" tourtip-step="1"></span>
     <span tourtip="tip 1" tourtip-step="0"></span>

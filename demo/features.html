@@ -1,0 +1,88 @@
+<tour ng-init="init()">
+<div class="row">
+  <div class="col-6" style="float: left">
+    <div tourtip="Checkout the url - notice that Angular Tour changed views!"
+         tourtip-placement="bottom"
+         tourtip-step="0"
+         tourtip-offset="-250"
+         class="title">Features</div>
+
+    <div class="block"
+         tourtip="Angular Tour has some cool features."
+         tourtip-placement="right"
+         tourtip-offset="100"
+         tourtip-step="1">
+      <ul class="list">
+        <li>Easy to use</li>
+        <li>Responsive to window resizes</li>
+        <li>Works with views</li>
+        <li>Smoothly scrolls to each step</li>
+        <li>Control the placement for each tour tip</li>
+      </ul>
+    </div>
+  </div>
+  <div class="col-6">
+    <div class="title">Supported Browsers</div>
+    <div class="block">
+      <ul class="list"
+          tourtip="And is tested in all major browsers."
+          tourtip-placement="bottom"
+          tourtip-offset="200"
+          tourtip-step="2">
+        <li>Chrome</li>
+        <li>Firefox</li>
+        <li>Safari</li>
+        <li>Internet Explorer 10+</li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+<div class="row">
+  <div class="title-row"><div class="title title-xl">Customizable</div></div>
+
+  <div class="col-4">
+    <div class="tile">
+      <div class="tile-title">Configuring Defaults</div>
+      <div class="tile-content"
+           tourtip="Configuration is easy, for more info check the github page."
+           tourtip-placement="bottom"
+           tourtip-offset="130"
+           tourtip-step="3">
+        <span tourtip="You can also go backwards through the DOM, like we just did."
+              tourtip-next-label="Cool. How do I use it?"
+              tourtip-placement="bottom"
+              tourtip-offset="130"
+              tourtip-step="6"></span>
+        You can inject the <code>tourConfig</code> service into your app and modify the defaults.
+      </div>
+    </div>
+  </div>
+
+  <div class="col-4">
+    <div class="tile">
+      <div class="tile-title">Customizing HTML</div>
+      <div class="tile-content"
+           tourtip="You can use your own markup."
+           tourtip-placement="bottom"
+           tourtip-offset="60"
+           tourtip-step="4">
+        HTML templates are cleanly separated, and you can easily substitute your own template.
+      </div>
+    </div>
+  </div>
+
+  <div class="col-4">
+    <div class="tile">
+      <div class="tile-title">Customizing CSS</div>
+      <div class="tile-content"
+           tourtip="Easily change the look and feel."
+           tourtip-placement="bottom"
+           tourtip-offset="60"
+           tourtip-step="5">
+        A default CSS can be used for your convenience, but feel free to use your own css!
+      </div>
+    </div>
+  </div>
+</div>
+</tour>

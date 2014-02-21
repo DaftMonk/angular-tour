@@ -35,8 +35,8 @@ module.exports = function (grunt) {
     watch: {
       js: {
         files: [
-          '{.tmp,<%= yeoman.src %>}/**/*.js',
-          '!<%= yeoman.src %>/**/*.spec.js'
+          '{.tmp, <%= yeoman.src %>}/**/*.js,<%= yeoman.demo %>}/*.js',
+            '!<%= yeoman.src %>/**/*.spec.js'
         ],
         tasks: ['jshint:all']
       },
@@ -158,6 +158,7 @@ module.exports = function (grunt) {
         reporter: require('jshint-stylish')
       },
       all: [
+        'demo/DemoApp.js',
         'Gruntfile.js',
         '<%= yeoman.src %>/{,*/}*.js'
       ],

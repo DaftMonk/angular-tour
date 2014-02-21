@@ -1,0 +1,49 @@
+<tour ng-init="init()">
+<div class="row">
+  <div class="title-row">
+    <div tourtip="Thanks for taking the Angular Tour!"
+         tourtip-next-label="Finish"
+         tourtip-placement="bottom"
+         tourtip-offset="-200"
+         tourtip-step="3"
+         class="title title-xl">GitHub
+    </div>
+  </div>
+
+  <div class="col-12">
+    <div class="tile">
+      <div class="tile-content">
+        <div>
+          <span tourtip="Use bower to download all the apps dependencies"
+                tourtip-placement="right"
+                tourtip-offset="60"
+                tourtip-step="0">Install with bower using
+          </span>
+        </div>
+        <pre>bower install</pre>
+        <div>
+          <span tourtip="Then use npm install the build requirements"
+                tourtip-placement="right"
+                tourtip-offset="260"
+                tourtip-step="1">npm install using 
+          </span>
+        </div>
+        <pre>npm install</pre>
+
+        <div>
+          <span tourtip="Then grunt is your task manager to run this demo"
+                tourtip-placement="right"
+                tourtip-offset="260"
+                tourtip-step="2">
+            Use grunt to build the project and run the demo.
+          </span>
+        </div>
+        <pre>grunt dist</pre>
+        <pre>grunt serve</pre>
+        
+      </div>
+    </div>
+  </div>
+</div>
+</div>
+</tour>

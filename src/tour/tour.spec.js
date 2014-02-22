@@ -7,23 +7,6 @@ describe('Directive: tour', function () {
 
   var $rootScope, $compile, $controller, $timeout;
 
-  // Mock out cookieStore
-  beforeEach(module(function ($provide) {
-    $provide.provider('$cookieStore', function () {
-      this.$get = function(){
-        var _cookies = {};
-        return {
-          get: function(key) {
-            return _cookies[key];
-          },
-          put: function(key, value) {
-            _cookies[key] = value;
-          }
-        };
-      };
-    });
-  }));
-
   beforeEach(inject(function (_$rootScope_, _$compile_, _$controller_, _$timeout_) {
     $rootScope = _$rootScope_;
     $compile = _$compile_;
@@ -35,7 +18,7 @@ describe('Directive: tour', function () {
     var steps;
 
     beforeEach(inject(function (OrderedList) {
-      steps = OrderedList;
+      steps = OrderedList.getInstance();
       // add unordered items
     }));
 
@@ -96,7 +79,6 @@ describe('Directive: tour', function () {
 
     it('should push a value into empty list', inject(function (OrderedList) {
       expect(steps.getCount()).toBe(0);
-
       steps.push('1');
       expect(steps.getCount()).toBe(1);
       expect(steps.get(0)).toBe('1');
@@ -117,6 +99,10 @@ describe('Directive: tour', function () {
 
   describe('basics', function() {
     var elm, scope, tour, tip1, tip2, tourScope;
+
+    beforeEach(inject(function (tourState) {
+      tourState.started();
+    }));
 
     beforeEach(function() {
       this.addMatchers({
@@ -151,7 +137,7 @@ describe('Directive: tour', function () {
       scope.$apply();
       $timeout.flush();
 
-      tourScope = elm.scope();
+      tourScope = elm.isolateScope();
     });
     afterEach(function() {
       scope.$destroy();
@@ -232,7 +218,7 @@ describe('Directive: tour', function () {
       expect(ctrl.getCurrentStep()).toBeFalsy();
     });
 
-    it('should load step when you reopen tour ', function () {
+    it('should load step when you reopen tour ', inject(function (tourState) {
       ctrl.startTour();
       ctrl.next();
       ctrl.endTour(true);
@@ -243,18 +229,20 @@ describe('Directive: tour', function () {
         ctrl.addStep(steps[i]);
       }
       scope.$apply();
+      tourState.started();
       ctrl.startTour();
+      //Restart from beginning
+      expect(ctrl.getCurrentStep()).toEqual(steps[0]);
+    }));
 
-      expect(ctrl.getCurrentStep()).toEqual(steps[1]);
-    });
-
-    it('should set tour to completed when you reach end', inject(function (tourConfig, $cookieStore) {
-      expect($cookieStore.get(tourConfig.cookieName + '_completed')).toBe(undefined);
+    it('should set tour to completed when you reach end', inject(function (tourConfig, tourState) {
+      //expect($cookieStore.get(tourConfig.cookieName + '_completed')).toBe(undefined);
       ctrl.startTour();
       ctrl.next();
       ctrl.next();
       ctrl.next();
-      expect($cookieStore.get(tourConfig.cookieName + '_completed')).toBe(true);
+      expect(tourState.isActive()).toBe(false);
+      //expect($cookieStore.get(tourConfig.cookieName + '_completed')).toBe(true);
     }));
 
     it('should select step at index', function () {
@@ -264,7 +252,8 @@ describe('Directive: tour', function () {
       expect(ctrl.getCurrentStep()).toEqual(steps[1]);
     });
 
-    it('should set first step to active = true and the rest to false', function() {
+    it('should set first step to active = true and the rest to false', inject(function(tourState) {
+      tourState.started();
       ctrl.startTour();
 
       ctrl.steps.forEach(function(step, i) {
@@ -274,7 +263,7 @@ describe('Directive: tour', function () {
           expect(step.tt_open).toBe(true);
         }
       });
-    });
+    }));
 
     it('should have added tourtips to steps array', function () {
       expect(ctrl.steps.getCount()).toBe(3);

@@ -1,0 +1,32 @@
+<tour ng-init="init()">
+  <div class="row">
+  <div class="title-row"><div class="title title-xl">How to install</div></div>
+
+  <div class="col-12">
+    <div class="tile">
+      <div class="tile-content">
+        <div><span tourtip="Use bower to download all the dependencies"
+                   tourtip-placement="right"
+                   tourtip-offset="60"
+                   tourtip-step="0">Install with bower using</span></div>
+        <pre>bower install angular-tour</pre>
+        <div><span tourtip="Then add those to your index.html"
+                   tourtip-placement="right"
+                   tourtip-offset="260"
+                   tourtip-step="1">Add the dependencies to your html file</span></div>
+        <pre><code data-language="html">&lt;script src="bower_components/jquery/jquery.js">&lt;/script>
+            &lt;script src="bower_components/angular/angular.js">&lt;/script>
+            &lt;script src="bower_components/jquery-cookie/jquery.cookie.js">&lt;/script>
+            &lt;script src="bower_components/angular-tour/dist/angular-tour-tpls.min.js">&lt;/script></code></pre>
+        <div>You'll also probably want to add the default stylesheet.</div>
+        <pre><code data-language="html">&lt;link rel="bower_components/angular-tour/dist/angular-tour.css"/></code></pre>
+        <div><span tourtip="Lastly, add angular-tour to your module and you're good to go!"
+                   tourtip-placement="right"
+                   tourtip-offset="100"
+                   tourtip-step="2">Lastly, add angular-tour as a dependency to your angular module</span></div>
+        <pre><code data-language="javascript">angular.module('myApp', ['angular-tour']);</pre></code>
+      </div>
+    </div>
+  </div>
+  </div>
+</tour>

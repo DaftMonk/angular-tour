@@ -2,7 +2,18 @@
 
 ## Demo
 
-Want to see it in action? Visit <http://daftmonk.github.io/angular-tour/>
+Note: 
+  * This is a fork of the Angular Tour project: [Angular Tour] (https://github.com/DaftMonk/angular-tour)
+  * It differs in the following ways
+  * This fork supports navigation
+  * The tourtips can guide a user from page to page 
+  * The tour may consist of many pages 'stiched' together
+  * The user can cancel the tour at anytime
+  * The tour always starts from the same place
+  * There are no cookies involved
+  * If a user cancels the tour, if they start again, they start from the beginning
+
+Want to see it in action? Visit See [demo here] (http://bartonhammond.github.io/#/)
 
 ## Showcase features of your website
 
@@ -10,7 +21,7 @@ Give an interactive tour to showcase the features of your website.
 
   * Easy to use
   * Responsive to window resizes
-  * Cookies remember your place in the tour
+  * Navigates views
   * Smoothly scrolls to each step
   * Control the placement for each tour tip
 
@@ -37,7 +48,6 @@ Once bower has downloaded those dependencies for you, you'll need to make sure y
 
     <script src="bower_components/jquery/jquery.js"></script>
     <script src="bower_components/angular/angular.js"></script>
-    <script src="bower_components/jquery-cookie/jquery.cookie.js"></script>
     <script src="bower_components/angular-tour/dist/angular-tour-tpls.min.js"></script>
 
 You'll also probably want to include the default stylesheet for angular tour. (You can replace this with your own stylesheet.)
@@ -73,10 +83,22 @@ There are additional attributes that allow you to customize each tour-tip.
 `next-label` **(Default: "Next")**: The text for the next button.
 `placement` **(Default: "top")**: Placement of the tour tip relative to the target element. can be top, right, left, bottom
 
-Inside your tour, you also have access to two scope methods for ending and starting the tour.
+Navigation code
+The tour directive should be contained within each page.  So if you have 4 pages, you'll have for "mini" tours - the tourtips within that page.  In order to support navigation, the <tour> controller emits a "onTourEnd" event.  
 
-    <a ng-click="openTour()">Open Tour</a>
-    <a ng-click="closeTour()">Close Tour</a>
+So within your controller that contains the <tour>, add a init() add the following code to navigate to the "search" page when this tour ends.
+
+ $scope.init = function() {
+   $scope.$on('onTourEnd', function() {
+     $location.path('/search');
+   });
+ }
+
+Be sure to have a "ng-init="init()" somewhere in your html markup - maybe on the <tour such as:
+
+   <tour ng-init="init()">
+   ....
+   </tour>
 
 ## Customization
 
@@ -90,8 +112,6 @@ If you'd like to edit the defaults for all your tour, you can inject tourConfig 
       nextLabel        : 'Next',                 // default text in the next tip button
       scrollSpeed      : 500,                    // page scrolling speed in milliseconds
       offset           : 28,                     // how many pixels offset the tip is from the target
-      cookies          : true,                   // if cookies are used, may help to disable during development
-      cookieName       : 'ngTour',               // choose your own cookie name
       postTourCallback : function (stepIndex){}, // a method to call once the tour closes (canceled or complete)
       postStepCallback : function (stepIndex){}  // a method to call after each step
     }

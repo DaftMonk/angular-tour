@@ -9,7 +9,6 @@ module.exports = function (config) {
     files : [
         'bower_components/jquery/jquery.js',
         'bower_components/angular/angular.js',
-        'bower_components/angular-cookies/angular-cookies.js',
         'bower_components/angular-mocks/angular-mocks.js',
         'src/**/*.js',
         'src/**/*.spec.js',

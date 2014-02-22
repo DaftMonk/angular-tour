@@ -1,0 +1,61 @@
+<tour ng-init="init()">
+<div  class="row">
+  <div class="title-row">
+    <div  tourtip="Let's see how to install Angular Tour" 
+          tourtip-placement="right"
+          tourtip-offset="200"
+          tourtip-step="2"
+          class="title title-xl">
+      Example
+    </div>
+  </div>
+
+  <div class="col-12">
+    <div class="tile">
+      <div class="tile-content">
+        <div tourtip='Just add the tourtip attribute wherever you want a tip, and wrap your tourtips in a &lt;tour>.'
+          tourtip-placement="right"
+          tourtip-offset="-600"
+          tourtip-step="0">Html markup and Angular Controller Usage Example</div>
+        <pre style="width:45%; display: inline-block">
+          <code data-language="html">
+            &lt;!-- Define the tour, 
+                    init the controller
+                    and add tourtips to elements -->
+            &lt;tour ng-init="init()">
+            &lt;span tourtip="tip 1"> Highlighted &lt;/span>
+            &lt;span tourtip="tip 2"> Elements &lt;/span>
+            &lt;input tourtip="uuse it as an attribute" />
+            &lt;span tourtip="Full options"
+               tourtip-step="1"
+               tourtip-next-label="Next"
+               tourtip-placement="right"
+               tourtip-offset="60">Full options&lt;/span>
+          &lt;/tour>
+          </code>
+        </pre>
+       <pre  tourtip="Be sure to have $scope.init() defined in the Controller." 
+             tourtip-placement="top"
+             tourtip-step="1"
+             style="width:45%; display: inline-block">
+          <code data-language="javascript">
+            /**
+             * When this page tour ends, 
+             * Angular Tour will emit the onTourEnd event
+             * so you can control the navigation
+             * and demonstrate the awesomenuess of your app!
+             */
+            app.controller('MyCtrl', function($scope, $location) {
+              $scope.init = function() {
+                  $scope.$on('onTourEnd', function() {
+                     $location.path('/nextpage);
+                  });
+               }
+             })
+          </code>
+        </pre>
+      </div>
+    </div>
+  </div>
+</div>
+</tour>

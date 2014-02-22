@@ -2,8 +2,16 @@
 
 ## Demo
 
-Note: This is a fork of the Angular Tour project: [Angular Tour] (https://github.com/DaftMonk/angular-tour)
-      This fork support navigation - the tourtips can guide a user from page to page 
+Note: 
+  * This is a fork of the Angular Tour project: [Angular Tour] (https://github.com/DaftMonk/angular-tour)
+  * It differs in the following ways
+  * This fork supports navigation
+  * The tourtips can guide a user from page to page 
+  * The tour may consist of many pages 'stiched' together
+  * The user can cancel the tour at anytime
+  * The tour always starts from the same place
+  * There are no cookies involved
+  * If a user cancels the tour, if they start again, they start from the beginning
 
 Want to see it in action? Visit See [demo here] (http://bartonhammond.github.io/#/)
 

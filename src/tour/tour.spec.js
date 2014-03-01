@@ -31,11 +31,11 @@ describe('Directive: tour', function () {
     $timeout = _$timeout_;
   }));
 
-  describe('OrderedList', function() {
+  describe('orderedList', function() {
     var steps;
 
-    beforeEach(inject(function (OrderedList) {
-      steps = OrderedList;
+    beforeEach(inject(function (orderedList) {
+      steps = orderedList();
       // add unordered items
     }));
 
@@ -94,7 +94,7 @@ describe('Directive: tour', function () {
       expect(steps.get(5)).toBe('5');
     });
 
-    it('should push a value into empty list', inject(function (OrderedList) {
+    it('should push a value into empty list', inject(function (orderedList) {
       expect(steps.getCount()).toBe(0);
 
       steps.push('1');

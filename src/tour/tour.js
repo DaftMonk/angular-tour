@@ -48,11 +48,11 @@ angular.module('angular-tour.tour', [])
     });
   })
 
-  .controller('TourController', function($scope, OrderedList, tourConfig, $cookieStore) {
+  .controller('TourController', function($scope, orderedList, tourConfig, $cookieStore) {
     var self = this,
       currentIndex = -1,
       currentStep = null,
-      steps = self.steps = OrderedList;
+      steps = self.steps = orderedList();
 
     var selectIfFirstStep = function(step) {
       var loadedIndex = $cookieStore.get(tourConfig.cookieName);
@@ -349,90 +349,98 @@ angular.module('angular-tour.tour', [])
     return {
       replace: true,
       templateUrl: 'tour/tour.tpl.html',
-      scope: {content: '@', nextLabel: '@', placement: '@', nextAction: '&', closeAction: '&', isOpen: '@'},
+      scope: {
+        content: '@',
+        nextLabel: '@',
+        placement: '@',
+        nextAction: '&',
+        closeAction: '&',
+        isOpen: '@'
+      },
       restrict: 'EA',
       link: function (scope, element, attrs) {
       }
     };
   })
 
-  .factory('OrderedList', function() {
-    var self = this;
-    self.map = {};
-    self._array = [];
-    function sortNumber(a,b)
-    {
-      return a - b;
-    }
-
-    return {
-      set: function(key, value) {
-        if(!angular.isNumber(key)) return;
-        // key already exists, replace value
-        if(key in self.map) {
-          self.map[key] = value;
+  /**
+   * OrderedList factory
+   * Each tour will have their own steps
+   */
+  .factory('orderedList', function () {
+    var OrderedList = function() {
+      this.map = {};
+      this._array = [];
+    };
+    
+    OrderedList.prototype.set = function (key, value) {
+      if (!angular.isNumber(key))
+        return;
+      if (key in this.map) {
+        this.map[key] = value;
+      } else {
+        if (key < this._array.length) {
+          var insertIndex = key - 1 > 0 ? key - 1 : 0;
+          this._array.splice(insertIndex, 0, key);
+        } else {
+          this._array.push(key);
         }
-        // insert new key and value
-        else {
-          if(key < self._array.length) {
-            // insert if possible
-            var insertIndex = key - 1 > 0 ? key - 1 : 0;
-            self._array.splice(insertIndex, 0, key);
-          } else {
-            // otherwise just push to the end
-            self._array.push(key);
-          }
-
-          self.map[key] = value;
-          self._array.sort(sortNumber);
-        }
-      },
-      indexOf: function(value) {
-        for( var prop in self.map ) {
-          if( self.map.hasOwnProperty( prop ) ) {
-            if( self.map[ prop ] === value )
-              return Number(prop);
-          }
-        }
-      },
-      push: function(value) {
-        var key = (self._array[self._array.length - 1] + 1) || 0;
-
-        // insert new key and value
-        self._array.push(key);
-
-        self.map[key] = value;
-        self._array.sort(sortNumber);
-      },
-      remove: function(key) {
-        var index = self._array.indexOf(key);
-        if(index === -1) {
-          throw new Error('key does not exist');
-        }
-        self._array.splice(index, 1);
-        delete self.map[key];
-      },
-      get: function(key) {
-        return self.map[key];
-      },
-      getCount: function() {
-        return self._array.length;
-      },
-      forEach: function(f) {
-        var key, value;
-        for(var i = 0; i < self._array.length; i++) {
-          key = self._array[i];
-          value = self.map[key];
-          f(value, key);
-        }
-      },
-      first: function() {
-        var key, value;
-        key = self._array[0];
-        value = self.map[key];
-        return(value);
+        this.map[key] = value;
+        this._array.sort(function(a,b){
+          return a-b;
+        });
       }
     };
+    OrderedList.prototype.indexOf = function (value) {
+      for (var prop in this.map) {
+        if (this.map.hasOwnProperty(prop)) {
+          if (this.map[prop] === value)
+            return Number(prop);
+        }
+      }
+    };
+    OrderedList.prototype.push = function (value) {
+      var key = this._array[this._array.length - 1] + 1 || 0;
+      this._array.push(key);
+      this.map[key] = value;
+      this._array.sort(function(a, b) {
+        return a-b;
+      });
+    };
+    OrderedList.prototype.remove = function (key) {
+      var index = this._array.indexOf(key);
+      if (index === -1) {
+        throw new Error('key does not exist');
+      }
+      this._array.splice(index, 1);
+      delete this.map[key];
+    };
+    OrderedList.prototype.get = function (key) {
+      return this.map[key];
+    };
+    OrderedList.prototype.getCount = function () {
+      return this._array.length;
+    };
+    OrderedList.prototype.forEach = function (f) {
+      var key, value;
+      for (var i = 0; i < this._array.length; i++) {
+        key = this._array[i];
+        value = this.map[key];
+        f(value, key);
+      }
+    };
+    OrderedList.prototype.first = function () {
+      var key, value;
+      key = this._array[0];
+      value = this.map[key];
+      return value;
+    };
+
+    var orderedListFactory = function() {
+      return new OrderedList();
+    };
+    
+    return orderedListFactory;
   })
 
   .factory('scrollTo', function() {

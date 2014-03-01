@@ -9,7 +9,7 @@ describe('Directive: tour', function () {
 
   // Mock out cookieStore
   beforeEach(module(function ($provide) {
-    $provide.provider('$cookieStore', function () {
+    $provide.provider('cookieStore', function () {
       this.$get = function(){
         var _cookies = {};
         return {
@@ -248,13 +248,13 @@ describe('Directive: tour', function () {
       expect(ctrl.getCurrentStep()).toEqual(steps[1]);
     });
 
-    it('should set tour to completed when you reach end', inject(function (tourConfig, $cookieStore) {
-      expect($cookieStore.get(tourConfig.cookieName + '_completed')).toBe(undefined);
+    it('should set tour to completed when you reach end', inject(function (tourConfig, cookieStore) {
+      expect(cookieStore.get(tourConfig.cookieName + '_completed')).toBe(undefined);
       ctrl.startTour();
       ctrl.next();
       ctrl.next();
       ctrl.next();
-      expect($cookieStore.get(tourConfig.cookieName + '_completed')).toBe(true);
+      expect(cookieStore.get(tourConfig.cookieName + '_completed')).toBe(true);
     }));
 
     it('should select step at index', function () {

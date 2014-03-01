@@ -1,6 +1,6 @@
 'use strict';
 
-angular.module('angular-tour.tour', [])
+angular.module('angular-tour.tour', ['ivpusic.cookie'])
   .constant('tourConfig', {
     placement        : 'top',                  // default placement relative to target. 'top', 'right', 'left', 'bottom'
     animation        : true,                   // if tips fade in
@@ -13,7 +13,7 @@ angular.module('angular-tour.tour', [])
     postStepCallback : function (stepIndex){}  // a method to call after each step
   })
 
-  .provider('$cookieStore', function(){
+  .provider('cookieStore', function(){
     var self = this;
     self.defaultOptions = {};
 
@@ -21,42 +21,41 @@ angular.module('angular-tour.tour', [])
       self.defaultOptions = options;
     };
 
-    self.$get = function(){
+    self.$get = function(ipCookie){
       return {
         get: function(name){
-          var jsonCookie = $.cookie(name);
+          var jsonCookie = ipCookie(name);
           if(jsonCookie){
             return angular.fromJson(jsonCookie);
           }
         },
         put: function(name, value, options){
           options = $.extend({}, self.defaultOptions, options);
-          $.cookie(name, angular.toJson(value), options);
+          ipCookie(name, angular.toJson(value), options);
         },
         remove: function(name, options){
-          options = $.extend({}, self.defaultOptions, options);
-          $.removeCookie(name, options);
+          ipCookie.remove(name);
         }
       };
     };
   })
 
-  .config(function($cookieStoreProvider){
-    $cookieStoreProvider.setDefaultOptions({
+  .config(function(cookieStoreProvider){
+    cookieStoreProvider.setDefaultOptions({
       path: '/', // Cookies should be available on all pages
       expires: 3650 // Store tour cookies for 10 years
     });
   })
 
-  .controller('TourController', function($scope, orderedList, tourConfig, $cookieStore) {
+  .controller('TourController', function($scope, orderedList, tourConfig, cookieStore) {
     var self = this,
       currentIndex = -1,
       currentStep = null,
       steps = self.steps = orderedList();
 
     var selectIfFirstStep = function(step) {
-      var loadedIndex = $cookieStore.get(tourConfig.cookieName);
-      var wasClosed = $cookieStore.get(tourConfig.cookieName + '_closed');
+      var loadedIndex = cookieStore.get(tourConfig.cookieName);
+      var wasClosed = cookieStore.get(tourConfig.cookieName + '_closed');
       if(wasClosed) return;
 
       function selectFromCookie() {
@@ -123,17 +122,17 @@ angular.module('angular-tour.tour', [])
       });
 
       if(!skipSave && tourConfig.cookies) {
-        $cookieStore.put(tourConfig.cookieName + '_closed', true);
+        cookieStore.put(tourConfig.cookieName + '_closed', true);
       }
 
       tourConfig.postTourCallback(currentIndex);
     };
 
     self.startTour = function() {
-      if($cookieStore.get(tourConfig.cookieName + '_completed')) return;
+      if(cookieStore.get(tourConfig.cookieName + '_completed')) return;
 
       if(tourConfig.cookies) {
-        $cookieStore.put(tourConfig.cookieName + '_closed', false);
+        cookieStore.put(tourConfig.cookieName + '_closed', false);
       }
 
       steps.forEach(function(step) {
@@ -142,8 +141,8 @@ angular.module('angular-tour.tour', [])
     };
 
     $scope.openTour = function() {
-      if($cookieStore.get(tourConfig.cookieName + '_completed') && tourConfig.cookies) {
-        $cookieStore.put(tourConfig.cookieName + '_completed', false);
+      if(cookieStore.get(tourConfig.cookieName + '_completed') && tourConfig.cookies) {
+        cookieStore.put(tourConfig.cookieName + '_completed', false);
         self.save(steps.indexOf(steps.first()));
       }
 
@@ -155,12 +154,12 @@ angular.module('angular-tour.tour', [])
     };
 
     self.save = function(index) {
-      $cookieStore.put(tourConfig.cookieName, index);
+      cookieStore.put(tourConfig.cookieName, index);
     };
 
     self.tourCompleted = function() {
       self.endTour();
-      $cookieStore.put(tourConfig.cookieName + '_completed', true);
+      cookieStore.put(tourConfig.cookieName + '_completed', true);
     };
 
     self.next = function () {

@@ -29,7 +29,7 @@ To install run
 
     bower install angular-tour
 
-Angular Tour has dependencies on jQuery and jQuery cookie, which bower will install.
+Angular Tour has dependencies on jQuery and Angular Cookie, which bower will install.
 
 ## Setup
 
@@ -37,7 +37,7 @@ Once bower has downloaded those dependencies for you, you'll need to make sure y
 
     <script src="bower_components/jquery/jquery.js"></script>
     <script src="bower_components/angular/angular.js"></script>
-    <script src="bower_components/jquery-cookie/jquery.cookie.js"></script>
+    <script src="bower_components/angular-cookie/angular-cookie.min.js"></script>
     <script src="bower_components/angular-tour/dist/angular-tour-tpls.min.js"></script>
 
 You'll also probably want to include the default stylesheet for angular tour. (You can replace this with your own stylesheet.)

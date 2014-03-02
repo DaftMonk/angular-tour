@@ -1,3 +1,4 @@
+/* global jasmine */
 'use strict';
 
 describe('Directive: tour', function () {
@@ -7,9 +8,9 @@ describe('Directive: tour', function () {
 
   var $rootScope, $compile, $controller, $timeout;
 
-  // Mock out cookieStore
+  // Mock out tourCookieStore
   beforeEach(module(function ($provide) {
-    $provide.provider('cookieStore', function () {
+    $provide.provider('tourCookieStore', function () {
       this.$get = function(){
         var _cookies = {};
         return {
@@ -223,7 +224,7 @@ describe('Directive: tour', function () {
 
     it('should not open tour if it was closed ', function () {
       ctrl.next();
-      ctrl.endTour();
+      ctrl.cancelTour();
 
       ctrl = $controller('TourController', {$scope: scope});
       for(var i = 0;i < steps.length;i++){
@@ -232,10 +233,13 @@ describe('Directive: tour', function () {
       expect(ctrl.getCurrentStep()).toBeFalsy();
     });
 
+    // Cookie tests
+    // 
     it('should load step when you reopen tour ', function () {
       ctrl.startTour();
       ctrl.next();
-      ctrl.endTour(true);
+
+      ctrl.cancelTour();
       ctrl.select(steps[0]);
 
       ctrl = $controller('TourController', {$scope: scope});
@@ -248,13 +252,13 @@ describe('Directive: tour', function () {
       expect(ctrl.getCurrentStep()).toEqual(steps[1]);
     });
 
-    it('should set tour to completed when you reach end', inject(function (tourConfig, cookieStore) {
-      expect(cookieStore.get(tourConfig.cookieName + '_completed')).toBe(undefined);
+    it('should set tour to completed when you reach end', inject(function (tourConfig, tourCookieStore) {
+      expect(tourCookieStore.get(tourConfig.cookieName + '_completed')).toBe(undefined);
       ctrl.startTour();
       ctrl.next();
       ctrl.next();
       ctrl.next();
-      expect(cookieStore.get(tourConfig.cookieName + '_completed')).toBe(true);
+      expect(tourCookieStore.get(tourConfig.cookieName + '_completed')).toBe(true);
     }));
 
     it('should select step at index', function () {
@@ -298,6 +302,28 @@ describe('Directive: tour', function () {
       ctrl.addStep(tourStep);
 
       expect(ctrl.steps.get(0).content).toBe(3);
+    });
+
+    it('should emit tour related events', function() {
+      var tourCancel = jasmine.createSpy('tourCancel');
+      scope.$on('tour:tourCancel', tourCancel);
+      ctrl.cancelTour();
+      expect(tourCancel).toHaveBeenCalled();
+
+      var tourComplete = jasmine.createSpy('tourComplete');
+      scope.$on('tour:tourComplete', tourComplete);
+      ctrl.completeTour();
+      expect(tourComplete).toHaveBeenCalled();
+
+      var tourStart = jasmine.createSpy('tourStart');
+      scope.$on('tour:tourStart', tourStart);
+      ctrl.startTour();
+      expect(tourStart).toHaveBeenCalled();
+
+      var nextStep = jasmine.createSpy('tourNextStep');
+      scope.$on('tour:nextStep', nextStep);
+      ctrl.next();
+      expect(nextStep).toHaveBeenCalled();
     });
   });
 

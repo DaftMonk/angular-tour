@@ -8,84 +8,25 @@ angular.module('angular-tour.tour', ['ivpusic.cookie'])
     scrollSpeed      : 500,                    // page scrolling speed in milliseconds
     offset           : 28,                     // how many pixels offset the tip is from the target
     cookies          : true,                   // if cookies are used, may help to disable during development
-    cookieName       : 'ngTour',               // choose your own cookie name
-    postTourCallback : function (stepIndex){}, // a method to call once the tour closes (canceled or complete)
-    postStepCallback : function (stepIndex){}  // a method to call after each step
+    cookieName       : 'ngTour'                // choose your own cookie name
   })
 
-  .provider('cookieStore', function(){
-    var self = this;
-    self.defaultOptions = {};
-
-    self.setDefaultOptions = function(options){
-      self.defaultOptions = options;
-    };
-
-    self.$get = function(ipCookie){
-      return {
-        get: function(name){
-          var jsonCookie = ipCookie(name);
-          if(jsonCookie){
-            return angular.fromJson(jsonCookie);
-          }
-        },
-        put: function(name, value, options){
-          options = $.extend({}, self.defaultOptions, options);
-          ipCookie(name, angular.toJson(value), options);
-        },
-        remove: function(name, options){
-          ipCookie.remove(name);
-        }
-      };
-    };
-  })
-
-  .config(function(cookieStoreProvider){
-    cookieStoreProvider.setDefaultOptions({
-      path: '/', // Cookies should be available on all pages
-      expires: 3650 // Store tour cookies for 10 years
-    });
-  })
-
-  .controller('TourController', function($scope, orderedList, tourConfig, cookieStore) {
+  /**
+   * TourController
+   * the logic for the tour, which manages all the steps
+   */
+  .controller('TourController', function($scope, orderedList, tourConfig, tourCookieManager) {
     var self = this,
       currentIndex = -1,
       currentStep = null,
       steps = self.steps = orderedList();
 
-    var selectIfFirstStep = function(step) {
-      var loadedIndex = cookieStore.get(tourConfig.cookieName);
-      var wasClosed = cookieStore.get(tourConfig.cookieName + '_closed');
-      if(wasClosed) return;
-
-      function selectFromCookie() {
-        if(steps.indexOf(step) === loadedIndex) {
-          self.select(step);
-        }
-      }
-
-      function selectFirst() {
-        if((steps.first() === step)) {
-          self.select(step);
-        } else {
-          step.tt_open = false;
-        }
-      }
-
-      // load from cookie or select first step
-      if(loadedIndex && tourConfig.cookies) {
-        selectFromCookie();
-      } else {
-        selectFirst();
-      }
-    };
-
-    self.selectAtIndex = function(index) {
-      if(steps.get(index))
+    self.selectAtIndex = function (index) {
+      if (steps.get(index))
         self.select(steps.get(index));
     };
 
-    self.getCurrentStep = function() {
+    self.getCurrentStep = function () {
       return currentStep;
     };
 
@@ -104,7 +45,7 @@ angular.module('angular-tour.tour', ['ivpusic.cookie'])
       if(nextStep) {
         goNext();
       } else {
-        self.tourCompleted();
+        self.completeTour();
       }
     };
 
@@ -116,68 +57,66 @@ angular.module('angular-tour.tour', ['ivpusic.cookie'])
       }
     };
 
-    self.endTour = function (skipSave) {
-      steps.forEach(function(step) {
+    self.unselectAllSteps = function() {
+      steps.forEach(function (step) {
         step.tt_open = false;
       });
+    };
 
-      if(!skipSave && tourConfig.cookies) {
-        cookieStore.put(tourConfig.cookieName + '_closed', true);
-      }
-
-      tourConfig.postTourCallback(currentIndex);
+    self.getFirstStep = function() {
+      var firstStep;
+      steps.forEach(function selectIfFirstStep(step) {
+        if (steps.first() === step) {
+          firstStep = step;
+        }
+      });
+      return firstStep;
     };
 
     self.startTour = function() {
-      if(cookieStore.get(tourConfig.cookieName + '_completed')) return;
-
+      var firstStep;
+      firstStep = self.getFirstStep();
       if(tourConfig.cookies) {
-        cookieStore.put(tourConfig.cookieName + '_closed', false);
+        firstStep = steps.get(tourCookieManager.lastStepIndex()) || firstStep;
       }
-
-      steps.forEach(function(step) {
-        selectIfFirstStep(step);
-      });
+      self.unselectAllSteps();
+      self.select(firstStep);
+      $scope.$emit('tour:tourStart', steps.indexOf(firstStep));
     };
 
-    $scope.openTour = function() {
-      if(cookieStore.get(tourConfig.cookieName + '_completed') && tourConfig.cookies) {
-        cookieStore.put(tourConfig.cookieName + '_completed', false);
-        self.save(steps.indexOf(steps.first()));
-      }
-
-      self.startTour();
+    self.cancelTour = function () {
+      self.unselectAllSteps();
+      $scope.$emit('tour:tourCancel');
     };
 
-    $scope.closeTour = function() {
-      self.endTour();
-    };
-
-    self.save = function(index) {
-      cookieStore.put(tourConfig.cookieName, index);
-    };
-
-    self.tourCompleted = function() {
-      self.endTour();
-      cookieStore.put(tourConfig.cookieName + '_completed', true);
+    self.completeTour = function() {
+      self.unselectAllSteps();
+      $scope.$emit('tour:tourComplete');
     };
 
     self.next = function () {
       var newIndex = currentIndex + 1;
-
-      if(tourConfig.cookies) {
-        self.save(currentIndex + 1);
+      if (newIndex + 1 > steps.getCount()) {
+        self.completeTour();
       }
-
-      if(newIndex + 1 > steps.getCount()) {
-        self.tourCompleted();
-      }
-
-      tourConfig.postStepCallback(newIndex);
       self.select(steps.get(newIndex));
+      $scope.$emit('tour:nextStep', newIndex);
+    };
+
+    // scope methods
+    $scope.openTour = function() {
+      self.startTour();
+    };
+
+    $scope.closeTour = function() {
+      self.cancelTour();
     };
   })
 
+  /**
+   * tour
+   * directive that keeps all the tips in order, and allows you to control the tour
+   */
   .directive('tour', function () {
     return {
       controller: 'TourController',
@@ -188,6 +127,10 @@ angular.module('angular-tour.tour', ['ivpusic.cookie'])
     };
   })
 
+  /**
+   * tourtip
+   * a single step, tourtip manages the state of the tour-popup directive
+   */
   .directive('tourtip', function ($window, $compile, $interpolate, $timeout, scrollTo, tourConfig) {
     var startSym = $interpolate.startSymbol(),
         endSym = $interpolate.endSymbol();
@@ -227,7 +170,7 @@ angular.module('angular-tour.tour', ['ivpusic.cookie'])
         scope.tt_open = false;
         scope.tt_animation = tourConfig.animation;
         scope.tt_next_action = tourCtrl.next;
-        scope.tt_close_action = tourCtrl.endTour;
+        scope.tt_close_action = tourCtrl.cancelTour;
         scope.index = parseInt(attrs.tourtipStep, 10);
 
         var tourtip = $compile( template )( scope );
@@ -344,6 +287,10 @@ angular.module('angular-tour.tour', ['ivpusic.cookie'])
     };
   })
 
+  /**
+   * tourPopup
+   * the directive that actually had the template for the tip
+   */
   .directive('tourPopup', function () {
     return {
       replace: true,
@@ -363,8 +310,8 @@ angular.module('angular-tour.tour', ['ivpusic.cookie'])
   })
 
   /**
-   * OrderedList factory
-   * Each tour will have their own steps
+   * OrderedList
+   * Used for keeping steps in order
    */
   .factory('orderedList', function () {
     var OrderedList = function() {
@@ -442,6 +389,76 @@ angular.module('angular-tour.tour', ['ivpusic.cookie'])
     return orderedListFactory;
   })
 
+
+  /**
+   * tourCookieStore
+   * an abstraction away from the ipCookie dependency
+   */
+  .provider('tourCookieStore', function(){
+    var self = this;
+    self.defaultOptions = {
+      path: '/', // Cookies should be available on all pages
+      expires: 3650 // Store tour cookies for 10 years      
+    };
+
+    self.setDefaultOptions = function(options){
+      self.defaultOptions = options;
+    };
+
+    self.$get = function(ipCookie){
+      return {
+        get: function(name){
+          return ipCookie(name);
+        },
+        put: function(name, value, options){
+          options = $.extend({}, self.defaultOptions, options);
+          ipCookie(name, angular.toJson(value), options);
+        },
+        remove: function(name, options){
+          ipCookie.remove(name);
+        }
+      };
+    };
+  })
+
+  /**
+   * tourCookieManager
+   * listens for events on the scope to keep cookies synced up   
+   */
+  .factory('tourCookieManager', function($rootScope, tourCookieStore, tourConfig) {
+
+    $rootScope.$on('tour:tourCancel', function() {
+      tourCookieStore.put(tourConfig.cookieName + '_closed', true);
+    });
+
+    $rootScope.$on('tour:tourComplete', function() {
+      tourCookieStore.put(tourConfig.cookieName + '_completed', true);
+      tourCookieStore.put(tourConfig.cookieName + '_closed', true);
+    });
+
+    $rootScope.$on('tour:tourStart', function(event, stepIndex) {
+      if(tourCookieStore.get(tourConfig.cookieName + '_completed')) return;
+      tourCookieStore.put(tourConfig.cookieName + '_completed', false);
+      tourCookieStore.put(tourConfig.cookieName, stepIndex);
+    });
+
+    $rootScope.$on('tour:nextStep', function(event, stepIndex) {
+      tourCookieStore.put(tourConfig.cookieName, stepIndex);
+    });
+
+    return {
+      lastStepIndex: function() {
+        var wasCompleted = tourCookieStore.get(tourConfig.cookieName + '_completed');
+        if(wasCompleted) return;
+
+        var loadedIndex = tourCookieStore.get(tourConfig.cookieName);
+        if(loadedIndex) {
+          return loadedIndex;
+        }
+      }
+    };
+  })
+
   .factory('scrollTo', function() {
     return function(target, offsetY, offsetX, speed) {
       if(target) {
@@ -453,7 +470,21 @@ angular.module('angular-tour.tour', ['ivpusic.cookie'])
         $('html,body').stop().animate({scrollTop: 0}, speed);
       }
     };
+  })
+
+  .service('tourState', function() {
+    var self = this;
+    self._tourIsActive = false;
+    
+    self.isActive = function() {
+      return self._tourIsActive;
+    };
+    
+    self.started = function() {
+      self._tourIsActive = true;
+    };
+    
+    self.ended = function() {
+      self._tourIsActive = false;
+    };
   });
-
-
-

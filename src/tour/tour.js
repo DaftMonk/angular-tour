@@ -135,7 +135,7 @@ angular.module('angular-tour.tour', ['ivpusic.cookie'])
 
   /**
    * tourtip
-   * a single step, tourtip manages the state of the tour-popup directive
+   * tourtip manages the state of the tour-popup directive
    */
   .directive('tourtip', function ($window, $compile, $interpolate, $timeout, scrollTo, tourConfig) {
     var startSym = $interpolate.startSymbol(),
@@ -432,32 +432,33 @@ angular.module('angular-tour.tour', ['ivpusic.cookie'])
    * listens for events on the scope to keep cookies synced up   
    */
   .factory('tourCookieManager', function($rootScope, tourCookieStore, tourConfig) {
+    var cookieName = tourConfig.cookieName;
 
     $rootScope.$on('tour:tourCancel', function() {
-      tourCookieStore.put(tourConfig.cookieName + '_closed', true);
+      tourCookieStore.put(cookieName + '_closed', true);
     });
 
     $rootScope.$on('tour:tourComplete', function() {
-      tourCookieStore.put(tourConfig.cookieName + '_completed', true);
-      tourCookieStore.put(tourConfig.cookieName + '_closed', true);
+      tourCookieStore.put(cookieName + '_completed', true);
+      tourCookieStore.put(cookieName + '_closed', true);
     });
 
     $rootScope.$on('tour:tourStart', function(event, stepIndex) {
-      if(tourCookieStore.get(tourConfig.cookieName + '_completed')) return;
-      tourCookieStore.put(tourConfig.cookieName + '_completed', false);
-      tourCookieStore.put(tourConfig.cookieName, stepIndex);
+      if(tourCookieStore.get(cookieName + '_completed')) return;
+      tourCookieStore.put(cookieName + '_completed', false);
+      tourCookieStore.put(cookieName, stepIndex);
     });
 
     $rootScope.$on('tour:nextStep', function(event, stepIndex) {
-      tourCookieStore.put(tourConfig.cookieName, stepIndex);
+      tourCookieStore.put(cookieName, stepIndex);
     });
 
     return {
       lastStepIndex: function() {
-        var wasCompleted = tourCookieStore.get(tourConfig.cookieName + '_completed');
+        var wasCompleted = tourCookieStore.get(cookieName + '_completed');
         if(wasCompleted) return;
 
-        var loadedIndex = tourCookieStore.get(tourConfig.cookieName);
+        var loadedIndex = tourCookieStore.get(cookieName);
         if(loadedIndex) {
           return loadedIndex;
         }

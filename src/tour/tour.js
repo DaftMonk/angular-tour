@@ -1,6 +1,11 @@
 'use strict';
 
 angular.module('angular-tour.tour', ['ivpusic.cookie'])
+
+  /**
+   * tourConfig
+   * Default configuration, can be customized by injecting tourConfig into your app and modifying it
+   */
   .constant('tourConfig', {
     placement        : 'top',                  // default placement relative to target. 'top', 'right', 'left', 'bottom'
     animation        : true,                   // if tips fade in
@@ -103,7 +108,8 @@ angular.module('angular-tour.tour', ['ivpusic.cookie'])
       $scope.$emit('tour:nextStep', newIndex);
     };
 
-    // scope methods
+    // Scope methods    
+    
     $scope.openTour = function() {
       self.startTour();
     };
@@ -459,6 +465,10 @@ angular.module('angular-tour.tour', ['ivpusic.cookie'])
     };
   })
 
+  /**
+   * ScrollTo
+   * Smoothly scroll to a dom element
+   */
   .factory('scrollTo', function() {
     return function(target, offsetY, offsetX, speed) {
       if(target) {
@@ -469,22 +479,5 @@ angular.module('angular-tour.tour', ['ivpusic.cookie'])
       } else {
         $('html,body').stop().animate({scrollTop: 0}, speed);
       }
-    };
-  })
-
-  .service('tourState', function() {
-    var self = this;
-    self._tourIsActive = false;
-    
-    self.isActive = function() {
-      return self._tourIsActive;
-    };
-    
-    self.started = function() {
-      self._tourIsActive = true;
-    };
-    
-    self.ended = function() {
-      self._tourIsActive = false;
     };
   });

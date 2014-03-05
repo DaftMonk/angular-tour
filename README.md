@@ -91,9 +91,7 @@ If you'd like to edit the defaults for all your tour, you can inject tourConfig 
       scrollSpeed      : 500,                    // page scrolling speed in milliseconds
       offset           : 28,                     // how many pixels offset the tip is from the target
       cookies          : true,                   // if cookies are used, may help to disable during development
-      cookieName       : 'ngTour',               // choose your own cookie name
-      postTourCallback : function (stepIndex){}, // a method to call once the tour closes (canceled or complete)
-      postStepCallback : function (stepIndex){}  // a method to call after each step
+      cookieName       : 'ngTour'                // choose your own cookie name
     }
 
 ### Customizing Templates

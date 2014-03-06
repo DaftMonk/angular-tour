@@ -1,0 +1,175 @@
+html {
+    background: -webkit-linear-gradient(bottom, #6DBCDB 20%, #639AC9 100%);
+    background: -ms-linear-gradient(bottom, #6DBCDB 20%, #639AC9 100%);
+    background: linear-gradient(to bottom, #6DBCDB 20%, #639AC9 100%);
+}
+
+html, body {
+    font-family: 'Open Sans', sans-serif;
+    margin: 0;
+    padding: 0;
+    position: relative;
+    color: #464637;
+    min-height: 100%;
+    font-size: 20px;
+    font-weight: 300;
+}
+
+h1 {
+    color: #fff;
+    font-size: 20px;
+    font-weight: 300;
+    text-align: center;
+}
+
+ul {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+}
+
+.logo {
+    padding-top: 55px;
+}
+
+.container {
+    margin: auto;
+    padding: 30px;
+    min-width: 1100px;
+    max-width: 1300px;
+}
+
+@media (min-width: 750px) and (max-width: 970px){
+    .container {
+        min-width: 750px;
+    }
+}
+
+.row {
+    margin-left: -15px;
+    margin-right: -15px;
+    margin-bottom: 30px;
+}
+
+.row:before, .row:after {
+    content: " ";
+    display: table;
+}
+
+.row:after {
+    clear: both;
+}
+
+.col-4, .col-6, .col-12 {
+    float: left;
+}
+
+.col-4 {
+    width: 33.33333333333333%;
+}
+
+.col-6 {
+    width: 50%;
+}
+
+.col-12 {
+    width: 100%;
+}
+
+.title {
+    color: #fff;
+    padding: 3px 10px;
+    display: inline-block;
+    position: relative;
+    background-color: #3D5580;
+    z-index: 3;
+}
+.title-xl {
+    padding: 3px 15px;
+    font-size: 40px;
+}
+
+.title-row:before, .title-row:after {
+    content: " ";
+    display: table;
+}
+
+.title-row:after {
+    clear: both;
+}
+
+.button {
+    color: #fff;
+    margin: 8px 20px 10px 0;
+    padding: 5px 10px;
+    min-width: 10px;
+    background-color: #5F9EDF;
+    text-align: center;
+    text-decoration: none;
+    transition: background-color 300ms ease-out;
+}
+
+.button:hover {
+    background-color: #477edf;
+}
+
+.tile {
+    margin-top: 15px;
+    margin-left: 15px;
+    margin-right: 15px;
+    background-color: #fff;
+    vertical-align: top;
+    min-height: 80px;
+}
+.tile-title {
+    color: #FF7270;
+    text-align: center;
+    padding: 20px 0 0px;
+}
+.tile-content {
+    padding: 20px 40px 40px;
+}
+
+.block {
+    padding: 20px 0;
+    margin-top: -8px;
+    margin-left: 15px;
+    margin-right: 15px;
+    min-height: 215px;
+    background-color: #fff;
+}
+
+.list {
+    list-style: square;
+    padding: 0px 60px;
+}
+
+.list li {
+    padding: 10px 0px;
+}
+
+.block-list li {
+    padding: 10px 40px;
+}
+
+code {
+    font-size: 16px;
+}
+
+.social {
+    margin-top: 1em;
+    padding: 15px 0;
+}
+
+.social-buttons {
+    margin-left: 0;
+    margin-bottom: 0;
+    padding-left: 0;
+    list-style: none;
+}
+
+.social-buttons li {
+    display: inline-block;
+    padding: 5px 8px;
+    line-height: 1;
+}

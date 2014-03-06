@@ -1,6 +1,6 @@
 'use strict';
 
-angular.module('angular-tour.tour', ['ivpusic.cookie'])
+angular.module('angular-tour.tour', [])
 
   /**
    * tourConfig
@@ -11,46 +11,33 @@ angular.module('angular-tour.tour', ['ivpusic.cookie'])
     animation        : true,                   // if tips fade in
     nextLabel        : 'Next',                 // default text in the next tip button
     scrollSpeed      : 500,                    // page scrolling speed in milliseconds
-    offset           : 28,                     // how many pixels offset the tip is from the target
-    cookies          : true,                   // if cookies are used, may help to disable during development
-    cookieName       : 'ngTour'                // choose your own cookie name
+    offset           : 28                      // how many pixels offset the tip is from the target
   })
 
   /**
    * TourController
    * the logic for the tour, which manages all the steps
    */
-  .controller('TourController', function($scope, orderedList, tourConfig, tourCookieManager) {
+  .controller('TourController', function($scope, orderedList) {
     var self = this,
-      currentIndex = -1,
-      currentStep = null,
-      steps = self.steps = orderedList();
+        steps = self.steps = orderedList();
 
-    self.selectAtIndex = function (index) {
-      if (steps.get(index))
-        self.select(steps.get(index));
+    $scope.$watch( 'currentStep', function ( val ) {
+      self.select(val);
+    });
+
+    self.getCurrentStep = function() {
+      return $scope.currentStep;
     };
-
-    self.getCurrentStep = function () {
-      return currentStep;
-    };
-
-    self.select = function(nextStep) {
-      var nextIndex = steps.indexOf(nextStep);
-
-      function goNext() {
-        if(currentStep) {
-          currentStep.tt_open = false;
-        }
-        currentStep = nextStep;
-        currentIndex = nextIndex;
-        nextStep.tt_open = true;
+    
+    self.select = function(nextIndex) {
+      if($scope.currentStep !== nextIndex) {
+        $scope.currentStep = nextIndex;
       }
-
-      if(nextStep) {
-        goNext();
-      } else {
-        self.completeTour();
+      self.unselectAllSteps();
+      var step = steps.get(nextIndex);
+      if(step) {
+        step.ttOpen = true;
       }
     };
 
@@ -64,54 +51,16 @@ angular.module('angular-tour.tour', ['ivpusic.cookie'])
 
     self.unselectAllSteps = function() {
       steps.forEach(function (step) {
-        step.tt_open = false;
+        step.ttOpen = false;
       });
-    };
-
-    self.getFirstStep = function() {
-      var firstStep;
-      steps.forEach(function selectIfFirstStep(step) {
-        if (steps.first() === step) {
-          firstStep = step;
-        }
-      });
-      return firstStep;
-    };
-
-    self.startTour = function() {
-      var firstStep;
-      firstStep = self.getFirstStep();
-      if(tourConfig.cookies) {
-        firstStep = steps.get(tourCookieManager.lastStepIndex()) || firstStep;
-      }
-      self.unselectAllSteps();
-      self.select(firstStep);
-      $scope.$emit('tour:tourStart', steps.indexOf(firstStep));
     };
 
     self.cancelTour = function () {
       self.unselectAllSteps();
-      $scope.$emit('tour:tourCancel');
     };
 
-    self.completeTour = function() {
-      self.unselectAllSteps();
-      $scope.$emit('tour:tourComplete');
-    };
-
-    self.next = function () {
-      var newIndex = currentIndex + 1;
-      if (newIndex + 1 > steps.getCount()) {
-        self.completeTour();
-      }
-      self.select(steps.get(newIndex));
-      $scope.$emit('tour:nextStep', newIndex);
-    };
-
-    // Scope methods    
-    
     $scope.openTour = function() {
-      self.startTour();
+      self.select($scope.currentStep);
     };
 
     $scope.closeTour = function() {
@@ -123,12 +72,27 @@ angular.module('angular-tour.tour', ['ivpusic.cookie'])
    * tour
    * directive that keeps all the tips in order, and allows you to control the tour
    */
-  .directive('tour', function () {
+  .directive('tour', function ($parse) {
     return {
       controller: 'TourController',
       scope: true,
       restrict: 'EA',
       link: function (scope, element, attrs) {
+        var model = $parse(attrs.currentStep);
+        var modelValue = scope.$eval(attrs.currentStep) || 0;
+
+        // Watch model and change current step
+        scope.$watch(attrs.currentStep, function(newVal){
+          scope.currentStep = newVal;
+        });
+
+        scope.nextStep = function() {
+          model.assign(scope, ++modelValue);
+        };
+
+        scope.prevStep = function() {
+          model.assign(scope, --modelValue);
+        };
       }
     };
   })
@@ -142,58 +106,47 @@ angular.module('angular-tour.tour', ['ivpusic.cookie'])
         endSym = $interpolate.endSymbol();
 
     var template =
-      '<div tour-popup '+
-        'next-label="'+startSym+'tt_next_label'+endSym+'" '+
-        'content="'+startSym+'tt_content'+endSym+'" '+
-        'placement="'+startSym+'tt_placement'+endSym+'" '+
-        'next-action="tt_next_action()" '+
-        'close-action="tt_close_action()" '+
-        'is-open="'+startSym+'tt_open'+endSym+'" '+
-        '>'+
+      '<div tour-popup>'+
         '</div>';
 
     return {
       require: '^tour',
       restrict: 'EA',
-      scope: {},
+      scope: true,
       link: function (scope, element, attrs, tourCtrl) {
         attrs.$observe( 'tourtip', function ( val ) {
-          scope.tt_content = val;
+          scope.ttContent = val;
         });
 
         attrs.$observe( 'tourtipPlacement', function ( val ) {
-          scope.tt_placement = val || tourConfig.placement;
+          scope.ttPlacement = val || tourConfig.placement;
         });
 
         attrs.$observe( 'tourtipNextLabel', function ( val ) {
-          scope.tt_next_label = val || tourConfig.nextLabel;
+          scope.ttNextLabel = val || tourConfig.nextLabel;
         });
 
         attrs.$observe( 'tourtipOffset', function ( val ) {
-          scope.tt_offset = parseInt(val, 10) || tourConfig.offset;
+          scope.ttOffset = parseInt(val, 10) || tourConfig.offset;
         });
 
-        scope.tt_open = false;
-        scope.tt_animation = tourConfig.animation;
-        scope.tt_next_action = tourCtrl.next;
-        scope.tt_close_action = tourCtrl.cancelTour;
+        scope.ttOpen = false;
+        scope.ttAnimation = tourConfig.animation;
         scope.index = parseInt(attrs.tourtipStep, 10);
 
         var tourtip = $compile( template )( scope );
         tourCtrl.addStep(scope);
 
-        $timeout(function() {
-          tourCtrl.startTour();
+        // wrap this in a time out because the tourtip won't compile right away
+        $timeout( function() {
+          scope.$watch('ttOpen', function(val) {
+            if(val) {
+              show();
+            } else {
+              hide();
+            }
+          });
         }, 500);
-
-        scope.$watch('tt_open', function(tt_open) {
-          if(tt_open) {
-            tourCtrl.select(scope);
-            show();
-          } else {
-            hide();
-          }
-        });
 
         function show() {
           var position,
@@ -204,11 +157,11 @@ angular.module('angular-tour.tour', ['ivpusic.cookie'])
             width,
             targetElement;
 
-          if ( ! scope.tt_content ) {
+          if ( ! scope.ttContent ) {
             return;
           }
 
-          if(scope.tt_animation)
+          if(scope.ttAnimation)
             tourtip.fadeIn();
           else {
             tourtip.css({ display: 'block' });
@@ -235,28 +188,28 @@ angular.module('angular-tour.tour', ['ivpusic.cookie'])
             height = targetElement.height();
 
             // Calculate the tourtip's top and left coordinates to center it
-            switch ( scope.tt_placement ) {
+            switch ( scope.ttPlacement ) {
             case 'right':
               ttPosition = {
                 top: position.top,
-                left: position.left + width + scope.tt_offset
+                left: position.left + width + scope.ttOffset
               };
               break;
             case 'bottom':
               ttPosition = {
-                top: position.top + height + scope.tt_offset,
+                top: position.top + height + scope.ttOffset,
                 left: position.left
               };
               break;
             case 'left':
               ttPosition = {
                 top: position.top,
-                left: position.left - ttWidth - scope.tt_offset
+                left: position.left - ttWidth - scope.ttOffset
               };
               break;
             default:
               ttPosition = {
-                top: position.top - ttHeight - scope.tt_offset,
+                top: position.top - ttHeight - scope.ttOffset,
                 left: position.left
               };
               break;
@@ -295,20 +248,13 @@ angular.module('angular-tour.tour', ['ivpusic.cookie'])
 
   /**
    * tourPopup
-   * the directive that actually had the template for the tip
+   * the directive that actually has the template for the tip
    */
   .directive('tourPopup', function () {
     return {
       replace: true,
       templateUrl: 'tour/tour.tpl.html',
-      scope: {
-        content: '@',
-        nextLabel: '@',
-        placement: '@',
-        nextAction: '&',
-        closeAction: '&',
-        isOpen: '@'
-      },
+      scope: true,
       restrict: 'EA',
       link: function (scope, element, attrs) {
       }
@@ -393,77 +339,6 @@ angular.module('angular-tour.tour', ['ivpusic.cookie'])
     };
     
     return orderedListFactory;
-  })
-
-
-  /**
-   * tourCookieStore
-   * an abstraction away from the ipCookie dependency
-   */
-  .provider('tourCookieStore', function(){
-    var self = this;
-    self.defaultOptions = {
-      path: '/', // Cookies should be available on all pages
-      expires: 3650 // Store tour cookies for 10 years      
-    };
-
-    self.setDefaultOptions = function(options){
-      self.defaultOptions = options;
-    };
-
-    self.$get = function(ipCookie){
-      return {
-        get: function(name){
-          return ipCookie(name);
-        },
-        put: function(name, value, options){
-          options = $.extend({}, self.defaultOptions, options);
-          ipCookie(name, angular.toJson(value), options);
-        },
-        remove: function(name, options){
-          ipCookie.remove(name);
-        }
-      };
-    };
-  })
-
-  /**
-   * tourCookieManager
-   * listens for events on the scope to keep cookies synced up   
-   */
-  .factory('tourCookieManager', function($rootScope, tourCookieStore, tourConfig) {
-    var cookieName = tourConfig.cookieName;
-
-    $rootScope.$on('tour:tourCancel', function() {
-      tourCookieStore.put(cookieName + '_closed', true);
-    });
-
-    $rootScope.$on('tour:tourComplete', function() {
-      tourCookieStore.put(cookieName + '_completed', true);
-      tourCookieStore.put(cookieName + '_closed', true);
-    });
-
-    $rootScope.$on('tour:tourStart', function(event, stepIndex) {
-      if(tourCookieStore.get(cookieName + '_completed')) return;
-      tourCookieStore.put(cookieName + '_completed', false);
-      tourCookieStore.put(cookieName, stepIndex);
-    });
-
-    $rootScope.$on('tour:nextStep', function(event, stepIndex) {
-      tourCookieStore.put(cookieName, stepIndex);
-    });
-
-    return {
-      lastStepIndex: function() {
-        var wasCompleted = tourCookieStore.get(cookieName + '_completed');
-        if(wasCompleted) return;
-
-        var loadedIndex = tourCookieStore.get(cookieName);
-        if(loadedIndex) {
-          return loadedIndex;
-        }
-      }
-    };
   })
 
   /**

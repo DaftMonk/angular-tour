@@ -8,23 +8,6 @@ describe('Directive: tour', function () {
 
   var $rootScope, $compile, $controller, $timeout;
 
-  // Mock out tourCookieStore
-  beforeEach(module(function ($provide) {
-    $provide.provider('tourCookieStore', function () {
-      this.$get = function(){
-        var _cookies = {};
-        return {
-          get: function(key) {
-            return _cookies[key];
-          },
-          put: function(key, value) {
-            _cookies[key] = value;
-          }
-        };
-      };
-    });
-  }));
-
   beforeEach(inject(function (_$rootScope_, _$compile_, _$controller_, _$timeout_) {
     $rootScope = _$rootScope_;
     $compile = _$compile_;
@@ -136,7 +119,9 @@ describe('Directive: tour', function () {
 
       scope = $rootScope.$new();
 
-      tour = angular.element('<tour></tour>');
+      scope.stepIndex = 0;
+
+      tour = angular.element('<tour current-step="stepIndex"></tour>');
       tip1 = angular.element('<span tourtip="feature 1!" tourtip-step="0" tourtip-next-label="Next" tourtip-placement="top" class="btn">' +
         'Important website feature' +
         '</span>');
@@ -182,24 +167,25 @@ describe('Directive: tour', function () {
       it('should append tip1 popup to element and open it', function () {
         expect(elm).toHaveOpenTourtips(1);
         expect(tip1.next().html()).toContain('feature 1');
-        expect(tip1.isolateScope().tt_open).toBe(true);
+        expect(tip1.scope().ttOpen).toBe(true);
       });
 
       it('should open tip2 popup and close tip1 on next', function () {
         var elmNext = elm.find('.tour-next-tip').eq(0);
+
         elmNext.click();
 
         expect(elm).toHaveOpenTourtips(1);
-        expect(tip1.isolateScope().tt_open).toBe(false);
-        expect(tip2.isolateScope().tt_open).toBe(true);
+        expect(tip1.scope().ttOpen).toBe(false);
+        expect(tip2.scope().ttOpen).toBe(true);
       });
 
       it('should close tips when you click close', function () {
         var elmNext = elm.find('.tour-close-tip').eq(0);
         elmNext.click();
 
-        expect(tip1.isolateScope().tt_open).toBe(false);
-        expect(tip2.isolateScope().tt_open).toBe(false);
+        expect(tip1.scope().ttOpen).toBe(false);
+        expect(tip2.scope().ttOpen).toBe(false);
       });
     });
   });
@@ -222,60 +208,21 @@ describe('Directive: tour', function () {
       scope.$destroy();
     });
 
-    it('should not open tour if it was closed ', function () {
-      ctrl.next();
-      ctrl.cancelTour();
-
-      ctrl = $controller('TourController', {$scope: scope});
-      for(var i = 0;i < steps.length;i++){
-        ctrl.addStep(steps[i]);
-      }
-      expect(ctrl.getCurrentStep()).toBeFalsy();
-    });
-
-    // Cookie tests
-    // 
-    it('should load step when you reopen tour ', function () {
-      ctrl.startTour();
-      ctrl.next();
-
-      ctrl.cancelTour();
-      ctrl.select(steps[0]);
-
-      ctrl = $controller('TourController', {$scope: scope});
-      for(var i = 0;i < steps.length;i++){
-        ctrl.addStep(steps[i]);
-      }
-      scope.$apply();
-      ctrl.startTour();
-
-      expect(ctrl.getCurrentStep()).toEqual(steps[1]);
-    });
-
-    it('should set tour to completed when you reach end', inject(function (tourConfig, tourCookieStore) {
-      expect(tourCookieStore.get(tourConfig.cookieName + '_completed')).toBe(undefined);
-      ctrl.startTour();
-      ctrl.next();
-      ctrl.next();
-      ctrl.next();
-      expect(tourCookieStore.get(tourConfig.cookieName + '_completed')).toBe(true);
-    }));
-
     it('should select step at index', function () {
-      ctrl.select(steps[0]);
-      expect(ctrl.getCurrentStep()).toEqual(steps[0]);
-      ctrl.selectAtIndex(1);
-      expect(ctrl.getCurrentStep()).toEqual(steps[1]);
+      ctrl.select(0);
+      expect(ctrl.getCurrentStep()).toEqual(0);
+      ctrl.select(1);
+      expect(ctrl.getCurrentStep()).toEqual(1);
     });
 
     it('should set first step to active = true and the rest to false', function() {
-      ctrl.startTour();
+      ctrl.select(0);
 
       ctrl.steps.forEach(function(step, i) {
         if (i !== 0) {
-          expect(step.tt_open).not.toBe(true);
+          expect(step.ttOpen).not.toBe(true);
         } else {
-          expect(step.tt_open).toBe(true);
+          expect(step.ttOpen).toBe(true);
         }
       });
     });
@@ -302,28 +249,6 @@ describe('Directive: tour', function () {
       ctrl.addStep(tourStep);
 
       expect(ctrl.steps.get(0).content).toBe(3);
-    });
-
-    it('should emit tour related events', function() {
-      var tourCancel = jasmine.createSpy('tourCancel');
-      scope.$on('tour:tourCancel', tourCancel);
-      ctrl.cancelTour();
-      expect(tourCancel).toHaveBeenCalled();
-
-      var tourComplete = jasmine.createSpy('tourComplete');
-      scope.$on('tour:tourComplete', tourComplete);
-      ctrl.completeTour();
-      expect(tourComplete).toHaveBeenCalled();
-
-      var tourStart = jasmine.createSpy('tourStart');
-      scope.$on('tour:tourStart', tourStart);
-      ctrl.startTour();
-      expect(tourStart).toHaveBeenCalled();
-
-      var nextStep = jasmine.createSpy('tourNextStep');
-      scope.$on('tour:nextStep', nextStep);
-      ctrl.next();
-      expect(nextStep).toHaveBeenCalled();
     });
   });
 

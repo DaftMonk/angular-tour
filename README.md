@@ -20,7 +20,7 @@ Has been tested in
 * Chrome
 * Firefox
 * Safari
-* Internet Explorer 10+
+* Internet Explorer 9+
 
 ## Installation
 
@@ -76,7 +76,7 @@ It is very easy to add a cookie module that remembers what step a user was on. U
 
 There are additional attributes that allow you to customize each tour-tip.
 
-`tourtip-step` **(Default: "null")**: tour tip play from step 0 onwards, you can specify a specific order, e.g.
+`tourtip-step` **(Default: "null")**: tour tips play from step 0 onwards, or in the order they were added. You can specify a specific order, e.g.
 
     <span tourtip="tip 2" tourtip-step="1"></span>
     <span tourtip="tip 1" tourtip-step="0"></span>
@@ -118,7 +118,7 @@ The easiest way to add your own template is to use the script directive:
           <div class="tour-content-wrapper">
               <p ng-bind="ttContent"></p>
               <a ng-click="setCurrentStep(getCurrentStep() + 1)" ng-bind="ttNextLabel" class="small button tour-next-tip"></a>
-              <a ng-click="closeTour()" class="tour-close-tip">×</a>
+              <a ng-click="closeTour()" class="tour-close-tip">Ã—</a>
           </div>
       </div>
     </script>

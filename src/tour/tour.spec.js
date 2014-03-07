@@ -121,7 +121,7 @@ describe('Directive: tour', function () {
 
       scope.stepIndex = 0;
 
-      tour = angular.element('<tour current-step="stepIndex"></tour>');
+      tour = angular.element('<tour step="stepIndex"></tour>');
       tip1 = angular.element('<span tourtip="feature 1!" tourtip-step="0" tourtip-next-label="Next" tourtip-placement="top" class="btn">' +
         'Important website feature' +
         '</span>');
@@ -188,6 +188,105 @@ describe('Directive: tour', function () {
         expect(tip2.scope().ttOpen).toBe(false);
       });
     });
+
+    describe('tour', function() {  
+
+      var scope, elm, tour, tip1, tip2;
+
+      beforeEach(function() {  
+        scope = $rootScope.$new();
+        scope.stepIndex = 0;
+        scope.otherStepIndex = -1;
+
+        // set up first tour
+        tour = angular.element('<tour step="stepIndex" post-tour="tourComplete()" post-step="tourStep()"></tour>');
+        tip1 = angular.element('<span tourtip="feature 1!">' +
+          'Important website feature' +
+          '</span>');
+        tip2 = angular.element('<span tourtip="feature 2!">' +
+          'Another website feature' +
+          '</span>');
+
+        tour.append(tip1);
+        tour.append(tip2);
+
+        elm = $compile(tour)(scope);        
+        scope.$apply();
+        $timeout.flush();        
+      });
+      afterEach(function() {
+        scope.$destroy();
+      });
+
+      it('should call post-tour method', function() {
+        scope.tourComplete = function() {};
+        spyOn(scope, 'tourComplete')
+        // find next button in tour
+        var tour1Next = elm.find('.tour-next-tip').eq(0);
+        tour1Next.click();
+        tour1Next.click();
+        expect(scope.tourComplete).toHaveBeenCalled();
+      });
+
+      it('should call post-step method', function() {
+        scope.tourStep = function() {};
+        spyOn(scope, 'tourStep')
+        // find next button in tour
+        var tour1Next = elm.find('.tour-next-tip').eq(0);
+        tour1Next.click();        
+        expect(scope.tourStep).toHaveBeenCalled();
+      });
+
+      it('should be able to handle multiple tours', function() {
+        // when first tour finishes, initializes second tour
+        scope.tourComplete = function() {
+          scope.otherStepIndex = 0;
+        };
+        
+        // set up second tour
+        var otherTour = angular.element('<tour step="otherStepIndex"></tour>');
+        var otherTip1 = angular.element('<span tourtip="feature 1 of other tour!">' +
+          'Important website feature' + '</span>');
+        var otherTip2 = angular.element('<span tourtip="feature 2 of other tour!">' +
+          'Another website feature' + '</span>');
+
+        otherTour.append(otherTip1);
+        otherTour.append(otherTip2);
+
+        var otherElm = $compile(otherTour)(scope);
+
+        scope.$apply();
+        $timeout.flush();
+
+        // find next button in tour1
+        var tour1Next = elm.find('.tour-next-tip').eq(0);
+
+        // expect second tour to be closed
+        expect(otherTip1.scope().ttOpen).toBe(false);
+        expect(otherTip2.scope().ttOpen).toBe(false);
+
+        // finish first tour, expect tours to open and close correctly
+        expect(tip1.scope().ttOpen).toBe(true);
+        expect(tip2.scope().ttOpen).toBe(false);
+        tour1Next.click();
+        expect(tip1.scope().ttOpen).toBe(false);
+        expect(tip2.scope().ttOpen).toBe(true);
+        tour1Next.click();
+
+        // recompile the other tour element after the first tour finishes
+        otherElm = $compile(otherTour)(scope);
+        scope.$apply();
+        $timeout.flush();
+        var tour2Next = otherElm.find('.tour-next-tip').eq(0);
+
+        // expect second tour to open after first tour finished
+        expect(otherTip1.scope().ttOpen).toBe(true);
+        expect(otherTip2.scope().ttOpen).toBe(false);
+        tour2Next.click();
+        expect(otherTip1.scope().ttOpen).toBe(false);
+        expect(otherTip2.scope().ttOpen).toBe(true);
+      });
+    });
   });
 
   describe('tour controller', function() {
@@ -210,9 +309,9 @@ describe('Directive: tour', function () {
 
     it('should select step at index', function () {
       ctrl.select(0);
-      expect(ctrl.getCurrentStep()).toEqual(0);
+      expect(ctrl.currentStep).toEqual(0);
       ctrl.select(1);
-      expect(ctrl.getCurrentStep()).toEqual(1);
+      expect(ctrl.currentStep).toEqual(1);
     });
 
     it('should set first step to active = true and the rest to false', function() {

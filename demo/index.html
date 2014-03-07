@@ -34,9 +34,20 @@
     </script>
     <!-- /build -->
     <script type="text/javascript">
-      angular.module('demoApp', ['angular-tour'])
-        .controller('DemoCtrl', function($scope) {
-          $scope.currentStep=0;
+      angular.module('demoApp', ['angular-tour', 'ivpusic.cookie'])
+        .controller('DemoCtrl', function($scope, ipCookie) {
+          // load from cookie if possible, otherwise set step to 0
+          $scope.currentStep = ipCookie('myTour') || 0;
+
+          // callback for when we've finished going through the tour
+          $scope.postTourCallback = function() {
+            console.log('tour over');
+          };
+
+          // optional way of saving tour progress with cookies
+          $scope.postStepCallback = function() {
+            ipCookie('myTour', $scope.currentStep, { expires: 3000 });
+          };          
         });
     </script>
     <!-- build:css angular-tour.css -->
@@ -44,12 +55,12 @@
     <!-- /build -->
 </head>
 <body ng-app="demoApp" ng-controller="DemoCtrl">
-<tour current-step="currentStep">
+<tour step="currentStep" post-tour="postTourCallback()" post-step="postStepCallback()">
   <a tourtip="Thanks for reading. Head over to the github page for more info."
      tourtip-next-label="Finish"
      tourtip-placement="left"
      tourtip-offset="60"
-     tourtip-step="12"
+     tourtip-step="13"
      href="https://github.com/DaftMonk/angular-tour"><img style="position: absolute; top: 0; right: 0; border: 0;" src="https://s3.amazonaws.com/github/ribbons/forkme_right_red_aa0000.png" alt="Fork me on GitHub"></a>
   <div class="container">
     <div>
@@ -121,7 +132,7 @@
             <ul class="list">
               <li>Easy to use</li>
               <li>Responsive to window resizes</li>
-              <li>Cookies remember your place in the tour</li>
+              <li>Supports multiple tours</li>
               <li>Smoothly scrolls to each step</li>
               <li>Control the placement for each tour tip</li>
             </ul>
@@ -201,12 +212,19 @@
       <div class="col-12">
         <div class="tile">
           <div class="tile-content">
-            <div tourtip='Just add the tourtip attribute wherever you want a tip, and wrap your tourtips in a &lt;tour>.'
+            <div tourtip='Just add a tourtip attribute wherever you want a tip, and wrap your tourtips in a &lt;tour>.'
                  tourtip-next-label="Continue"
                  tourtip-placement="right"
                  tourtip-offset="-400"
-                 tourtip-step="7">Usage example</div>
-              <pre><code data-language="html">&lt;tour>
+                 tourtip-step="7">
+                 <div tourtip='A tour requires a model for the current step e.g. <tour step="currentStep">'
+                   tourtip-next-label="Continue"
+                   tourtip-placement="right"
+                   tourtip-offset="-400"
+                   tourtip-step="8">
+                   Usage example</div></div>
+
+              <pre><code data-language="html">&lt;tour step="currentStep">
   &lt;span tourtip="tip 1"> Highlighted &lt;/span>
   &lt;span tourtip="tip 2"> Elements &lt;/span>
   &lt;input tourtip="You can use it as an attribute on your element" />
@@ -216,6 +234,20 @@
         tourtip-placement="right"
         tourtip-offset="60">Full options&lt;/span>
 &lt;/tour></code></pre>
+
+You can also add callbacks to the <code>&lt;tour></code>:
+<pre><code data-language="html">&lt;tour step="currentStep" post-tour="tourComplete()" post-step="stepComplete()">
+</code></pre>
+
+It is very easy to add a cookie module that remembers what step a user was on. With the angular-cookie module, this is all you need to integrate cookies:
+
+<pre><code data-language="javascript">$scope.currentStep = ipCookie('myTour') || 0;
+
+$scope.postStepCallback = function() {
+  ipCookie('myTour', $scope.currentStep, { expires: 3000 });
+};
+</code></pre>    
+
         Inside your <code>&lt;tour></code> you have access to two scope methods for ending and starting the tour.
 <pre><code data-language="html"><a ng-click="openTour()">Open Tour</a>
 <a ng-click="closeTour()">Close Tour</a></code></pre>
@@ -225,7 +257,7 @@
                tourtip-next-label="How about installation?"
                tourtip-placement="right"
                tourtip-offset="80"
-               tourtip-step="8">Close Tour</a>
+               tourtip-step="9">Close Tour</a>
           </div>
 
         </div>
@@ -242,16 +274,15 @@
                        tourtip-next-label="Continue"
                        tourtip-placement="right"
                        tourtip-offset="60"
-                       tourtip-step="9">Install with bower using</span></div>
+                       tourtip-step="10">Install with bower using</span></div>
               <pre>bower install angular-tour</pre>
             <div><span tourtip="Then add those to your index.html"
                        tourtip-next-label="Continue"
                        tourtip-placement="right"
                        tourtip-offset="260"
-                       tourtip-step="10">Add the dependencies to your html file</span></div>
+                       tourtip-step="11">Add the dependencies to your html file</span></div>
               <pre><code data-language="html">&lt;script src="bower_components/jquery/jquery.js">&lt;/script>
 &lt;script src="bower_components/angular/angular.js">&lt;/script>
-&lt;script src="bower_components/angular-cookie/angular-cookie.min.js">&lt;/script>
 &lt;script src="bower_components/angular-tour/dist/angular-tour-tpls.min.js">&lt;/script></code></pre>
             <div>You'll also probably want to add the default stylesheet.</div>
               <pre><code data-language="html">&lt;link rel="bower_components/angular-tour/dist/angular-tour.css"/></code></pre>
@@ -259,7 +290,7 @@
                        tourtip-next-label="Continue"
                        tourtip-placement="right"
                        tourtip-offset="100"
-                       tourtip-step="11">Lastly, add angular-tour as a dependency to your angular module</span></div>
+                       tourtip-step="12">Lastly, add angular-tour as a dependency to your angular module</span></div>
               <pre><code data-language="javascript">angular.module('myApp', ['angular-tour']);</pre></code>
           </div>
         </div>

@@ -22,23 +22,36 @@ angular.module('angular-tour.tour', [])
     var self = this,
         steps = self.steps = orderedList();
 
-    $scope.$watch( 'currentStep', function ( val ) {
-      self.select(val);
-    });
+    // we'll pass these in from the directive
+    self.postTourCallback = angular.noop;
+    self.postStepCallback = angular.noop;
+    self.currentStep = 0;
 
-    self.getCurrentStep = function() {
-      return $scope.currentStep;
-    };
-    
-    self.select = function(nextIndex) {
-      if($scope.currentStep !== nextIndex) {
-        $scope.currentStep = nextIndex;
+    // if currentStep changes, select the new step
+    $scope.$watch( function() { return self.currentStep; },
+      function ( val ) {
+        self.select(val);
       }
+    );
+
+    self.select = function(nextIndex) {
+      if(!angular.isNumber(nextIndex)) return;
+
       self.unselectAllSteps();
       var step = steps.get(nextIndex);
       if(step) {
         step.ttOpen = true;
       }
+
+      // update currentStep if we manually selected this index
+      if(self.currentStep !== nextIndex) {
+        self.currentStep = nextIndex;
+      }
+
+      if(nextIndex >= steps.getCount()) {
+        self.postTourCallback();
+      }
+      self.postStepCallback();
     };
 
     self.addStep = function(step) {
@@ -57,10 +70,13 @@ angular.module('angular-tour.tour', [])
 
     self.cancelTour = function () {
       self.unselectAllSteps();
+      self.postTourCallback();
     };
 
     $scope.openTour = function() {
-      self.select($scope.currentStep);
+      // open at first step if we've already finished tour
+      var startStep = self.currentStep >= steps.getCount() || self.currentStep < 0  ? 0 : self.currentStep;
+      self.select(startStep);
     };
 
     $scope.closeTour = function() {
@@ -69,45 +85,59 @@ angular.module('angular-tour.tour', [])
   })
 
   /**
-   * tour
-   * directive that keeps all the tips in order, and allows you to control the tour
+   * Tour
+   * directive that allows you to control the tour
    */
   .directive('tour', function ($parse) {
     return {
       controller: 'TourController',
-      scope: true,
       restrict: 'EA',
-      link: function (scope, element, attrs) {
-        var model = $parse(attrs.currentStep);
-        var modelValue = scope.$eval(attrs.currentStep) || 0;
+      scope: true,
+      link: function (scope, element, attrs, ctrl) {
+        if(!angular.isDefined(attrs.step)) {
+          throw('The <tour> directive requires a `step` attribute to bind the current step to.');
+        }
+        var model = $parse(attrs.step);
 
-        // Watch model and change current step
-        scope.$watch(attrs.currentStep, function(newVal){
-          scope.currentStep = newVal;
+        // Watch current step view model and update locally
+        scope.$watch(attrs.step, function(newVal){
+          ctrl.currentStep = newVal;
         });
 
-        scope.nextStep = function() {
-          model.assign(scope, ++modelValue);
+        ctrl.postTourCallback = function() {
+          if(angular.isDefined(attrs.postTour)) {
+            scope.$parent.$eval(attrs.postTour);
+          }
         };
 
-        scope.prevStep = function() {
-          model.assign(scope, --modelValue);
+        ctrl.postStepCallback = function() {
+          if(angular.isDefined(attrs.postStep)) {
+            scope.$parent.$eval(attrs.postStep);
+          }
+        };
+
+        // update the current step in the view as well as in our controller
+        scope.setCurrentStep = function(val) {
+          model.assign(scope.$parent, val);
+          ctrl.currentStep = val;
+        };
+
+        scope.getCurrentStep = function() {
+          return ctrl.currentStep;
         };
       }
     };
   })
 
   /**
-   * tourtip
+   * Tourtip
    * tourtip manages the state of the tour-popup directive
    */
   .directive('tourtip', function ($window, $compile, $interpolate, $timeout, scrollTo, tourConfig) {
     var startSym = $interpolate.startSymbol(),
         endSym = $interpolate.endSymbol();
 
-    var template =
-      '<div tour-popup>'+
-        '</div>';
+    var template = '<div tour-popup></div>';
 
     return {
       require: '^tour',
@@ -247,7 +277,7 @@ angular.module('angular-tour.tour', [])
   })
 
   /**
-   * tourPopup
+   * TourPopup
    * the directive that actually has the template for the tip
    */
   .directive('tourPopup', function () {

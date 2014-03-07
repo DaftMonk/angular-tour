@@ -10,7 +10,6 @@ Give an interactive tour to showcase the features of your website.
 
   * Easy to use
   * Responsive to window resizes
-  * Cookies remember your place in the tour
   * Smoothly scrolls to each step
   * Control the placement for each tour tip
 
@@ -29,15 +28,14 @@ To install run
 
     bower install angular-tour
 
-Angular Tour has dependencies on jQuery and Angular Cookie, which bower will install.
+Angular Tour has a dependency on jQuery.
 
 ## Setup
 
-Once bower has downloaded those dependencies for you, you'll need to make sure you add the required libraries to your index file. Your script includes should look something like this:
+Once bower has downloaded the dependencies for you, you'll need to make sure you add the required libraries to your index file. Your script includes should look something like this:
 
     <script src="bower_components/jquery/jquery.js"></script>
     <script src="bower_components/angular/angular.js"></script>
-    <script src="bower_components/angular-cookie/angular-cookie.min.js"></script>
     <script src="bower_components/angular-tour/dist/angular-tour-tpls.min.js"></script>
 
 You'll also probably want to include the default stylesheet for angular tour. (You can replace this with your own stylesheet.)
@@ -50,17 +48,31 @@ Lastly, you'll need to include the module in your angular app
 
 ## How to use
 
-To begin your tour you'll need a `<tour>` element to contain all of your tour tips.
+To begin your tour you'll need a `<tour>` element to contain all of your tour tips, it must have a `step` attribute for binding the tour step to your scope.
 
-Add the tourtip attribute wherever you want a tip.
+Add the tourtip attribute to whatever elements you want to add a tip to.
 
 Example markup:
 
-    <tour>
+    <tour step="currentStep">
       <span tourtip="tip 1"> Highlighted </span>
       <span tourtip="tip 2"> Elements </span>
       <input tourtip="or add it as an attribute to your element" />
     </tour>
+
+You can also add callbacks to the `tour`:
+
+    <tour step="currentStep" post-tour="tourComplete()" post-step="stepComplete()">
+
+It is very easy to add a cookie module that remembers what step a user was on. Using the angular-cookie module this is all you need to integrate cookies:
+
+    // load cookie, or start new tour
+    $scope.currentStep = ipCookie('myTour') || 0;
+
+    // save cookie after each step
+    $scope.postStepCallback = function() {
+      ipCookie('myTour', $scope.currentStep, { expires: 3000 });
+    };
 
 There are additional attributes that allow you to customize each tour-tip.
 
@@ -89,9 +101,7 @@ If you'd like to edit the defaults for all your tour, you can inject tourConfig 
       animation        : true,                   // if tips fade in
       nextLabel        : 'Next',                 // default text in the next tip button
       scrollSpeed      : 500,                    // page scrolling speed in milliseconds
-      offset           : 28,                     // how many pixels offset the tip is from the target
-      cookies          : true,                   // if cookies are used, may help to disable during development
-      cookieName       : 'ngTour'                // choose your own cookie name
+      offset           : 28                      // how many pixels offset the tip is from the target
     }
 
 ### Customizing Templates
@@ -104,13 +114,13 @@ The easiest way to add your own template is to use the script directive:
 
     <script id="tour/tour.tpl.html" type="text/ng-template">
       <div class="tour-tip">
-          <span class="tour-arrow tt-{{ placement }}"></span>
+          <span class="tour-arrow tt-{{ ttPlacement }}"></span>
           <div class="tour-content-wrapper">
-              <p ng-bind="content"></p>
-              <a ng-click="nextAction()" ng-bind="nextLabel" class="small button tour-next-tip"></a>
-              <a ng-click="closeAction()" class="tour-close-tip">×</a>
+              <p ng-bind="ttContent"></p>
+              <a ng-click="setCurrentStep(getCurrentStep() + 1)" ng-bind="ttNextLabel" class="small button tour-next-tip"></a>
+              <a ng-click="closeTour()" class="tour-close-tip">×</a>
           </div>
-      </div>  
+      </div>
     </script>
 
 ## License

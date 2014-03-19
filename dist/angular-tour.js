@@ -1,6 +1,6 @@
 /**
  * An AngularJS directive for showcasing features of your website
- * @version v0.0.2 - 2013-12-26
+ * @version v0.0.2 - 2014-03-19
  * @link https://github.com/DaftMonk/angular-tour
  * @author Tyler Henkel
  * @license MIT License, http://www.opensource.org/licenses/MIT
@@ -14,97 +14,35 @@
     animation: true,
     nextLabel: 'Next',
     scrollSpeed: 500,
-    offset: 28,
-    cookies: true,
-    cookieName: 'ngTour',
-    postTourCallback: function (stepIndex) {
-    },
-    postStepCallback: function (stepIndex) {
-    }
-  }).provider('$cookieStore', function () {
-    var self = this;
-    self.defaultOptions = {};
-    self.setDefaultOptions = function (options) {
-      self.defaultOptions = options;
-    };
-    self.$get = function () {
-      return {
-        get: function (name) {
-          var jsonCookie = $.cookie(name);
-          if (jsonCookie) {
-            return angular.fromJson(jsonCookie);
-          }
-        },
-        put: function (name, value, options) {
-          options = $.extend({}, self.defaultOptions, options);
-          $.cookie(name, angular.toJson(value), options);
-        },
-        remove: function (name, options) {
-          options = $.extend({}, self.defaultOptions, options);
-          $.removeCookie(name, options);
-        }
-      };
-    };
-  }).config([
-    '$cookieStoreProvider',
-    function ($cookieStoreProvider) {
-      $cookieStoreProvider.setDefaultOptions({
-        path: '/',
-        expires: 3650
-      });
-    }
-  ]).controller('TourController', [
+    offset: 28
+  }).controller('TourController', [
     '$scope',
-    'OrderedList',
-    'tourConfig',
-    '$cookieStore',
-    function ($scope, OrderedList, tourConfig, $cookieStore) {
-      var self = this, currentIndex = -1, currentStep = null, steps = self.steps = OrderedList;
-      var selectIfFirstStep = function (step) {
-        var loadedIndex = $cookieStore.get(tourConfig.cookieName);
-        var wasClosed = $cookieStore.get(tourConfig.cookieName + '_closed');
-        if (wasClosed)
+    'orderedList',
+    function ($scope, orderedList) {
+      var self = this, steps = self.steps = orderedList();
+      self.postTourCallback = angular.noop;
+      self.postStepCallback = angular.noop;
+      self.currentStep = 0;
+      $scope.$watch(function () {
+        return self.currentStep;
+      }, function (val) {
+        self.select(val);
+      });
+      self.select = function (nextIndex) {
+        if (!angular.isNumber(nextIndex))
           return;
-        function selectFromCookie() {
-          if (steps.indexOf(step) === loadedIndex) {
-            self.select(step);
-          }
+        self.unselectAllSteps();
+        var step = steps.get(nextIndex);
+        if (step) {
+          step.ttOpen = true;
         }
-        function selectFirst() {
-          if (steps.first() === step) {
-            self.select(step);
-          } else {
-            step.tt_open = false;
-          }
+        if (self.currentStep !== nextIndex) {
+          self.currentStep = nextIndex;
         }
-        if (loadedIndex && tourConfig.cookies) {
-          selectFromCookie();
-        } else {
-          selectFirst();
+        if (nextIndex >= steps.getCount()) {
+          self.postTourCallback();
         }
-      };
-      self.selectAtIndex = function (index) {
-        if (steps.get(index))
-          self.select(steps.get(index));
-      };
-      self.getCurrentStep = function () {
-        return currentStep;
-      };
-      self.select = function (nextStep) {
-        var nextIndex = steps.indexOf(nextStep);
-        function goNext() {
-          if (currentStep) {
-            currentStep.tt_open = false;
-          }
-          currentStep = nextStep;
-          currentIndex = nextIndex;
-          nextStep.tt_open = true;
-        }
-        if (nextStep) {
-          goNext();
-        } else {
-          self.tourCompleted();
-        }
+        self.postStepCallback();
       };
       self.addStep = function (step) {
         if (angular.isNumber(step.index) && !isNaN(step.index)) {
@@ -113,63 +51,59 @@
           steps.push(step);
         }
       };
-      self.endTour = function (skipSave) {
+      self.unselectAllSteps = function () {
         steps.forEach(function (step) {
-          step.tt_open = false;
+          step.ttOpen = false;
         });
-        if (!skipSave && tourConfig.cookies) {
-          $cookieStore.put(tourConfig.cookieName + '_closed', true);
-        }
-        tourConfig.postTourCallback(currentIndex);
       };
-      self.startTour = function () {
-        if ($cookieStore.get(tourConfig.cookieName + '_completed'))
-          return;
-        if (tourConfig.cookies) {
-          $cookieStore.put(tourConfig.cookieName + '_closed', false);
-        }
-        steps.forEach(function (step) {
-          selectIfFirstStep(step);
-        });
+      self.cancelTour = function () {
+        self.unselectAllSteps();
+        self.postTourCallback();
       };
       $scope.openTour = function () {
-        if ($cookieStore.get(tourConfig.cookieName + '_completed') && tourConfig.cookies) {
-          $cookieStore.put(tourConfig.cookieName + '_completed', false);
-          self.save(steps.indexOf(steps.first()));
-        }
-        self.startTour();
+        var startStep = self.currentStep >= steps.getCount() || self.currentStep < 0 ? 0 : self.currentStep;
+        self.select(startStep);
       };
       $scope.closeTour = function () {
-        self.endTour();
-      };
-      self.save = function (index) {
-        $cookieStore.put(tourConfig.cookieName, index);
-      };
-      self.tourCompleted = function () {
-        self.endTour();
-        $cookieStore.put(tourConfig.cookieName + '_completed', true);
-      };
-      self.next = function () {
-        var newIndex = currentIndex + 1;
-        if (tourConfig.cookies) {
-          self.save(currentIndex + 1);
-        }
-        if (newIndex + 1 > steps.getCount()) {
-          self.tourCompleted();
-        }
-        tourConfig.postStepCallback(newIndex);
-        self.select(steps.get(newIndex));
+        self.cancelTour();
       };
     }
-  ]).directive('tour', function () {
-    return {
-      controller: 'TourController',
-      scope: true,
-      restrict: 'EA',
-      link: function (scope, element, attrs) {
-      }
-    };
-  }).directive('tourtip', [
+  ]).directive('tour', [
+    '$parse',
+    function ($parse) {
+      return {
+        controller: 'TourController',
+        restrict: 'EA',
+        scope: true,
+        link: function (scope, element, attrs, ctrl) {
+          if (!angular.isDefined(attrs.step)) {
+            throw 'The <tour> directive requires a `step` attribute to bind the current step to.';
+          }
+          var model = $parse(attrs.step);
+          scope.$watch(attrs.step, function (newVal) {
+            ctrl.currentStep = newVal;
+          });
+          ctrl.postTourCallback = function () {
+            if (angular.isDefined(attrs.postTour)) {
+              scope.$parent.$eval(attrs.postTour);
+            }
+          };
+          ctrl.postStepCallback = function () {
+            if (angular.isDefined(attrs.postStep)) {
+              scope.$parent.$eval(attrs.postStep);
+            }
+          };
+          scope.setCurrentStep = function (val) {
+            model.assign(scope.$parent, val);
+            ctrl.currentStep = val;
+          };
+          scope.getCurrentStep = function () {
+            return ctrl.currentStep;
+          };
+        }
+      };
+    }
+  ]).directive('tourtip', [
     '$window',
     '$compile',
     '$interpolate',
@@ -178,48 +112,44 @@
     'tourConfig',
     function ($window, $compile, $interpolate, $timeout, scrollTo, tourConfig) {
       var startSym = $interpolate.startSymbol(), endSym = $interpolate.endSymbol();
-      var template = '<div tour-popup ' + 'next-label="' + startSym + 'tt_next_label' + endSym + '" ' + 'content="' + startSym + 'tt_content' + endSym + '" ' + 'placement="' + startSym + 'tt_placement' + endSym + '" ' + 'next-action="tt_next_action()" ' + 'close-action="tt_close_action()" ' + 'is-open="' + startSym + 'tt_open' + endSym + '" ' + '>' + '</div>';
+      var template = '<div tour-popup></div>';
       return {
         require: '^tour',
         restrict: 'EA',
-        scope: {},
+        scope: true,
         link: function (scope, element, attrs, tourCtrl) {
           attrs.$observe('tourtip', function (val) {
-            scope.tt_content = val;
+            scope.ttContent = val;
           });
           attrs.$observe('tourtipPlacement', function (val) {
-            scope.tt_placement = val || tourConfig.placement;
+            scope.ttPlacement = val || tourConfig.placement;
           });
           attrs.$observe('tourtipNextLabel', function (val) {
-            scope.tt_next_label = val || tourConfig.nextLabel;
+            scope.ttNextLabel = val || tourConfig.nextLabel;
           });
           attrs.$observe('tourtipOffset', function (val) {
-            scope.tt_offset = parseInt(val, 10) || tourConfig.offset;
+            scope.ttOffset = parseInt(val, 10) || tourConfig.offset;
           });
-          scope.tt_open = false;
-          scope.tt_animation = tourConfig.animation;
-          scope.tt_next_action = tourCtrl.next;
-          scope.tt_close_action = tourCtrl.endTour;
+          scope.ttOpen = false;
+          scope.ttAnimation = tourConfig.animation;
           scope.index = parseInt(attrs.tourtipStep, 10);
           var tourtip = $compile(template)(scope);
           tourCtrl.addStep(scope);
           $timeout(function () {
-            tourCtrl.startTour();
+            scope.$watch('ttOpen', function (val) {
+              if (val) {
+                show();
+              } else {
+                hide();
+              }
+            });
           }, 500);
-          scope.$watch('tt_open', function (tt_open) {
-            if (tt_open) {
-              tourCtrl.select(scope);
-              show();
-            } else {
-              hide();
-            }
-          });
           function show() {
             var position, ttWidth, ttHeight, ttPosition, height, width, targetElement;
-            if (!scope.tt_content) {
+            if (!scope.ttContent) {
               return;
             }
-            if (scope.tt_animation)
+            if (scope.ttAnimation)
               tourtip.fadeIn();
             else {
               tourtip.css({ display: 'block' });
@@ -236,28 +166,28 @@
               ttHeight = tourtip.height();
               width = targetElement.width();
               height = targetElement.height();
-              switch (scope.tt_placement) {
+              switch (scope.ttPlacement) {
               case 'right':
                 ttPosition = {
                   top: position.top,
-                  left: position.left + width + scope.tt_offset
+                  left: position.left + width + scope.ttOffset
                 };
                 break;
               case 'bottom':
                 ttPosition = {
-                  top: position.top + height + scope.tt_offset,
+                  top: position.top + height + scope.ttOffset,
                   left: position.left
                 };
                 break;
               case 'left':
                 ttPosition = {
                   top: position.top,
-                  left: position.left - ttWidth - scope.tt_offset
+                  left: position.left - ttWidth - scope.ttOffset
                 };
                 break;
               default:
                 ttPosition = {
-                  top: position.top - ttHeight - scope.tt_offset,
+                  top: position.top - ttHeight - scope.ttOffset,
                   left: position.left
                 };
                 break;
@@ -288,85 +218,82 @@
     return {
       replace: true,
       templateUrl: 'tour/tour.tpl.html',
-      scope: {
-        content: '@',
-        nextLabel: '@',
-        placement: '@',
-        nextAction: '&',
-        closeAction: '&',
-        isOpen: '@'
-      },
+      scope: true,
       restrict: 'EA',
       link: function (scope, element, attrs) {
       }
     };
-  }).factory('OrderedList', function () {
-    var self = this;
-    self.map = {};
-    self._array = [];
-    function sortNumber(a, b) {
-      return a - b;
-    }
-    return {
-      set: function (key, value) {
-        if (!angular.isNumber(key))
-          return;
-        if (key in self.map) {
-          self.map[key] = value;
+  }).factory('orderedList', function () {
+    var OrderedList = function () {
+      this.map = {};
+      this._array = [];
+    };
+    OrderedList.prototype.set = function (key, value) {
+      if (!angular.isNumber(key))
+        return;
+      if (key in this.map) {
+        this.map[key] = value;
+      } else {
+        if (key < this._array.length) {
+          var insertIndex = key - 1 > 0 ? key - 1 : 0;
+          this._array.splice(insertIndex, 0, key);
         } else {
-          if (key < self._array.length) {
-            var insertIndex = key - 1 > 0 ? key - 1 : 0;
-            self._array.splice(insertIndex, 0, key);
-          } else {
-            self._array.push(key);
-          }
-          self.map[key] = value;
-          self._array.sort(sortNumber);
+          this._array.push(key);
         }
-      },
-      indexOf: function (value) {
-        for (var prop in self.map) {
-          if (self.map.hasOwnProperty(prop)) {
-            if (self.map[prop] === value)
-              return Number(prop);
-          }
-        }
-      },
-      push: function (value) {
-        var key = self._array[self._array.length - 1] + 1 || 0;
-        self._array.push(key);
-        self.map[key] = value;
-        self._array.sort(sortNumber);
-      },
-      remove: function (key) {
-        var index = self._array.indexOf(key);
-        if (index === -1) {
-          throw new Error('key does not exist');
-        }
-        self._array.splice(index, 1);
-        delete self.map[key];
-      },
-      get: function (key) {
-        return self.map[key];
-      },
-      getCount: function () {
-        return self._array.length;
-      },
-      forEach: function (f) {
-        var key, value;
-        for (var i = 0; i < self._array.length; i++) {
-          key = self._array[i];
-          value = self.map[key];
-          f(value, key);
-        }
-      },
-      first: function () {
-        var key, value;
-        key = self._array[0];
-        value = self.map[key];
-        return value;
+        this.map[key] = value;
+        this._array.sort(function (a, b) {
+          return a - b;
+        });
       }
     };
+    OrderedList.prototype.indexOf = function (value) {
+      for (var prop in this.map) {
+        if (this.map.hasOwnProperty(prop)) {
+          if (this.map[prop] === value)
+            return Number(prop);
+        }
+      }
+    };
+    OrderedList.prototype.push = function (value) {
+      var key = this._array[this._array.length - 1] + 1 || 0;
+      this._array.push(key);
+      this.map[key] = value;
+      this._array.sort(function (a, b) {
+        return a - b;
+      });
+    };
+    OrderedList.prototype.remove = function (key) {
+      var index = this._array.indexOf(key);
+      if (index === -1) {
+        throw new Error('key does not exist');
+      }
+      this._array.splice(index, 1);
+      delete this.map[key];
+    };
+    OrderedList.prototype.get = function (key) {
+      return this.map[key];
+    };
+    OrderedList.prototype.getCount = function () {
+      return this._array.length;
+    };
+    OrderedList.prototype.forEach = function (f) {
+      var key, value;
+      for (var i = 0; i < this._array.length; i++) {
+        key = this._array[i];
+        value = this.map[key];
+        f(value, key);
+      }
+    };
+    OrderedList.prototype.first = function () {
+      var key, value;
+      key = this._array[0];
+      value = this.map[key];
+      return value;
+    };
+    var orderedListFactory = function () {
+      return new OrderedList();
+    };
+    return orderedListFactory;
   }).factory('scrollTo', function () {
     return function (target, offsetY, offsetX, speed) {
       if (target) {

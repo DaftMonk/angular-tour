@@ -70,7 +70,7 @@ It is very easy to add a cookie module that remembers what step a user was on. U
     $scope.currentStep = ipCookie('myTour') || 0;
 
     // save cookie after each step
-    $scope.postStepCallback = function() {
+    $scope.stepComplete = function() {
       ipCookie('myTour', $scope.currentStep, { expires: 3000 });
     };
 

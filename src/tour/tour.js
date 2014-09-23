@@ -11,7 +11,8 @@ angular.module('angular-tour.tour', [])
     animation        : true,                   // if tips fade in
     nextLabel        : 'Next',                 // default text in the next tip button
     scrollSpeed      : 500,                    // page scrolling speed in milliseconds
-    offset           : 28                      // how many pixels offset the tip is from the target
+    topOffset        : 28,                     // how many pixels vertical offset the tip is from the target
+    leftOffset       : 28                      // how many pixels horizontal offset the tip is from the target
   })
 
   /**
@@ -156,8 +157,12 @@ angular.module('angular-tour.tour', [])
           scope.ttNextLabel = val || tourConfig.nextLabel;
         });
 
-        attrs.$observe( 'tourtipOffset', function ( val ) {
-          scope.ttOffset = parseInt(val, 10) || tourConfig.offset;
+        attrs.$observe( 'tourtipTopOffset', function ( val ) {
+          scope.ttTopOffset = parseInt(val, 10) || tourConfig.topOffset;
+        });
+
+        attrs.$observe( 'tourtipLeftOffset', function ( val ) {
+          scope.ttLeftOffset = parseInt(val, 10) || tourConfig.leftOffset;
         });
 
         scope.ttOpen = false;
@@ -221,26 +226,26 @@ angular.module('angular-tour.tour', [])
             switch ( scope.ttPlacement ) {
             case 'right':
               ttPosition = {
-                top: position.top,
-                left: position.left + width + scope.ttOffset
+                top: position.top + scope.ttTopOffset,
+                left: position.left + width + scope.ttLeftOffset
               };
               break;
             case 'bottom':
               ttPosition = {
-                top: position.top + height + scope.ttOffset,
-                left: position.left
+                top: position.top + height + scope.ttTopOffset,
+                left: position.left + scope.ttLeftOffset
               };
               break;
             case 'left':
               ttPosition = {
-                top: position.top,
-                left: position.left - ttWidth - scope.ttOffset
+                top: position.top + scope.ttTopOffset,
+                left: position.left - ttWidth - scope.ttLeftOffset
               };
               break;
             default:
               ttPosition = {
-                top: position.top - ttHeight - scope.ttOffset,
-                left: position.left
+                top: position.top - ttHeight - scope.ttTopOffset,
+                left: position.left + scope.ttLeftOffset
               };
               break;
             }

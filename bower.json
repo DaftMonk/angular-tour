@@ -32,9 +32,7 @@
   ],
   "dependencies": {
     "angular": "~1.2.x",
-    "jquery": "~2.0.3",
-    "angular-cookies": "~1.2.25",
-    "angular-cookie": "~4.0.2"
+    "jquery": "~2.0.3"
   },
   "devDependencies": {
     "angular-mocks": "~1.x"

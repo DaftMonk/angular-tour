@@ -157,6 +157,10 @@ angular.module('angular-tour.tour', [])
           scope.ttNextLabel = val || tourConfig.nextLabel;
         });
 
+        attrs.$observe('tourtipOffset', function( val ) {
+          scope.ttOffset = parseInt(val, 10) || undefined;
+        });
+
         attrs.$observe( 'tourtipTopOffset', function ( val ) {
           scope.ttTopOffset = parseInt(val, 10) || tourConfig.topOffset;
         });
@@ -226,26 +230,26 @@ angular.module('angular-tour.tour', [])
             switch ( scope.ttPlacement ) {
             case 'right':
               ttPosition = {
-                top: position.top + scope.ttTopOffset,
-                left: position.left + width + scope.ttLeftOffset
+                top: position.top + ((scope.ttOffset)? 0 : scope.ttTopOffset),
+                left: position.left + width + ((scope.ttOffset)? scope.ttOffset : scope.ttLeftOffset)
               };
               break;
             case 'bottom':
               ttPosition = {
-                top: position.top + height + scope.ttTopOffset,
-                left: position.left + scope.ttLeftOffset
+                top: position.top + height + ((scope.ttOffset)? scope.ttOffset : scope.ttTopOffset),
+                left: position.left + ((scope.ttOffset)? 0 : scope.ttLeftOffset)
               };
               break;
             case 'left':
               ttPosition = {
-                top: position.top + scope.ttTopOffset,
-                left: position.left - ttWidth - scope.ttLeftOffset
+                top: position.top + ((scope.ttOffset)? 0 : scope.ttTopOffset),
+                left: position.left - ttWidth - ((scope.ttOffset)? scope.ttOffset : scope.ttLeftOffset)
               };
               break;
             default:
               ttPosition = {
-                top: position.top - ttHeight - scope.ttTopOffset,
-                left: position.left + scope.ttLeftOffset
+                top: position.top - ttHeight - ((scope.ttOffset)? scope.ttOffset : scope.ttTopOffset),
+                left: position.left + ((scope.ttOffset)? 0 : scope.ttLeftOffset)
               };
               break;
             }

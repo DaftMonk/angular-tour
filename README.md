@@ -82,8 +82,8 @@ There are additional attributes that allow you to customize each tour-tip.
     <span tourtip="tip 1" tourtip-step="0"></span>
     <span tourtip="tip 3" tourtip-step="2"></span>
 
-`next-label` **(Default: "Next")**: The text for the next button.
-`placement` **(Default: "top")**: Placement of the tour tip relative to the target element. can be top, right, left, bottom
+`tourtip-next-label` **(Default: "Next")**: The text for the next button.
+`tourtip-placement` **(Default: "top")**: Placement of the tour tip relative to the target element. can be top, right, left, bottom
 
 Inside your tour, you also have access to two scope methods for ending and starting the tour.
 

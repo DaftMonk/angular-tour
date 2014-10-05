@@ -40,7 +40,7 @@ Once bower has downloaded the dependencies for you, you'll need to make sure you
 
 You'll also probably want to include the default stylesheet for angular tour. (You can replace this with your own stylesheet.)
 
-    <link rel="bower_components/angular-tour/dist/angular-tour.css"/>
+    <link href="bower_components/angular-tour/dist/angular-tour.css" rel="stylesheet" type="text/css"/>
 
 Lastly, you'll need to include the module in your angular app
 

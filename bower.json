@@ -32,6 +32,7 @@
   ],
   "dependencies": {
     "angular": "~1.2.x",
+    "angular-cookie": "~4.0.1",
     "jquery": "~2.0.3"
   },
   "devDependencies": {

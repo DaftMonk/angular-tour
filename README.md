@@ -101,7 +101,8 @@ If you'd like to edit the defaults for all your tour, you can inject tourConfig 
       animation        : true,                   // if tips fade in
       nextLabel        : 'Next',                 // default text in the next tip button
       scrollSpeed      : 500,                    // page scrolling speed in milliseconds
-      offset           : 28                      // how many pixels offset the tip is from the target
+      topOffset        : 28,                     // how many pixels vertical offset the tip is from the target
+      leftOffset       : 28                      // how many pixels horizontal offset the tip is from the target
     }
 
 ### Customizing Templates

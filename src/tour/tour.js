@@ -191,11 +191,13 @@ angular.module('angular-tour.tour', [])
             return;
           }
 
-          if(scope.ttAnimation)
+          /*if(scope.ttAnimation)
             tourtip.fadeIn();
           else {
             tourtip.css({ display: 'block' });
-          }
+          }*/
+          tourtip.css({ display: 'block' });
+          tourtip.removeClass('ng-hide');        
 
           // Append it to the dom
           element.after( tourtip );
@@ -209,38 +211,38 @@ angular.module('angular-tour.tour', [])
 
           var updatePosition = function() {
             // Get the position of the directive element
-            position = targetElement.position();
+            position = targetElement[0];
 
-            ttWidth = tourtip.width();
-            ttHeight = tourtip.height();
+            ttWidth = tourtip[0].offsetWidth;
+            ttHeight = tourtip[0].offsetHeight;
 
-            width = targetElement.width();
-            height = targetElement.height();
+            width = targetElement[0].offsetWidth;
+            height = targetElement[0].offsetHeight;
 
             // Calculate the tourtip's top and left coordinates to center it
             switch ( scope.ttPlacement ) {
             case 'right':
               ttPosition = {
-                top: position.top,
-                left: position.left + width + scope.ttOffset
+                top: position.offsetTop,
+                left: position.offsetLeft + width + scope.ttOffset
               };
               break;
             case 'bottom':
               ttPosition = {
-                top: position.top + height + scope.ttOffset,
-                left: position.left
+                top: position.offsetTop + height + scope.ttOffset,
+                left: position.offsetLeft
               };
               break;
             case 'left':
               ttPosition = {
-                top: position.top,
-                left: position.left - ttWidth - scope.ttOffset
+                top: position.offsetTop,
+                left: position.offsetLeft - ttWidth - scope.ttOffset
               };
               break;
             default:
               ttPosition = {
-                top: position.top - ttHeight - scope.ttOffset,
-                left: position.left
+                top: position.offsetTop - ttHeight - scope.ttOffset,
+                left: position.offsetLeft
               };
               break;
             }
@@ -262,7 +264,7 @@ angular.module('angular-tour.tour', [])
         }
 
         function hide() {
-          tourtip.detach();
+          tourtip.addClass('ng-hide');          
           angular.element($window).unbind('resize.' + scope.$id);
         }
 
@@ -375,15 +377,15 @@ angular.module('angular-tour.tour', [])
    * ScrollTo
    * Smoothly scroll to a dom element
    */
-  .factory('scrollTo', function() {
+  .factory('scrollTo', function($window) {
     return function(target, offsetY, offsetX, speed) {
       if(target) {
         offsetY = offsetY || -100;
         offsetX = offsetX || -100;
         speed = speed || 500;
-        $('html,body').stop().animate({scrollTop: target.offset().top + offsetY, scrollLeft: target.offset().left + offsetX}, speed);
+        $window.scrollTo(target[0].offsetLeft + offsetX, target[0].offsetTop + offsetY);        
       } else {
-        $('html,body').stop().animate({scrollTop: 0}, speed);
+        $window.scrollTo(0, 0);
       }
     };
   });

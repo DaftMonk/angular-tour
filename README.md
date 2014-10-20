@@ -100,6 +100,7 @@ If you'd like to edit the defaults for all your tour, you can inject tourConfig 
       placement        : 'top',                  // default placement relative to target. 'top', 'right', 'left', 'bottom'
       animation        : true,                   // if tips fade in
       nextLabel        : 'Next',                 // default text in the next tip button
+      scrolling        : true,                   // if page scrolls to next tip
       scrollSpeed      : 500,                    // page scrolling speed in milliseconds
       offset           : 28                      // how many pixels offset the tip is from the target
     }

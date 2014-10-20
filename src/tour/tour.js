@@ -10,6 +10,7 @@ angular.module('angular-tour.tour', [])
     placement        : 'top',                  // default placement relative to target. 'top', 'right', 'left', 'bottom'
     animation        : true,                   // if tips fade in
     nextLabel        : 'Next',                 // default text in the next tip button
+    scrolling        : true,                   // if page scrolls to next tip
     scrollSpeed      : 500,                    // page scrolling speed in milliseconds
     offset           : 28                      // how many pixels offset the tip is from the target
   })
@@ -251,8 +252,10 @@ angular.module('angular-tour.tour', [])
             // Now set the calculated positioning.
             tourtip.css( ttPosition );
 
-            // Scroll to the tour tip
-            scrollTo(tourtip, -200, -300, tourConfig.scrollSpeed);
+            // Scroll to the tour tip if scrolling is enabled
+            if (tourConfig.scrolling) {
+              scrollTo(tourtip, -200, -300, tourConfig.scrollSpeed);
+            }
           };
 
           angular.element($window).bind('resize.' + scope.$id, function() {

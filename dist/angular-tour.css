@@ -65,20 +65,20 @@
 .tour-tip .tour-arrow.tt-top {
   border-style: solid;
   bottom: -27px;
-  border-color: #1c252e transparent transparent !important;
+  border-color: #1C252E transparent transparent !important;
 }
 
 .tour-tip .tour-arrow.tt-bottom {
   border-style: solid;
   top: -28px;
-  border-color: transparent transparent #1c252e !important;
+  border-color: transparent transparent #1C252E !important;
 }
 
 .tour-tip .tour-arrow.tt-right {
   border-style: solid;
   left: -27px;
   top: 28px;
-  border-color: transparent #1c252e transparent transparent !important;
+  border-color: transparent #1C252E transparent transparent !important;
 }
 
 .tour-tip .tour-arrow.tt-left {
@@ -100,7 +100,7 @@
   position: absolute;
   right: 12px;
   top: 10px;
-  color: white !important;
+  color: #fff !important;
   text-decoration: none;
   font-size: 30px;
   font-weight: 400;
@@ -110,5 +110,5 @@
 
 .tour-tip .tour-close-tip:hover,
 .tour-tip .tour-close-tip:focus {
-  color: #eeeeee !important;
+  color: #eee !important;
 }

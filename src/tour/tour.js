@@ -160,6 +160,14 @@ angular.module('angular-tour.tour', [])
           scope.ttOffset = parseInt(val, 10) || tourConfig.offset;
         });
 
+        attrs.$observe( 'tourtipVerticalOffset', function ( val ) {
+          scope.ttOffsetV = parseInt(val, 10) || 0;
+        });
+
+        attrs.$observe( 'tourtipHorizontalOffset', function ( val ) {
+          scope.ttOffsetH = parseInt(val, 10) || 0;
+        });
+
         scope.ttOpen = false;
         scope.ttAnimation = tourConfig.animation;
         scope.index = parseInt(attrs.tourtipStep, 10);
@@ -221,26 +229,26 @@ angular.module('angular-tour.tour', [])
             switch ( scope.ttPlacement ) {
             case 'right':
               ttPosition = {
-                top: position.top,
+                top: position.top + scope.ttOffsetV,
                 left: position.left + width + scope.ttOffset
               };
               break;
             case 'bottom':
               ttPosition = {
                 top: position.top + height + scope.ttOffset,
-                left: position.left
+                left: position.left + scope.ttOffsetH
               };
               break;
             case 'left':
               ttPosition = {
-                top: position.top,
+                top: position.top + scope.ttOffsetV,
                 left: position.left - ttWidth - scope.ttOffset
               };
               break;
             default:
               ttPosition = {
                 top: position.top - ttHeight - scope.ttOffset,
-                left: position.left
+                left: position.left + scope.ttOffsetH
               };
               break;
             }

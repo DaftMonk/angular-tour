@@ -189,11 +189,11 @@ describe('Directive: tour', function () {
       });
     });
 
-    describe('tour', function() {  
+    describe('tour', function() {
 
       var scope, elm, tour, tip1, tip2;
 
-      beforeEach(function() {  
+      beforeEach(function() {
         scope = $rootScope.$new();
         scope.stepIndex = 0;
         scope.otherStepIndex = -1;
@@ -210,9 +210,9 @@ describe('Directive: tour', function () {
         tour.append(tip1);
         tour.append(tip2);
 
-        elm = $compile(tour)(scope);        
+        elm = $compile(tour)(scope);
         scope.$apply();
-        $timeout.flush();        
+        $timeout.flush();
       });
       afterEach(function() {
         scope.$destroy();
@@ -220,7 +220,7 @@ describe('Directive: tour', function () {
 
       it('should call post-tour method', function() {
         scope.tourComplete = function() {};
-        spyOn(scope, 'tourComplete')
+        spyOn(scope, 'tourComplete');
         // find next button in tour
         var tour1Next = elm.find('.tour-next-tip').eq(0);
         tour1Next.click();
@@ -230,10 +230,10 @@ describe('Directive: tour', function () {
 
       it('should call post-step method', function() {
         scope.tourStep = function() {};
-        spyOn(scope, 'tourStep')
+        spyOn(scope, 'tourStep');
         // find next button in tour
         var tour1Next = elm.find('.tour-next-tip').eq(0);
-        tour1Next.click();        
+        tour1Next.click();
         expect(scope.tourStep).toHaveBeenCalled();
       });
 
@@ -242,7 +242,7 @@ describe('Directive: tour', function () {
         scope.tourComplete = function() {
           scope.otherStepIndex = 0;
         };
-        
+
         // set up second tour
         var otherTour = angular.element('<tour step="otherStepIndex"></tour>');
         var otherTip1 = angular.element('<span tourtip="feature 1 of other tour!">' +

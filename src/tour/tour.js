@@ -149,7 +149,8 @@ angular.module('angular-tour.tour', [])
         });
 
         attrs.$observe( 'tourtipPlacement', function ( val ) {
-          scope.ttPlacement = val || tourConfig.placement;
+          scope.ttPlacement = (val || tourConfig.placement).toLowerCase();
+          scope.centered = (scope.ttPlacement === 'center');
         });
 
         attrs.$observe( 'tourtipNextLabel', function ( val ) {
@@ -182,10 +183,7 @@ angular.module('angular-tour.tour', [])
           var position,
             ttWidth,
             ttHeight,
-            ttPosition,
-            height,
-            width,
-            targetElement;
+            ttPosition;
 
           if ( ! scope.ttContent ) {
             return;
@@ -197,38 +195,33 @@ angular.module('angular-tour.tour', [])
             tourtip.css({ display: 'block' });
           }
 
-          // Append it to the dom
-          element.after( tourtip );
-
-          // Try to set target to the first child of our tour directive
-          if(element.children().eq(0).length>0) {
-            targetElement = element.children().eq(0);
-          } else {
-            targetElement = element;
-          }
+          angular.element('body').append(tourtip);
 
           var updatePosition = function() {
             // Get the position of the directive element
-            position = targetElement.position();
+            position = element[0].getBoundingClientRect();
 
             ttWidth = tourtip.width();
             ttHeight = tourtip.height();
-
-            width = targetElement.width();
-            height = targetElement.height();
 
             // Calculate the tourtip's top and left coordinates to center it
             switch ( scope.ttPlacement ) {
             case 'right':
               ttPosition = {
                 top: position.top,
-                left: position.left + width + scope.ttOffset
+                left: position.left + position.width + scope.ttOffset
               };
               break;
             case 'bottom':
               ttPosition = {
-                top: position.top + height + scope.ttOffset,
+                top: position.top + position.height + scope.ttOffset,
                 left: position.left
+              };
+              break;
+            case 'center':
+              ttPosition = {
+                top: position.top + 0.5 * (position.height - ttHeight),
+                left: position.left + 0.5 * (position.width - ttWidth)
               };
               break;
             case 'left':
@@ -300,7 +293,7 @@ angular.module('angular-tour.tour', [])
       this.map = {};
       this._array = [];
     };
-    
+
     OrderedList.prototype.set = function (key, value) {
       if (!angular.isNumber(key))
         return;
@@ -367,7 +360,7 @@ angular.module('angular-tour.tour', [])
     var orderedListFactory = function() {
       return new OrderedList();
     };
-    
+
     return orderedListFactory;
   })
 

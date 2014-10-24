@@ -49,7 +49,8 @@
     "node": ">=0.8.0"
   },
   "scripts": {
-    "test": "grunt test"
+    "test": "grunt test",
+    "test-debug": "./node_modules/karma/bin/karma start ./karma.conf.js --browsers Chrome"
   },
   "licenses": [
     {

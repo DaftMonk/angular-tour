@@ -92,12 +92,12 @@ angular.module('angular-tour.tour', [])
    * Tour
    * directive that allows you to control the tour
    */
-  .directive('tour', function ($parse) {
+  .directive('tour', function ($parse, tourConfig) {
     return {
       controller: 'TourController',
       restrict: 'EA',
       scope: true,
-      link: function (scope, element, attrs, ctrl, tourConfig) {
+      link: function (scope, element, attrs, ctrl) {
         if(!angular.isDefined(attrs.step)) {
           throw('The <tour> directive requires a `step` attribute to bind the current step to.');
         }
@@ -217,6 +217,9 @@ angular.module('angular-tour.tour', [])
             // Get the position of the directive element
             position = element[0].getBoundingClientRect();
 
+            //make it relative against page, not the window
+            var top = position.top + window.scrollY;
+
             ttWidth = tourtip.width();
             ttHeight = tourtip.height();
 
@@ -224,31 +227,31 @@ angular.module('angular-tour.tour', [])
             switch ( scope.ttPlacement ) {
             case 'right':
               ttPosition = {
-                top: position.top,
+                top: top,
                 left: position.left + position.width + scope.ttOffset
               };
               break;
             case 'bottom':
               ttPosition = {
-                top: position.top + position.height + scope.ttOffset,
+                top: top + position.height + scope.ttOffset,
                 left: position.left
               };
               break;
             case 'center':
               ttPosition = {
-                top: position.top + 0.5 * (position.height - ttHeight),
+                top: top + 0.5 * (position.height - ttHeight),
                 left: position.left + 0.5 * (position.width - ttWidth)
               };
               break;
             case 'left':
               ttPosition = {
-                top: position.top,
+                top: top,
                 left: position.left - ttWidth - scope.ttOffset
               };
               break;
             default:
               ttPosition = {
-                top: position.top - ttHeight - scope.ttOffset,
+                top: top - ttHeight - scope.ttOffset,
                 left: position.left
               };
               break;

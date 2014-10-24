@@ -164,9 +164,9 @@ angular.module('angular-tour.tour', [])
           scope.ttContent = val;
         });
 
-        attrs.$observe( 'tourtipPlacement', function ( val ) {
-          scope.ttPlacement = (val || tourConfig.placement).toLowerCase();
-          scope.centered = (scope.ttPlacement === 'center');
+        attrs.$observe('tourtipPlacement', function (val) {
+          scope.ttPlacement = (val || tourConfig.placement).toLowerCase().trim();
+          scope.centered = (scope.ttPlacement.indexOf('center') === 0);
         });
 
         attrs.$observe( 'tourtipNextLabel', function ( val ) {
@@ -239,7 +239,13 @@ angular.module('angular-tour.tour', [])
               break;
             case 'center':
               ttPosition = {
-                top: top + 0.5 * (position.height - ttHeight),
+                top: top + 0.5 * (position.height - ttHeight) + scope.ttOffset,
+                left: position.left + 0.5 * (position.width - ttWidth)
+              };
+              break;
+            case 'center-top':
+              ttPosition = {
+                top: top + 0.1 * (position.height - ttHeight) + scope.ttOffset,
                 left: position.left + 0.5 * (position.width - ttWidth)
               };
               break;

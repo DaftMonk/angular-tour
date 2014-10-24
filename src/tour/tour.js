@@ -177,6 +177,14 @@ angular.module('angular-tour.tour', [])
           scope.ttOffset = parseInt(val, 10) || tourConfig.offset;
         });
 
+        attrs.$observe('onShow', function (val) {
+          scope.onStepShow = val || null;
+        });
+
+        attrs.$observe('onProceed', function (val) {
+          scope.onStepProceed = val || null;
+        });
+
         attrs.$observe( 'tourtipElement', function (val) {
           scope.ttElement = val || null;
         });
@@ -290,7 +298,15 @@ angular.module('angular-tour.tour', [])
           angular.element($window).bind('resize.' + scope.$id, function() {
             updatePosition();
           });
+
           updatePosition();
+
+          if(scope.onStepShow) {
+            //fancy! Let's make on show action not instantly, but after a small delay
+            $timeout(function() {
+              scope.$eval(scope.onStepShow);
+            }, 300);
+          }
         }
 
         function hide() {
@@ -311,6 +327,13 @@ angular.module('angular-tour.tour', [])
           tourtip.remove();
           tourtip = null;
         });
+
+        scope.proceed = function() {
+          if(scope.onStepProceed)
+            scope.$eval(scope.onStepProceed);
+
+          scope.setCurrentStep(scope.getCurrentStep() + 1);
+        };
       }
     };
   })

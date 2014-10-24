@@ -12,7 +12,7 @@ angular.module('angular-tour.tour', [])
     nextLabel        : 'Next',                 // default text in the next tip button
     scrollSpeed      : 500,                    // page scrolling speed in milliseconds
     offset           : 28,                     // how many pixels offset the tip is from the target
-    backDrop         : false                   // if there is a backdrop (gray overlay) when tour starts
+    backDrop         : true                   // if there is a backdrop (gray overlay) when tour starts
   })
 
   /**
@@ -273,6 +273,9 @@ angular.module('angular-tour.tour', [])
             scrollTo(tourtip, -200, -300, tourConfig.scrollSpeed);
           };
 
+          if(tourConfig.backDrop)
+            focusActiveElement(element);
+
           angular.element($window).bind('resize.' + scope.$id, function() {
             updatePosition();
           });
@@ -282,6 +285,13 @@ angular.module('angular-tour.tour', [])
         function hide() {
           tourtip.detach();
           angular.element($window).unbind('resize.' + scope.$id);
+        }
+
+        function focusActiveElement(el) {
+          angular.element('.tour-element-active').removeClass('tour-element-active');
+
+          if(!scope.centered)
+            el.addClass('tour-element-active');
         }
 
         // Make sure tooltip is destroyed and removed.

@@ -12,7 +12,7 @@ angular.module('angular-tour.tour', [])
     nextLabel        : 'Next',                 // default text in the next tip button
     scrollSpeed      : 500,                    // page scrolling speed in milliseconds
     offset           : 28,                     // how many pixels offset the tip is from the target
-    backDrop         : true                   // if there is a backdrop (gray overlay) when tour starts
+    backDrop         : false                   // if there is a backdrop (gray overlay) when tour starts
   })
 
   /**
@@ -164,7 +164,7 @@ angular.module('angular-tour.tour', [])
           scope.ttContent = val;
         });
 
-        attrs.$observe('tourtipPlacement', function (val) {
+        attrs.$observe( 'tourtipPlacement', function (val) {
           scope.ttPlacement = (val || tourConfig.placement).toLowerCase().trim();
           scope.centered = (scope.ttPlacement.indexOf('center') === 0);
         });
@@ -176,6 +176,11 @@ angular.module('angular-tour.tour', [])
         attrs.$observe( 'tourtipOffset', function ( val ) {
           scope.ttOffset = parseInt(val, 10) || tourConfig.offset;
         });
+
+        attrs.$observe( 'tourtipElement', function (val) {
+          scope.ttElement = val || null;
+        });
+
 
         scope.ttOpen = false;
         scope.ttAnimation = tourConfig.animation;
@@ -211,11 +216,17 @@ angular.module('angular-tour.tour', [])
             tourtip.css({ display: 'block' });
           }
 
+          var targetElement = element;
+          if(scope.ttElement) {
+            var el = angular.element(scope.ttElement);
+            targetElement = el;
+          }
+
           angular.element('body').append(tourtip);
 
           var updatePosition = function() {
             // Get the position of the directive element
-            position = element[0].getBoundingClientRect();
+            position = targetElement[0].getBoundingClientRect();
 
             //make it relative against page, not the window
             var top = position.top + window.scrollY;
@@ -274,7 +285,7 @@ angular.module('angular-tour.tour', [])
           };
 
           if(tourConfig.backDrop)
-            focusActiveElement(element);
+            focusActiveElement(targetElement);
 
           angular.element($window).bind('resize.' + scope.$id, function() {
             updatePosition();

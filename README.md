@@ -90,6 +90,37 @@ Inside your tour, you also have access to two scope methods for ending and start
     <a ng-click="openTour()">Open Tour</a>
     <a ng-click="closeTour()">Close Tour</a>
 
+## Virtual steps
+
+If you have more complicated structure of application, especially with page 
+divided by page includes and different controllers you can consider using this approach.
+
+```
+<div class="container">
+  <a class="btn btn-sm magic-button">Well, some magic button</a>
+  <a id="other-button" class="btn btn-s">Well, some magic button</a>
+</div>
+
+<!-- somewhere else on the page -->
+
+<tour step="currentStep">
+  <virtual-step 
+    tourtip="Content of the first step"
+    tourtip-next-label="Move forward"
+    tourtip-placement="bottom"
+    tourtip-element=".magic-button"
+    tourtip-step="0" />  
+  <div
+    tourtip="Some other content..."
+    tourtip-next-label="Faster, faster!"
+    tourtip-placement="top"
+    tourtip-element="#other-button"
+    tourtip-step="1" />
+</tour>
+```
+
+Name of the tag doesn't really matter. It's a normal step definition, but the element that will be used to attach to is specified by `virtual-step` attribute.
+
 ## Customization
 
 ### Defaults
@@ -102,6 +133,7 @@ If you'd like to edit the defaults for all your tour, you can inject tourConfig 
       nextLabel        : 'Next',                 // default text in the next tip button
       scrollSpeed      : 500,                    // page scrolling speed in milliseconds
       offset           : 28                      // how many pixels offset the tip is from the target
+      backDrop         : false                   // should page dim out when the tour starts?
     }
 
 ### Customizing Templates

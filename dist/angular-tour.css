@@ -112,3 +112,19 @@
 .tour-tip .tour-close-tip:focus {
   color: #eee !important;
 }
+
+.tour-backdrop {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.6);
+  z-index: 100;
+}
+
+.tour-element-active {
+  z-index: 120 !important;
+  position: relative;
+  background: #fff;
+}

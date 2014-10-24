@@ -11,7 +11,8 @@ angular.module('angular-tour.tour', [])
     animation        : true,                   // if tips fade in
     nextLabel        : 'Next',                 // default text in the next tip button
     scrollSpeed      : 500,                    // page scrolling speed in milliseconds
-    offset           : 28                      // how many pixels offset the tip is from the target
+    offset           : 28,                     // how many pixels offset the tip is from the target
+    backDrop         : false                   // if there is a backdrop (gray overlay) when tour starts
   })
 
   /**
@@ -25,7 +26,7 @@ angular.module('angular-tour.tour', [])
     // we'll pass these in from the directive
     self.postTourCallback = angular.noop;
     self.postStepCallback = angular.noop;
-    self.currentStep = 0;
+    self.currentStep = -1;
 
     // if currentStep changes, select the new step
     $scope.$watch( function() { return self.currentStep; },
@@ -47,6 +48,9 @@ angular.module('angular-tour.tour', [])
       if(self.currentStep !== nextIndex) {
         self.currentStep = nextIndex;
       }
+
+      if(self.currentStep > -1)
+        self.showStepCallback();
 
       if(nextIndex >= steps.getCount()) {
         self.postTourCallback();
@@ -93,11 +97,12 @@ angular.module('angular-tour.tour', [])
       controller: 'TourController',
       restrict: 'EA',
       scope: true,
-      link: function (scope, element, attrs, ctrl) {
+      link: function (scope, element, attrs, ctrl, tourConfig) {
         if(!angular.isDefined(attrs.step)) {
           throw('The <tour> directive requires a `step` attribute to bind the current step to.');
         }
         var model = $parse(attrs.step);
+        var backDrop = false;
 
         // Watch current step view model and update locally
         scope.$watch(attrs.step, function(newVal){
@@ -105,6 +110,10 @@ angular.module('angular-tour.tour', [])
         });
 
         ctrl.postTourCallback = function() {
+          angular.element('.tour-backdrop').remove();
+          backDrop = false;
+          angular.element('.tour-element-active').removeClass('tour-element-active');
+
           if(angular.isDefined(attrs.postTour)) {
             scope.$parent.$eval(attrs.postTour);
           }
@@ -113,6 +122,13 @@ angular.module('angular-tour.tour', [])
         ctrl.postStepCallback = function() {
           if(angular.isDefined(attrs.postStep)) {
             scope.$parent.$eval(attrs.postStep);
+          }
+        };
+
+        ctrl.showStepCallback = function () {
+          if(!backDrop && tourConfig.backDrop) {
+            angular.element('body').append(angular.element('<div class="tour-backdrop"></div>'));
+            backDrop = true;
           }
         };
 

@@ -43,7 +43,7 @@
     &:hover {
       background-color: #0A87A1;
     }
-  }  
+  }
   .tour-arrow {
     &.tt-top {
       border-style: solid;
@@ -79,7 +79,7 @@
 
     .button {
       margin-bottom: 0!important;
-    }  
+    }
   }
   .tour-close-tip {
     position: absolute;
@@ -95,4 +95,17 @@
       color: #eee!important;
     }
   }
+}
+
+.tour-backdrop {
+  position: fixed;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background: rgba(0,0,0,.6);
+  z-index: 100;
+}
+
+.tour-element-active {
+  z-index: 120 !important;
+  position: relative;
+  background: #fff;
 }

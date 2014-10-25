@@ -26,6 +26,7 @@ angular.module('angular-tour.tour', [])
     // we'll pass these in from the directive
     self.postTourCallback = angular.noop;
     self.postStepCallback = angular.noop;
+    self.showStepCallback = angular.noop;
     self.currentStep = -1;
 
     // if currentStep changes, select the new step
@@ -295,9 +296,7 @@ angular.module('angular-tour.tour', [])
           if(tourConfig.backDrop)
             focusActiveElement(targetElement);
 
-          angular.element($window).bind('resize.' + scope.$id, function() {
-            updatePosition();
-          });
+          angular.element($window).bind('resize.' + scope.$id, updatePosition);
 
           updatePosition();
 
@@ -348,8 +347,7 @@ angular.module('angular-tour.tour', [])
       templateUrl: 'tour/tour.tpl.html',
       scope: true,
       restrict: 'EA',
-      link: function (scope, element, attrs) {
-      }
+      link: function (scope, element, attrs) { }
     };
   })
 

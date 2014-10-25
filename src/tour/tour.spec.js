@@ -6,6 +6,10 @@ describe('Directive: tour', function () {
   beforeEach(module('tour/tour.tpl.html'));
   beforeEach(module('angular-tour.tour'));
 
+  function getTourStep() {
+    return angular.element('body').find('div.tour-tip');
+  }
+
   var $rootScope, $compile, $controller, $timeout;
 
   beforeEach(inject(function (_$rootScope_, _$compile_, _$controller_, _$timeout_) {
@@ -105,8 +109,7 @@ describe('Directive: tour', function () {
     beforeEach(function() {
       this.addMatchers({
         toHaveOpenTourtips: function(noOfOpened) {
-          var tourtipElements = this.actual.find('div.tour-tip');
-          noOfOpened = noOfOpened;
+          var tourtipElements = getTourStep();
 
           this.message = function() {
             return 'Expected \'' + angular.mock.dump(tourtipElements) + '\' to have \'' + noOfOpened +
@@ -121,19 +124,14 @@ describe('Directive: tour', function () {
 
       scope.stepIndex = 0;
 
-      tour = angular.element('<tour step="stepIndex"></tour>');
-      tip1 = angular.element('<span tourtip="feature 1!" tourtip-step="0" tourtip-next-label="Next" tourtip-placement="top" class="btn">' +
-        'Important website feature' +
-        '</span>');
-
-      tip2 = angular.element('<span tourtip="feature 2!" tourtip-step="1" tourtip-next-label="Next" tourtip-placement="top" class="btn">' +
-        'Another website feature' +
-        '</span>');
-
-      tour.append(tip1);
-      tour.append(tip2);
+      tour = angular.element('<tour step="stepIndex">' +
+        '<span id="tt1" tourtip="feature 1!" tourtip-step="0" tourtip-next-label="Next" tourtip-placement="top" class="btn">Important website feature</span>' +
+        '<span id="tt2" tourtip="feature 2!" tourtip-step="1" tourtip-next-label="Next" tourtip-placement="top" class="btn">Another website feature</span>' +
+      '</tour>');
 
       elm = $compile(tour)(scope);
+      tip1 = tour.find('#tt1');
+      tip2 = tour.find('#tt2');
       scope.$apply();
       $timeout.flush();
 
@@ -164,14 +162,16 @@ describe('Directive: tour', function () {
         expect(elm.html()).toContain('Important website feature');
       });
 
-      it('should append tip1 popup to element and open it', function () {
+      it('should append tip1 popup to body and open it', function () {
         expect(elm).toHaveOpenTourtips(1);
-        expect(tip1.next().html()).toContain('feature 1');
+        var stepText = tip1.attr('tourtip');
+        var tourStep = getTourStep();
+        expect(tourStep.html()).toContain('feature 1');
         expect(tip1.scope().ttOpen).toBe(true);
       });
 
       it('should open tip2 popup and close tip1 on next', function () {
-        var elmNext = elm.find('.tour-next-tip').eq(0);
+        var elmNext = getTourStep().find('.tour-next-tip').eq(0);
 
         elmNext.click();
 
@@ -181,7 +181,7 @@ describe('Directive: tour', function () {
       });
 
       it('should close tips when you click close', function () {
-        var elmNext = elm.find('.tour-close-tip').eq(0);
+        var elmNext = getTourStep().find('.tour-close-tip').eq(0);
         elmNext.click();
 
         expect(tip1.scope().ttOpen).toBe(false);
@@ -222,7 +222,7 @@ describe('Directive: tour', function () {
         scope.tourComplete = function() {};
         spyOn(scope, 'tourComplete');
         // find next button in tour
-        var tour1Next = elm.find('.tour-next-tip').eq(0);
+        var tour1Next = getTourStep().find('.tour-next-tip').eq(0);
         tour1Next.click();
         tour1Next.click();
         expect(scope.tourComplete).toHaveBeenCalled();
@@ -232,7 +232,7 @@ describe('Directive: tour', function () {
         scope.tourStep = function() {};
         spyOn(scope, 'tourStep');
         // find next button in tour
-        var tour1Next = elm.find('.tour-next-tip').eq(0);
+        var tour1Next = getTourStep().find('.tour-next-tip').eq(0);
         tour1Next.click();
         expect(scope.tourStep).toHaveBeenCalled();
       });
@@ -259,7 +259,7 @@ describe('Directive: tour', function () {
         $timeout.flush();
 
         // find next button in tour1
-        var tour1Next = elm.find('.tour-next-tip').eq(0);
+        var tour1Next = getTourStep().find('.tour-next-tip').eq(0);
 
         // expect second tour to be closed
         expect(otherTip1.scope().ttOpen).toBe(false);
@@ -277,7 +277,7 @@ describe('Directive: tour', function () {
         otherElm = $compile(otherTour)(scope);
         scope.$apply();
         $timeout.flush();
-        var tour2Next = otherElm.find('.tour-next-tip').eq(0);
+        var tour2Next = getTourStep().find('.tour-next-tip').eq(0);
 
         // expect second tour to open after first tour finished
         expect(otherTip1.scope().ttOpen).toBe(true);

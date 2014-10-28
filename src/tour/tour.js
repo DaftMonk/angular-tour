@@ -242,7 +242,7 @@ angular.module('angular-tour.tour', [])
           var position = element[0].getBoundingClientRect();
 
           //make it relative against page, not the window
-          var top = position.top + window.scrollY;
+          var top = position.top + window.pageYOffset;
 
           var ttWidth = tourtip.width();
           var ttHeight = tourtip.height();

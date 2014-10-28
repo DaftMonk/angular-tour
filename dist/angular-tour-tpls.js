@@ -1,6 +1,6 @@
 /**
  * An AngularJS directive for showcasing features of your website
- * @version v0.1.1 - 2014-10-25
+ * @version v0.1.1 - 2014-10-28
  * @link https://github.com/DaftMonk/angular-tour
  * @author Tyler Henkel
  * @license MIT License, http://www.opensource.org/licenses/MIT
@@ -25,7 +25,8 @@
     nextLabel: 'Next',
     scrollSpeed: 500,
     offset: 28,
-    backDrop: false
+    backDrop: false,
+    useSourceScope: false
   }).controller('TourController', [
     '$scope',
     'orderedList',
@@ -152,6 +153,7 @@
           attrs.$observe('tourtip', function (val) {
             scope.ttContent = val;
           });
+          //defaults: tourConfig.placement
           attrs.$observe('tourtipPlacement', function (val) {
             scope.ttPlacement = (val || tourConfig.placement).toLowerCase().trim();
             scope.centered = scope.ttPlacement.indexOf('center') === 0;
@@ -162,14 +164,21 @@
           attrs.$observe('tourtipOffset', function (val) {
             scope.ttOffset = parseInt(val, 10) || tourConfig.offset;
           });
+          //defaults: null
           attrs.$observe('onShow', function (val) {
             scope.onStepShow = val || null;
           });
+          //defaults: null
           attrs.$observe('onProceed', function (val) {
             scope.onStepProceed = val || null;
           });
+          //defaults: null
           attrs.$observe('tourtipElement', function (val) {
             scope.ttElement = val || null;
+          });
+          //defaults: tourConfig.useSourceScope
+          attrs.$observe('useSourceScope', function (val) {
+            scope.ttSourceScope = !val ? tourConfig.useSourceScope : val === 'true';
           });
           scope.ttOpen = false;
           scope.ttAnimation = tourConfig.animation;
@@ -186,8 +195,70 @@
               }
             });
           }, 500);
+          //determining target scope. It's used only when using virtual steps and there
+          //is some action performed like on-show or on-progress. Without virtual steps
+          //action would performed on element's scope and that would work just fine
+          //however, when using virtual steps, whose steps can be placed in different
+          //controller, so it affects scope, which will be used to run this action against.
+          function getTargetScope() {
+            var targetElement = scope.ttElement ? angular.element(scope.ttElement) : element;
+            var targetScope = scope;
+            if (targetElement !== element && !scope.ttSourceScope)
+              targetScope = targetElement.scope();
+            return targetScope;
+          }
+          function calculatePosition(element) {
+            var ttPosition;
+            // Get the position of the directive element
+            var position = element[0].getBoundingClientRect();
+            //make it relative against page, not the window
+            var top = position.top + window.scrollY;
+            var ttWidth = tourtip.width();
+            var ttHeight = tourtip.height();
+            // Calculate the tourtip's top and left coordinates to center it
+            switch (scope.ttPlacement) {
+            case 'right':
+              ttPosition = {
+                top: top,
+                left: position.left + position.width + scope.ttOffset
+              };
+              break;
+            case 'bottom':
+              ttPosition = {
+                top: top + position.height + scope.ttOffset,
+                left: position.left
+              };
+              break;
+            case 'center':
+              ttPosition = {
+                top: top + 0.5 * (position.height - ttHeight) + scope.ttOffset,
+                left: position.left + 0.5 * (position.width - ttWidth)
+              };
+              break;
+            case 'center-top':
+              ttPosition = {
+                top: top + 0.1 * (position.height - ttHeight) + scope.ttOffset,
+                left: position.left + 0.5 * (position.width - ttWidth)
+              };
+              break;
+            case 'left':
+              ttPosition = {
+                top: top,
+                left: position.left - ttWidth - scope.ttOffset
+              };
+              break;
+            default:
+              ttPosition = {
+                top: top - ttHeight - scope.ttOffset,
+                left: position.left
+              };
+              break;
+            }
+            ttPosition.top += 'px';
+            ttPosition.left += 'px';
+            return ttPosition;
+          }
           function show() {
-            var position, ttWidth, ttHeight, ttPosition;
             if (!scope.ttContent) {
               return;
             }
@@ -196,60 +267,10 @@
             else {
               tourtip.css({ display: 'block' });
             }
-            var targetElement = element;
-            if (scope.ttElement) {
-              var el = angular.element(scope.ttElement);
-              targetElement = el;
-            }
+            var targetElement = scope.ttElement ? angular.element(scope.ttElement) : element;
             angular.element('body').append(tourtip);
             var updatePosition = function () {
-              // Get the position of the directive element
-              position = targetElement[0].getBoundingClientRect();
-              //make it relative against page, not the window
-              var top = position.top + window.scrollY;
-              ttWidth = tourtip.width();
-              ttHeight = tourtip.height();
-              // Calculate the tourtip's top and left coordinates to center it
-              switch (scope.ttPlacement) {
-              case 'right':
-                ttPosition = {
-                  top: top,
-                  left: position.left + position.width + scope.ttOffset
-                };
-                break;
-              case 'bottom':
-                ttPosition = {
-                  top: top + position.height + scope.ttOffset,
-                  left: position.left
-                };
-                break;
-              case 'center':
-                ttPosition = {
-                  top: top + 0.5 * (position.height - ttHeight) + scope.ttOffset,
-                  left: position.left + 0.5 * (position.width - ttWidth)
-                };
-                break;
-              case 'center-top':
-                ttPosition = {
-                  top: top + 0.1 * (position.height - ttHeight) + scope.ttOffset,
-                  left: position.left + 0.5 * (position.width - ttWidth)
-                };
-                break;
-              case 'left':
-                ttPosition = {
-                  top: top,
-                  left: position.left - ttWidth - scope.ttOffset
-                };
-                break;
-              default:
-                ttPosition = {
-                  top: top - ttHeight - scope.ttOffset,
-                  left: position.left
-                };
-                break;
-              }
-              ttPosition.top += 'px';
-              ttPosition.left += 'px';
+              var ttPosition = calculatePosition(targetElement);
               // Now set the calculated positioning.
               tourtip.css(ttPosition);
               // Scroll to the tour tip
@@ -260,9 +281,10 @@
             angular.element($window).bind('resize.' + scope.$id, updatePosition);
             updatePosition();
             if (scope.onStepShow) {
+              var targetScope = getTargetScope();
               //fancy! Let's make on show action not instantly, but after a small delay
               $timeout(function () {
-                scope.$eval(scope.onStepShow);
+                targetScope.$eval(scope.onStepShow);
               }, 300);
             }
           }
@@ -282,8 +304,12 @@
             tourtip = null;
           });
           scope.proceed = function () {
-            if (scope.onStepProceed)
-              scope.$eval(scope.onStepProceed);
+            if (scope.onStepProceed) {
+              var targetScope = getTargetScope();
+              $timeout(function () {
+                targetScope.$eval(scope.onStepProceed);
+              }, 100);
+            }
             scope.setCurrentStep(scope.getCurrentStep() + 1);
           };
         }

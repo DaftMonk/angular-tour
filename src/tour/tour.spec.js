@@ -218,9 +218,12 @@ describe('Directive: tour', function () {
 
     it('should call on-proceed method', function() {
       scope.onProceedFunction = function() {};
+      scope.ttSourceScope = true;
       spyOn(scope, 'onProceedFunction');
       var tour1Next = getTourStep().find('.tour-next-tip').eq(0);
       tour1Next.click();
+      $timeout.flush();
+
       expect(scope.onProceedFunction).toHaveBeenCalled();
     });
 

@@ -208,6 +208,15 @@ describe('Directive: tour', function () {
       expect(tip2.scope().ttOpen).toBe(true);
     });
 
+    it('proceed will move to the next step', function () {
+      var tScope = tip1.scope();
+      tScope.proceed();
+      scope.$apply();
+      expect(tScope.getCurrentStep() + 1).toBe(2);
+      var tourStep = getTourStep();
+      expect(tourStep.html()).toContain('feature 2');
+    });
+
     it('should close tips when you click close', function () {
       var elmNext = getTourStep().find('.tour-close-tip').eq(0);
       elmNext.click();
@@ -251,7 +260,7 @@ describe('Directive: tour', function () {
 
   describe('tour directive', function() {
 
-    var scope, elm, tour, tip1, tip2;
+    var scope, elm, tour, tip1, tip2, tourScope;
 
     beforeEach(function() {
       scope = $rootScope.$new();
@@ -259,7 +268,7 @@ describe('Directive: tour', function () {
       scope.otherStepIndex = -1;
 
       // set up first tour
-      tour = angular.element('<tour step="stepIndex" post-tour="tourComplete()" post-step="tourStep()"></tour>');
+      tour = angular.element('<tour step="stepIndex" post-tour="tourEnd()" tour-complete="tourComplete()" post-step="tourStep()"></tour>');
       tip1 = angular.element('<span tourtip="feature 1!">' +
         'Important website feature' +
         '</span>');
@@ -273,18 +282,42 @@ describe('Directive: tour', function () {
       elm = $compile(tour)(scope);
       scope.$apply();
       $timeout.flush();
+      tourScope = tour.scope();
     });
     afterEach(function() {
       scope.$destroy();
     });
 
     it('should call post-tour method', function() {
+      scope.tourEnd = function() {};
+      spyOn(scope, 'tourEnd');
+      var tour1Next = getTourStep().find('.tour-next-tip').eq(0);
+      tour1Next.click();
+      tour1Next.click();
+      expect(scope.tourEnd).toHaveBeenCalled();
+    });
+
+    it('should call post-tour method even when tour was canceled', function() {
+      scope.tourEnd = function() {};
+      spyOn(scope, 'tourEnd');
+      tourScope.closeTour();
+      expect(scope.tourEnd).toHaveBeenCalled();
+    });
+
+    it('should call tour-complete method', function() {
       scope.tourComplete = function() {};
       spyOn(scope, 'tourComplete');
       var tour1Next = getTourStep().find('.tour-next-tip').eq(0);
       tour1Next.click();
       tour1Next.click();
       expect(scope.tourComplete).toHaveBeenCalled();
+    });
+
+    it('should not call tour-complete method when tour canceled', function() {
+      scope.tourComplete = function() {};
+      spyOn(scope, 'tourComplete');
+      tourScope.closeTour();
+      expect(scope.tourComplete).not.toHaveBeenCalled();
     });
 
     it('should call post-step method', function() {

@@ -55,7 +55,7 @@ angular.module('angular-tour.tour', [])
         self.showStepCallback();
 
       if(nextIndex >= steps.getCount()) {
-        self.postTourCallback();
+        self.postTourCallback(true);
       }
       self.postStepCallback();
     };
@@ -76,7 +76,7 @@ angular.module('angular-tour.tour', [])
 
     self.cancelTour = function () {
       self.unselectAllSteps();
-      self.postTourCallback();
+      self.postTourCallback(false);
     };
 
     $scope.openTour = function() {
@@ -111,11 +111,14 @@ angular.module('angular-tour.tour', [])
           ctrl.currentStep = newVal;
         });
 
-        ctrl.postTourCallback = function() {
+        ctrl.postTourCallback = function(completed) {
           angular.element('.tour-backdrop').remove();
           backDrop = false;
           angular.element('.tour-element-active').removeClass('tour-element-active');
 
+          if (completed && angular.isDefined(attrs.tourComplete)) {
+            scope.$parent.$eval(attrs.tourComplete);
+          }
           if(angular.isDefined(attrs.postTour)) {
             scope.$parent.$eval(attrs.postTour);
           }
@@ -305,6 +308,9 @@ angular.module('angular-tour.tour', [])
           }
 
           var targetElement = scope.ttElement ? angular.element(scope.ttElement) : element;
+
+          if(targetElement == null || targetElement.length === 0)
+            throw 'Target element could not be found. Selector: ' + scope.ttElement;
 
           angular.element('body').append(tourtip);
 

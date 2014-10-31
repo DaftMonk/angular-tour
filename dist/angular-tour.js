@@ -1,6 +1,6 @@
 /**
  * An AngularJS directive for showcasing features of your website
- * @version v0.1.1 - 2014-10-28
+ * @version v0.1.1 - 2014-10-31
  * @link https://github.com/DaftMonk/angular-tour
  * @author Tyler Henkel
  * @license MIT License, http://www.opensource.org/licenses/MIT
@@ -48,7 +48,7 @@
         if (self.currentStep > -1)
           self.showStepCallback();
         if (nextIndex >= steps.getCount()) {
-          self.postTourCallback();
+          self.postTourCallback(true);
         }
         self.postStepCallback();
       };
@@ -66,7 +66,7 @@
       };
       self.cancelTour = function () {
         self.unselectAllSteps();
-        self.postTourCallback();
+        self.postTourCallback(false);
       };
       $scope.openTour = function () {
         // open at first step if we've already finished tour
@@ -95,10 +95,13 @@
           scope.$watch(attrs.step, function (newVal) {
             ctrl.currentStep = newVal;
           });
-          ctrl.postTourCallback = function () {
+          ctrl.postTourCallback = function (completed) {
             angular.element('.tour-backdrop').remove();
             backDrop = false;
             angular.element('.tour-element-active').removeClass('tour-element-active');
+            if (completed && angular.isDefined(attrs.tourComplete)) {
+              scope.$parent.$eval(attrs.tourComplete);
+            }
             if (angular.isDefined(attrs.postTour)) {
               scope.$parent.$eval(attrs.postTour);
             }
@@ -258,6 +261,8 @@
               tourtip.css({ display: 'block' });
             }
             var targetElement = scope.ttElement ? angular.element(scope.ttElement) : element;
+            if (targetElement == null || targetElement.length === 0)
+              throw 'Target element could not be found. Selector: ' + scope.ttElement;
             angular.element('body').append(tourtip);
             var updatePosition = function () {
               var ttPosition = calculatePosition(targetElement);

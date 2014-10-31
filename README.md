@@ -62,7 +62,11 @@ Example markup:
 
 You can also add callbacks to the `tour`:
 
-    <tour step="currentStep" post-tour="tourComplete()" post-step="stepComplete()">
+    <tour step="currentStep" post-tour="tourEnded()" post-step="stepComplete()" tour-complete="tourComplete()">
+
+* `tourEnded` will be called always when tour will be ended - completed or not
+* `tourComplete` will be called only when user will get to the last step
+* `stepComplete` will be called every time the step will be changed
 
 It is very easy to add a cookie module that remembers what step a user was on. Using the angular-cookie module this is all you need to integrate cookies:
 
@@ -83,7 +87,16 @@ There are additional attributes that allow you to customize each tour-tip.
     <span tourtip="tip 3" tourtip-step="2"></span>
 
 `tourtip-next-label` **(Default: "Next")**: The text for the next button.
+
 `tourtip-placement` **(Default: "top")**: Placement of the tour tip relative to the target element. can be top, right, left, bottom
+
+`on-show` **(Default: null)**: Callback, which will be called when the tour step will appear
+
+`on-proceed` **(Default: null)**: Callback, which will be called when user move to the next step, but just before showing it
+
+`tourtip-element` **(Default: null)**: CSS Selector for element, for which tourtip will be pointed. If left `null`, tourtip will be pointed for itself
+
+`use-source-scope` **(Default: false)**: 
 
 Inside your tour, you also have access to two scope methods for ending and starting the tour.
 

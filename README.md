@@ -96,7 +96,7 @@ There are additional attributes that allow you to customize each tour-tip.
 
 `tourtip-element` **(Default: null)**: CSS Selector for element, for which tourtip will be pointed. If left `null`, tourtip will be pointed for itself
 
-`use-source-scope` **(Default: false)**: 
+`use-source-scope` **(Default: false)**: Option meaningful only when using virtual steps. When set to `false` - it will use as a target scope, scope of target's element for evaluating `on-show` and `on-proceed` callbacks. When set to `true`, target's scope will be scope when resides step itself. See example below for a better explanation if you still need one.
 
 Inside your tour, you also have access to two scope methods for ending and starting the tour.
 
@@ -108,13 +108,15 @@ Inside your tour, you also have access to two scope methods for ending and start
 If you have more complicated structure of application, especially with page 
 divided by page includes and different controllers you can consider using this approach.
 
-```
+```html
 <div class="container">
-  <a class="btn btn-sm magic-button">Well, some magic button</a>
+  <a class="btn btn-sm magic-button" ng-click="someRandomAction()">Well, some magic button</a>
   <a id="other-button" class="btn btn-s">Well, some magic button</a>
 </div>
 
-<!-- somewhere else on the page -->
+<!-- somewhere else on the page, and different scope -->
+
+<button class="btn btn-sm btn-primary" ng-click="localAction()">Pff</button>
 
 <tour step="currentStep">
   <virtual-step 
@@ -122,12 +124,15 @@ divided by page includes and different controllers you can consider using this a
     tourtip-next-label="Move forward"
     tourtip-placement="bottom"
     tourtip-element=".magic-button"
+    on-show="someRandomAction()"
     tourtip-step="0" />  
   <div
     tourtip="Some other content..."
     tourtip-next-label="Faster, faster!"
     tourtip-placement="top"
     tourtip-element="#other-button"
+    on-proceed="localAction()"
+    use-source-scope="true"
     tourtip-step="1" />
 </tour>
 ```
@@ -140,14 +145,16 @@ Name of the tag doesn't really matter. It's a normal step definition, but the el
 
 If you'd like to edit the defaults for all your tour, you can inject tourConfig somewhere into your app and modify the following defaults.
 
-    {
-      placement        : 'top',                  // default placement relative to target. 'top', 'right', 'left', 'bottom'
-      animation        : true,                   // if tips fade in
-      nextLabel        : 'Next',                 // default text in the next tip button
-      scrollSpeed      : 500,                    // page scrolling speed in milliseconds
-      offset           : 28                      // how many pixels offset the tip is from the target
-      backDrop         : false                   // should page dim out when the tour starts?
-    }
+```JS
+{
+  placement        : 'top',  // default placement relative to target. 'top', 'right', 'left', 'bottom', 'center', 'center-top'
+  animation        : true,   // if tips fade in
+  nextLabel        : 'Next', // default text in the next tip button
+  scrollSpeed      : 500,    // page scrolling speed in milliseconds
+  offset           : 28      // how many pixels offset the tip is from the target
+  backDrop         : false   // should page dim out when the tour starts?
+}
+```
 
 ### Customizing Templates
 

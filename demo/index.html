@@ -219,17 +219,25 @@
 
               <pre><code data-language="html">&lt;tour step="currentStep">
   &lt;span tourtip="tip 1"> Highlighted &lt;/span>
+  &lt;span class="important-span"> Important &lt;/span>
   &lt;span tourtip="tip 2"> Elements &lt;/span>
   &lt;input tourtip="You can use it as an attribute on your element" />
   &lt;span tourtip="Full options"
         tourtip-step="3"
         tourtip-next-label="Next"
         tourtip-placement="right"
+        on-show="onShowMethod()"
+        on-proceed="proceedMethod()"
         tourtip-offset="60">Full options&lt;/span>
+
+  &lt;virtual-step tourtip="Well, some important stuff"
+                tourtip-step="4"
+                tourtip-element=".important-span" />
+
 &lt;/tour></code></pre>
 
 You can also add callbacks to the <code>&lt;tour></code>:
-<pre><code data-language="html">&lt;tour step="currentStep" post-tour="tourComplete()" post-step="stepComplete()">
+<pre><code data-language="html">&lt;tour step="currentStep" post-tour="tourEnded()" post-step="stepComplete()" tour-complete="tourComplete()">
 </code></pre>
 
 It is very easy to add a cookie module that remembers what step a user was on. With the angular-cookie module, this is all you need to integrate cookies:

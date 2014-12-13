@@ -26,7 +26,9 @@ Has been tested in
 
 To install run
 
-    bower install angular-tour
+```zsh
+bower install angular-tour
+```
 
 Angular Tour has a dependency on jQuery.
 
@@ -34,17 +36,23 @@ Angular Tour has a dependency on jQuery.
 
 Once bower has downloaded the dependencies for you, you'll need to make sure you add the required libraries to your index file. Your script includes should look something like this:
 
-    <script src="bower_components/jquery/jquery.js"></script>
-    <script src="bower_components/angular/angular.js"></script>
-    <script src="bower_components/angular-tour/dist/angular-tour-tpls.min.js"></script>
+```HTML
+<script src="bower_components/jquery/jquery.js"></script>
+<script src="bower_components/angular/angular.js"></script>
+<script src="bower_components/angular-tour/dist/angular-tour-tpls.min.js"></script>
+```
 
 You'll also probably want to include the default stylesheet for angular tour. (You can replace this with your own stylesheet.)
 
-    <link href="bower_components/angular-tour/dist/angular-tour.css" rel="stylesheet" type="text/css"/>
+```HTML
+<link href="bower_components/angular-tour/dist/angular-tour.css" rel="stylesheet" type="text/css"/>
+```
 
 Lastly, you'll need to include the module in your angular app
 
-    angular.module('myApp', ['angular-tour'])
+```JS
+angular.module('myApp', ['angular-tour'])
+```
 
 ## How to use
 
@@ -54,54 +62,66 @@ Add the tourtip attribute to whatever elements you want to add a tip to.
 
 Example markup:
 
-    <tour step="currentStep">
-      <span tourtip="tip 1"> Highlighted </span>
-      <span tourtip="tip 2"> Elements </span>
-      <input tourtip="or add it as an attribute to your element" />
-    </tour>
+```HTML
+<tour step="currentStep">
+  <span tourtip="tip 1"> Highlighted </span>
+  <span tourtip="tip 2"> Elements </span>
+  <input tourtip="or add it as an attribute to your element" />
+</tour>
+```
 
 You can also add callbacks to the `tour`:
 
-    <tour step="currentStep" post-tour="tourEnded()" post-step="stepComplete()" tour-complete="tourComplete()">
+```HTML
+<tour step="currentStep" post-tour="tourEnded()" post-step="stepComplete()" tour-complete="tourComplete()">
+```
 
 * `tourEnded` will be called always when tour will be ended - completed or not
 * `tourComplete` will be called only when user will get to the last step
 * `stepComplete` will be called every time the step will be changed
 
+> Side note: If you don't initialize `currentStep` in your controller it will be by default set to `-1`, which mean the tour won't appear on page load. 
+> This is **breaking change**, as previously `currentStep` was defaulted to `0`, which caused tour to start automatically.
+
 It is very easy to add a cookie module that remembers what step a user was on. Using the angular-cookie module this is all you need to integrate cookies:
 
-    // load cookie, or start new tour
-    $scope.currentStep = ipCookie('myTour') || 0;
+```JS
+// load cookie, or start new tour
+$scope.currentStep = ipCookie('myTour') || 0;
 
-    // save cookie after each step
-    $scope.stepComplete = function() {
-      ipCookie('myTour', $scope.currentStep, { expires: 3000 });
-    };
-
+// save cookie after each step
+$scope.stepComplete = function() {
+  ipCookie('myTour', $scope.currentStep, { expires: 3000 });
+};
+```
 There are additional attributes that allow you to customize each tour-tip.
 
-`tourtip-step` **(Default: "null")**: tour tips play from step 0 onwards, or in the order they were added. You can specify a specific order, e.g.
+* `tourtip-step` **(Default: "null")**: tour tips play from step 0 onwards, or in the order they were added. You can specify a specific order, e.g.
 
-    <span tourtip="tip 2" tourtip-step="1"></span>
-    <span tourtip="tip 1" tourtip-step="0"></span>
-    <span tourtip="tip 3" tourtip-step="2"></span>
+```HTML
+<span tourtip="tip 2" tourtip-step="1"></span>
+<span tourtip="tip 1" tourtip-step="0"></span>
+<span tourtip="tip 3" tourtip-step="2"></span>
+```
 
-`tourtip-next-label` **(Default: "Next")**: The text for the next button.
+* `tourtip-next-label` **(Default: "Next")**: The text for the next button.
 
-`tourtip-placement` **(Default: "top")**: Placement of the tour tip relative to the target element. can be top, right, left, bottom
+* `tourtip-placement` **(Default: "top")**: Placement of the tour tip relative to the target element. can be top, right, left, bottom
 
-`on-show` **(Default: null)**: Callback, which will be called when the tour step will appear
+* `on-show` **(Default: null)**: Callback, which will be called when the tour step will appear
 
-`on-proceed` **(Default: null)**: Callback, which will be called when user move to the next step, but just before showing it
+* `on-proceed` **(Default: null)**: Callback, which will be called when user move to the next step, but just before showing it
 
-`tourtip-element` **(Default: null)**: CSS Selector for element, for which tourtip will be pointed. If left `null`, tourtip will be pointed for itself
+* `tourtip-element` **(Default: null)**: CSS Selector for element, for which tourtip will be pointed. If left `null`, tourtip will be pointed for itself
 
-`use-source-scope` **(Default: false)**: Option meaningful only when using virtual steps. When set to `false` - it will use as a target scope, scope of target's element for evaluating `on-show` and `on-proceed` callbacks. When set to `true`, target's scope will be scope when resides step itself. See example below for a better explanation if you still need one.
+* `use-source-scope` **(Default: false)**: Option meaningful only when using virtual steps. When set to `false` - it will use as a target scope, scope of target's element for evaluating `on-show` and `on-proceed` callbacks. When set to `true`, target's scope will be scope when resides step itself. See example below for a better explanation if you still need one.
 
 Inside your tour, you also have access to two scope methods for ending and starting the tour.
 
-    <a ng-click="openTour()">Open Tour</a>
-    <a ng-click="closeTour()">Close Tour</a>
+```HTML
+<a ng-click="openTour()">Open Tour</a>
+<a ng-click="closeTour()">Close Tour</a>
+```
 
 ## Virtual steps
 
@@ -164,16 +184,18 @@ If you would like to replace the html template, instead of using the `angular-to
 
 The easiest way to add your own template is to use the script directive:
 
-    <script id="tour/tour.tpl.html" type="text/ng-template">
-      <div class="tour-tip">
-          <span class="tour-arrow tt-{{ ttPlacement }}"></span>
-          <div class="tour-content-wrapper">
-              <p ng-bind="ttContent"></p>
-              <a ng-click="setCurrentStep(getCurrentStep() + 1)" ng-bind="ttNextLabel" class="small button tour-next-tip"></a>
-              <a ng-click="closeTour()" class="tour-close-tip">×</a>
-          </div>
+```HTML
+<script id="tour/tour.tpl.html" type="text/ng-template">
+  <div class="tour-tip">
+      <span class="tour-arrow tt-{{ ttPlacement }}" ng-hide="centered"></span>
+      <div class="tour-content-wrapper">
+          <p ng-bind="ttContent"></p>
+          <a ng-click="proceed()" ng-bind="ttNextLabel" class="small button tour-next-tip"></a>
+          <a ng-click="closeTour()" class="tour-close-tip">×</a>
       </div>
-    </script>
+  </div>
+</script>
+```
 
 ## License
 

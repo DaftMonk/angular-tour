@@ -47,7 +47,7 @@
           // optional way of saving tour progress with cookies
           $scope.postStepCallback = function() {
             ipCookie('myTour', $scope.currentStep, { expires: 3000 });
-          };          
+          };
         });
     </script>
     <!-- build:css angular-tour.css -->
@@ -246,7 +246,7 @@ It is very easy to add a cookie module that remembers what step a user was on. W
 $scope.postStepCallback = function() {
   ipCookie('myTour', $scope.currentStep, { expires: 3000 });
 };
-</code></pre>    
+</code></pre>
 
         Inside your <code>&lt;tour></code> you have access to two scope methods for ending and starting the tour.
 <pre><code data-language="html">&lt;a ng-click="openTour()">Open Tour&lt;/a>
@@ -285,7 +285,7 @@ $scope.postStepCallback = function() {
 &lt;script src="bower_components/angular/angular.js">&lt;/script>
 &lt;script src="bower_components/angular-tour/dist/angular-tour-tpls.min.js">&lt;/script></code></pre>
             <div>You'll also probably want to add the default stylesheet.</div>
-              <pre><code data-language="html">&lt;link rel="bower_components/angular-tour/dist/angular-tour.css"/></code></pre>
+              <pre><code data-language="html">&lt;link href="bower_components/angular-tour/dist/angular-tour.css" rel="stylesheet"/></code></pre>
             <div><span tourtip="Lastly, add angular-tour to your module and you're good to go!"
                        tourtip-next-label="Continue"
                        tourtip-placement="right"

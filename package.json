@@ -1,6 +1,6 @@
 {
   "name": "angular-tour",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "description": "An AngularJS directive for showcasing features of your website",
   "keywords": [
     "angularjs",
@@ -32,7 +32,7 @@
     "grunt-contrib-uglify": "~0.2.2",
     "grunt-contrib-watch": "~0.5.2",
     "grunt-ngmin-concat": "~0.1.0",
-    "grunt-karma": "~0.7.1",
+    "grunt-karma": "~0.10.1",
     "grunt-html2js": "~0.1.3",
     "karma": "~0.12",
     "jshint-stylish": "~0.1.3",
@@ -41,6 +41,7 @@
     "grunt-autoprefixer": "~0.4.1",
     "grunt-contrib-copy": "~0.4.1",
     "karma-ng-html2js-preprocessor": "~0.1.0",
+    "karma-jasmine": "~0.1.0",
     "grunt-bump": "~0.0.11",
     "karma-chrome-launcher": "*",
     "grunt-processhtml": "~0.2.6"

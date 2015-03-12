@@ -203,7 +203,12 @@ angular.module('angular-tour.tour', [])
           scope.ttSourceScope = !val ? tourConfig.useSourceScope : val === 'true';
         });
 
-
+        //Init assignments (fix for Angular 1.3+)
+        scope.ttNextLabel = tourConfig.nextLabel;
+        scope.ttPlacement = tourConfig.placement.toLowerCase().trim();
+        scope.centered = false;
+        scope.ttOffset = tourConfig.offset;
+        scope.ttSourceScope = tourConfig.useSourceScope;
         scope.ttOpen = false;
         scope.ttAnimation = tourConfig.animation;
         scope.index = parseInt(attrs.tourtipStep, 10);

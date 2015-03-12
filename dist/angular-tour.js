@@ -1,6 +1,6 @@
 /**
  * An AngularJS directive for showcasing features of your website
- * @version v0.1.1 - 2014-11-05
+ * @version v0.1.2 - 2015-03-12
  * @link https://github.com/DaftMonk/angular-tour
  * @author Tyler Henkel
  * @license MIT License, http://www.opensource.org/licenses/MIT
@@ -173,6 +173,12 @@
           attrs.$observe('useSourceScope', function (val) {
             scope.ttSourceScope = !val ? tourConfig.useSourceScope : val === 'true';
           });
+          //Init assignments (fix for Angular 1.3+)
+          scope.ttNextLabel = tourConfig.nextLabel;
+          scope.ttPlacement = tourConfig.placement.toLowerCase().trim();
+          scope.centered = false;
+          scope.ttOffset = tourConfig.offset;
+          scope.ttSourceScope = tourConfig.useSourceScope;
           scope.ttOpen = false;
           scope.ttAnimation = tourConfig.animation;
           scope.index = parseInt(attrs.tourtipStep, 10);

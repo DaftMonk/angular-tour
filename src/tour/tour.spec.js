@@ -455,7 +455,7 @@ describe('Directive: tour', function () {
     it('should scroll to position', function () {
       expect($(window).scrollTop()).toEqual(0);
 
-      scrollTo(target);
+      scrollTo(target, 'body');
       waitsFor(function() {
         return $(window).scrollTop() === 100;
       }, 'Current position to be 100px');

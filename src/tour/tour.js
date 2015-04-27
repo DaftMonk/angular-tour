@@ -13,7 +13,8 @@ angular.module('angular-tour.tour', [])
     scrollSpeed      : 500,                    // page scrolling speed in milliseconds
     offset           : 28,                     // how many pixels offset the tip is from the target
     backDrop         : false,                  // if there is a backdrop (gray overlay) when tour starts
-    useSourceScope   : false                   // only target scope should be used (only when using virtual steps)
+    useSourceScope   : false,                  // only target scope should be used (only when using virtual steps)
+    containerElement : 'body'                  // default container element to parent tourtips to
   })
 
   /**
@@ -132,7 +133,7 @@ angular.module('angular-tour.tour', [])
 
         ctrl.showStepCallback = function () {
           if(!backDrop && tourConfig.backDrop) {
-            angular.element('body').append(angular.element('<div class="tour-backdrop"></div>'));
+            angular.element(tourConfig.containerElement).append(angular.element('<div class="tour-backdrop"></div>'));
             backDrop = true;
           }
         };
@@ -179,6 +180,10 @@ angular.module('angular-tour.tour', [])
           scope.ttNextLabel = val || tourConfig.nextLabel;
         });
 
+        attrs.$observe( 'tourtipContainerElement', function ( val ) {
+          scope.ttContainerElement = val || tourConfig.containerElement;
+        });
+
         attrs.$observe( 'tourtipOffset', function ( val ) {
           scope.ttOffset = parseInt(val, 10) || tourConfig.offset;
         });
@@ -205,6 +210,7 @@ angular.module('angular-tour.tour', [])
 
         //Init assignments (fix for Angular 1.3+)
         scope.ttNextLabel = tourConfig.nextLabel;
+        scope.ttContainerElement = tourConfig.containerElement;
         scope.ttPlacement = tourConfig.placement.toLowerCase().trim();
         scope.centered = false;
         scope.ttOffset = tourConfig.offset;
@@ -317,7 +323,7 @@ angular.module('angular-tour.tour', [])
           if(targetElement == null || targetElement.length === 0)
             throw 'Target element could not be found. Selector: ' + scope.ttElement;
 
-          angular.element('body').append(tourtip);
+          angular.element(scope.ttContainerElement).append(tourtip);
 
           var updatePosition = function() {
             var ttPosition = calculatePosition(targetElement);
@@ -326,7 +332,7 @@ angular.module('angular-tour.tour', [])
             tourtip.css( ttPosition );
 
             // Scroll to the tour tip
-            scrollTo(tourtip, -200, -300, tourConfig.scrollSpeed);
+            scrollTo(tourtip, scope.ttContainerElement, -200, -300, tourConfig.scrollSpeed);
           };
 
           if(tourConfig.backDrop)
@@ -479,14 +485,14 @@ angular.module('angular-tour.tour', [])
    * Smoothly scroll to a dom element
    */
   .factory('scrollTo', function() {
-    return function(target, offsetY, offsetX, speed) {
+    return function(target, containerElement, offsetY, offsetX, speed) {
       if(target) {
         offsetY = offsetY || -100;
         offsetX = offsetX || -100;
         speed = speed || 500;
-        $('html,body').stop().animate({scrollTop: target.offset().top + offsetY, scrollLeft: target.offset().left + offsetX}, speed);
+        $('html,' + containerElement).stop().animate({scrollTop: target.offset().top + offsetY, scrollLeft: target.offset().left + offsetX}, speed);
       } else {
-        $('html,body').stop().animate({scrollTop: 0}, speed);
+        $('html,' + containerElement).stop().animate({scrollTop: 0}, speed);
       }
     };
   });

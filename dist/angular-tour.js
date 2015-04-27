@@ -1,6 +1,6 @@
 /**
  * An AngularJS directive for showcasing features of your website
- * @version v0.1.2 - 2015-03-12
+ * @version v0.1.2 - 2015-04-27
  * @link https://github.com/DaftMonk/angular-tour
  * @author Tyler Henkel
  * @license MIT License, http://www.opensource.org/licenses/MIT
@@ -16,7 +16,8 @@
     scrollSpeed: 500,
     offset: 28,
     backDrop: false,
-    useSourceScope: false
+    useSourceScope: false,
+    containerElement: 'body'
   }).controller('TourController', [
     '$scope',
     'orderedList',
@@ -113,7 +114,7 @@
           };
           ctrl.showStepCallback = function () {
             if (!backDrop && tourConfig.backDrop) {
-              angular.element('body').append(angular.element('<div class="tour-backdrop"></div>'));
+              angular.element(tourConfig.containerElement).append(angular.element('<div class="tour-backdrop"></div>'));
               backDrop = true;
             }
           };
@@ -154,6 +155,9 @@
           attrs.$observe('tourtipNextLabel', function (val) {
             scope.ttNextLabel = val || tourConfig.nextLabel;
           });
+          attrs.$observe('tourtipContainerElement', function (val) {
+            scope.ttContainerElement = val || tourConfig.containerElement;
+          });
           attrs.$observe('tourtipOffset', function (val) {
             scope.ttOffset = parseInt(val, 10) || tourConfig.offset;
           });
@@ -175,6 +179,7 @@
           });
           //Init assignments (fix for Angular 1.3+)
           scope.ttNextLabel = tourConfig.nextLabel;
+          scope.ttContainerElement = tourConfig.containerElement;
           scope.ttPlacement = tourConfig.placement.toLowerCase().trim();
           scope.centered = false;
           scope.ttOffset = tourConfig.offset;
@@ -269,13 +274,13 @@
             var targetElement = scope.ttElement ? angular.element(scope.ttElement) : element;
             if (targetElement == null || targetElement.length === 0)
               throw 'Target element could not be found. Selector: ' + scope.ttElement;
-            angular.element('body').append(tourtip);
+            angular.element(scope.ttContainerElement).append(tourtip);
             var updatePosition = function () {
               var ttPosition = calculatePosition(targetElement);
               // Now set the calculated positioning.
               tourtip.css(ttPosition);
               // Scroll to the tour tip
-              scrollTo(tourtip, -200, -300, tourConfig.scrollSpeed);
+              scrollTo(tourtip, scope.ttContainerElement, -200, -300, tourConfig.scrollSpeed);
             };
             if (tourConfig.backDrop)
               focusActiveElement(targetElement);
@@ -397,17 +402,17 @@
     };
     return orderedListFactory;
   }).factory('scrollTo', function () {
-    return function (target, offsetY, offsetX, speed) {
+    return function (target, containerElement, offsetY, offsetX, speed) {
       if (target) {
         offsetY = offsetY || -100;
         offsetX = offsetX || -100;
         speed = speed || 500;
-        $('html,body').stop().animate({
+        $('html,' + containerElement).stop().animate({
           scrollTop: target.offset().top + offsetY,
           scrollLeft: target.offset().left + offsetX
         }, speed);
       } else {
-        $('html,body').stop().animate({ scrollTop: 0 }, speed);
+        $('html,' + containerElement).stop().animate({ scrollTop: 0 }, speed);
       }
     };
   });

@@ -171,8 +171,9 @@ If you'd like to edit the defaults for all your tour, you can inject tourConfig 
   animation        : true,   // if tips fade in
   nextLabel        : 'Next', // default text in the next tip button
   scrollSpeed      : 500,    // page scrolling speed in milliseconds
-  offset           : 28      // how many pixels offset the tip is from the target
-  backDrop         : false   // should page dim out when the tour starts?
+  offset           : 28,     // how many pixels offset the tip is from the target
+  backDrop         : false,  // should page dim out when the tour starts?
+  containerElement : 'body'  // default container element to parent tourtips to
 }
 ```
 

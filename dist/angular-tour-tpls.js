@@ -1,6 +1,6 @@
 /**
  * An AngularJS directive for showcasing features of your website
- * @version v0.1.2 - 2015-04-24
+ * @version v0.1.2 - 2015-04-27
  * @link https://github.com/DaftMonk/angular-tour
  * @author Tyler Henkel
  * @license MIT License, http://www.opensource.org/licenses/MIT
@@ -282,7 +282,7 @@
               tourtip.css({ display: 'block' });
             }
             var targetElement = scope.ttElement ? angular.element(scope.ttElement) : element;
-            if (targetElement === null || targetElement.length === 0)
+            if (targetElement == null || targetElement.length === 0)
               throw 'Target element could not be found. Selector: ' + scope.ttElement;
             angular.element(scope.ttContainerElement).append(tourtip);
             var updatePosition = function () {

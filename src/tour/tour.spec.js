@@ -447,7 +447,7 @@ describe('Directive: tour', function () {
       scope = $rootScope.$new();
       scrollTo = _scrollTo_;
 
-      target = angular.element('<div id=\"target\" style=\"position:absolute; top:200px;\"></div>');
+      target = angular.element('<div id=\"target\" style=\"position:absolute; top:500px;\"></div>');
       $('body').height(window.innerHeight*2).append(target);
       window.scrollTo(0, 0);
     }));
@@ -455,7 +455,7 @@ describe('Directive: tour', function () {
     it('should scroll to position', function () {
       expect($(window).scrollTop()).toEqual(0);
 
-      scrollTo(target, 'body');
+      scrollTo(target, 'body', -100, -100, 500, 200, 0);
       waitsFor(function() {
         return $(window).scrollTop() === 100;
       }, 'Current position to be 100px');

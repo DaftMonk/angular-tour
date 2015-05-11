@@ -249,7 +249,7 @@ angular.module('angular-tour.tour', [])
           return targetScope;
         }
 
-        function calculatePosition(element) {
+        function calculatePosition(element, container) {
           var ttPosition;
 
           // Get the position of the directive element
@@ -257,6 +257,9 @@ angular.module('angular-tour.tour', [])
 
           //make it relative against page, not the window
           var top = position.top + window.pageYOffset;
+          if (container && container[0]) {
+            top -= container[0].getBoundingClientRect().top + container[0].scrollTop;
+          }
 
           var ttWidth = tourtip.width();
           var ttHeight = tourtip.height();
@@ -326,13 +329,17 @@ angular.module('angular-tour.tour', [])
           angular.element(scope.ttContainerElement).append(tourtip);
 
           var updatePosition = function() {
-            var ttPosition = calculatePosition(targetElement);
+
+            var offsetElement = scope.ttContainerElement === 'body' ? undefined : angular.element(scope.ttContainerElement);
+            var ttPosition = calculatePosition(targetElement, offsetElement);
 
             // Now set the calculated positioning.
             tourtip.css( ttPosition );
 
             // Scroll to the tour tip
-            scrollTo(tourtip, scope.ttContainerElement, -200, -300, tourConfig.scrollSpeed);
+            var ttPositionTop = parseInt(ttPosition.top),
+              ttPositionLeft = parseInt(ttPosition.left);
+            scrollTo(tourtip, scope.ttContainerElement, -150, -300, tourConfig.scrollSpeed, ttPositionTop, ttPositionLeft);
           };
 
           if(tourConfig.backDrop)
@@ -485,12 +492,12 @@ angular.module('angular-tour.tour', [])
    * Smoothly scroll to a dom element
    */
   .factory('scrollTo', function() {
-    return function(target, containerElement, offsetY, offsetX, speed) {
+    return function (target, containerElement, offsetY, offsetX, speed, ttPositionTop, ttPositionLeft) {
       if(target) {
         offsetY = offsetY || -100;
         offsetX = offsetX || -100;
         speed = speed || 500;
-        $('html,' + containerElement).stop().animate({scrollTop: target.offset().top + offsetY, scrollLeft: target.offset().left + offsetX}, speed);
+        $('html,' + containerElement).stop().animate({scrollTop: ttPositionTop + offsetY, scrollLeft: ttPositionLeft + offsetX}, speed);
       } else {
         $('html,' + containerElement).stop().animate({scrollTop: 0}, speed);
       }

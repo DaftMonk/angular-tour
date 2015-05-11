@@ -1,6 +1,6 @@
 /**
  * An AngularJS directive for showcasing features of your website
- * @version v0.1.2 - 2015-04-27
+ * @version v0.1.2 - 2015-05-05
  * @link https://github.com/DaftMonk/angular-tour
  * @author Tyler Henkel
  * @license MIT License, http://www.opensource.org/licenses/MIT
@@ -221,12 +221,15 @@
               targetScope = targetElement.scope();
             return targetScope;
           }
-          function calculatePosition(element) {
+          function calculatePosition(element, container) {
             var ttPosition;
             // Get the position of the directive element
             var position = element[0].getBoundingClientRect();
             //make it relative against page, not the window
             var top = position.top + window.pageYOffset;
+            if (container && container[0]) {
+              top -= container[0].getBoundingClientRect().top + container[0].scrollTop;
+            }
             var ttWidth = tourtip.width();
             var ttHeight = tourtip.height();
             // Calculate the tourtip's top and left coordinates to center it
@@ -286,11 +289,13 @@
               throw 'Target element could not be found. Selector: ' + scope.ttElement;
             angular.element(scope.ttContainerElement).append(tourtip);
             var updatePosition = function () {
-              var ttPosition = calculatePosition(targetElement);
+              var offsetElement = scope.ttContainerElement === 'body' ? undefined : angular.element(scope.ttContainerElement);
+              var ttPosition = calculatePosition(targetElement, offsetElement);
               // Now set the calculated positioning.
               tourtip.css(ttPosition);
               // Scroll to the tour tip
-              scrollTo(tourtip, scope.ttContainerElement, -200, -300, tourConfig.scrollSpeed);
+              var ttPositionTop = parseInt(ttPosition.top), ttPositionLeft = parseInt(ttPosition.left);
+              scrollTo(tourtip, scope.ttContainerElement, -150, -300, tourConfig.scrollSpeed, ttPositionTop, ttPositionLeft);
             };
             if (tourConfig.backDrop)
               focusActiveElement(targetElement);
@@ -412,14 +417,14 @@
     };
     return orderedListFactory;
   }).factory('scrollTo', function () {
-    return function (target, containerElement, offsetY, offsetX, speed) {
+    return function (target, containerElement, offsetY, offsetX, speed, ttPositionTop, ttPositionLeft) {
       if (target) {
         offsetY = offsetY || -100;
         offsetX = offsetX || -100;
         speed = speed || 500;
         $('html,' + containerElement).stop().animate({
-          scrollTop: target.offset().top + offsetY,
-          scrollLeft: target.offset().left + offsetX
+          scrollTop: ttPositionTop + offsetY,
+          scrollLeft: ttPositionLeft + offsetX
         }, speed);
       } else {
         $('html,' + containerElement).stop().animate({ scrollTop: 0 }, speed);

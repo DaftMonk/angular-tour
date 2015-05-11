@@ -1,6 +1,6 @@
 /**
  * An AngularJS directive for showcasing features of your website
- * @version v0.1.2 - 2015-05-05
+ * @version v0.1.2 - 2015-05-11
  * @link https://github.com/DaftMonk/angular-tour
  * @author Tyler Henkel
  * @license MIT License, http://www.opensource.org/licenses/MIT
@@ -228,7 +228,7 @@
             //make it relative against page, not the window
             var top = position.top + window.pageYOffset;
             if (container && container[0]) {
-              top -= container[0].getBoundingClientRect().top + container[0].scrollTop;
+              top = top - container[0].getBoundingClientRect().top + container[0].scrollTop;
             }
             var ttWidth = tourtip.width();
             var ttHeight = tourtip.height();

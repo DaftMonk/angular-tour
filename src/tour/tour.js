@@ -95,7 +95,7 @@ angular.module('angular-tour.tour', [])
    * Tour
    * directive that allows you to control the tour
    */
-  .directive('tour', function ($parse, tourConfig) {
+  .directive('tour', function ($parse, $timeout, tourConfig) {
     return {
       controller: 'TourController',
       restrict: 'EA',
@@ -132,8 +132,14 @@ angular.module('angular-tour.tour', [])
         };
 
         ctrl.showStepCallback = function () {
-          if(!backDrop && tourConfig.backDrop) {
+          if(tourConfig.backDrop) {
             angular.element(tourConfig.containerElement).append(angular.element('<div class="tour-backdrop"></div>'));
+            
+            $timeout(function() {
+              $('.tour-backdrop').remove();
+              angular.element('<div class="tour-backdrop"></div>').insertBefore('.tour-tip');
+            }, 1000)
+
             backDrop = true;
           }
         };

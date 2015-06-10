@@ -1,6 +1,6 @@
 /**
  * An AngularJS directive for showcasing features of your website
- * @version v0.1.2 - 2015-05-11
+ * @version v0.1.2 - 2015-06-10
  * @link https://github.com/DaftMonk/angular-tour
  * @author Tyler Henkel
  * @license MIT License, http://www.opensource.org/licenses/MIT
@@ -80,8 +80,9 @@
     }
   ]).directive('tour', [
     '$parse',
+    '$timeout',
     'tourConfig',
-    function ($parse, tourConfig) {
+    function ($parse, $timeout, tourConfig) {
       return {
         controller: 'TourController',
         restrict: 'EA',
@@ -113,8 +114,12 @@
             }
           };
           ctrl.showStepCallback = function () {
-            if (!backDrop && tourConfig.backDrop) {
+            if (tourConfig.backDrop) {
               angular.element(tourConfig.containerElement).append(angular.element('<div class="tour-backdrop"></div>'));
+              $timeout(function () {
+                $('.tour-backdrop').remove();
+                angular.element('<div class="tour-backdrop"></div>').insertBefore('.tour-tip');
+              }, 1000);
               backDrop = true;
             }
           };

@@ -1,9 +1,16 @@
+<a name="0.2.2"></a>
+# 0.2.2 (2015-07-22)
+
+## Bugfix
+
+- **Vertical and Horizontal Offsets**: properly initialize horizontal and vertical offsets if not specified
+
 <a name="0.2.1"></a>
 # 0.2.1 (2015-07-22)
 
 ## Features
 
-- **Vertical and Horizontal Offsets**: allows fine-grained control of `tourtip` positioning
+- **Vertical and Horizontal Offsets**: allows fine-grained control of `tourtip` positioning - #39
 
 ## Breaking Changes
 

@@ -196,11 +196,11 @@ angular.module('angular-tour.tour', [])
                 scope.ttMargin = parseInt(val, 10) || tourConfig.margin;
             });
 
-            attrs.$observe('tourtipVerticalOffset', function(val) {
+            attrs.$observe('tourtipOffsetVertical', function(val) {
                 scope.offsetVertical = parseInt(val, 10) || 0;
             });
 
-            attrs.$observe('tourtipHorizontalOffset', function(val) {
+            attrs.$observe('tourtipOffsetHorizontal', function(val) {
                 scope.offsetHorizontal = parseInt(val, 10) || 0;
             });
 

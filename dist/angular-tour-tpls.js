@@ -1,6 +1,6 @@
 /**
  * An AngularJS directive for showcasing features of your website
- * @version v0.2.1 - 2015-07-22
+ * @version v0.2.2 - 2015-07-22
  * @link https://github.com/DaftMonk/angular-tour
  * @author Tyler Henkel
  * @license MIT License, http://www.opensource.org/licenses/MIT
@@ -176,10 +176,10 @@
           attrs.$observe('tourtipMargin', function (val) {
             scope.ttMargin = parseInt(val, 10) || tourConfig.margin;
           });
-          attrs.$observe('tourtipVerticalOffset', function (val) {
+          attrs.$observe('tourtipOffsetVertical', function (val) {
             scope.offsetVertical = parseInt(val, 10) || 0;
           });
-          attrs.$observe('tourtipHorizontalOffset', function (val) {
+          attrs.$observe('tourtipOffsetHorizontal', function (val) {
             scope.offsetHorizontal = parseInt(val, 10) || 0;
           });
           //defaults: null

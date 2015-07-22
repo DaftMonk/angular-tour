@@ -1,6 +1,6 @@
 /**
  * An AngularJS directive for showcasing features of your website
- * @version v0.1.2 - 2015-06-10
+ * @version v0.2.0 - 2015-07-22
  * @link https://github.com/DaftMonk/angular-tour
  * @author Tyler Henkel
  * @license MIT License, http://www.opensource.org/licenses/MIT
@@ -24,7 +24,7 @@
     animation: true,
     nextLabel: 'Next',
     scrollSpeed: 500,
-    offset: 28,
+    margin: 28,
     backDrop: false,
     useSourceScope: false,
     containerElement: 'body'
@@ -173,8 +173,14 @@
           attrs.$observe('tourtipContainerElement', function (val) {
             scope.ttContainerElement = val || tourConfig.containerElement;
           });
-          attrs.$observe('tourtipOffset', function (val) {
-            scope.ttOffset = parseInt(val, 10) || tourConfig.offset;
+          attrs.$observe('tourtipMargin', function (val) {
+            scope.ttMargin = parseInt(val, 10) || tourConfig.margin;
+          });
+          attrs.$observe('tourtipVerticalOffset', function (val) {
+            scope.offsetVertical = parseInt(val, 10) || 0;
+          });
+          attrs.$observe('tourtipHorizontalOffset', function (val) {
+            scope.offsetHorizontal = parseInt(val, 10) || 0;
           });
           //defaults: null
           attrs.$observe('onShow', function (val) {
@@ -197,7 +203,7 @@
           scope.ttContainerElement = tourConfig.containerElement;
           scope.ttPlacement = tourConfig.placement.toLowerCase().trim();
           scope.centered = false;
-          scope.ttOffset = tourConfig.offset;
+          scope.ttMargin = tourConfig.margin;
           scope.ttSourceScope = tourConfig.useSourceScope;
           scope.ttOpen = false;
           scope.ttAnimation = tourConfig.animation;
@@ -241,38 +247,38 @@
             switch (scope.ttPlacement) {
             case 'right':
               ttPosition = {
-                top: top,
-                left: position.left + position.width + scope.ttOffset
+                top: top + scope.offsetVertical,
+                left: position.left + position.width + scope.ttMargin + scope.offsetHorizontal
               };
               break;
             case 'bottom':
               ttPosition = {
-                top: top + position.height + scope.ttOffset,
-                left: position.left
+                top: top + position.height + scope.ttMargin + scope.offsetVertical,
+                left: position.left + scope.offsetHorizontal
               };
               break;
             case 'center':
               ttPosition = {
-                top: top + 0.5 * (position.height - ttHeight) + scope.ttOffset,
-                left: position.left + 0.5 * (position.width - ttWidth)
+                top: top + 0.5 * (position.height - ttHeight) + scope.ttMargin + scope.offsetVertical,
+                left: position.left + 0.5 * (position.width - ttWidth) + scope.offsetHorizontal
               };
               break;
             case 'center-top':
               ttPosition = {
-                top: top + 0.1 * (position.height - ttHeight) + scope.ttOffset,
-                left: position.left + 0.5 * (position.width - ttWidth)
+                top: top + 0.1 * (position.height - ttHeight) + scope.ttMargin + scope.offsetVertical,
+                left: position.left + 0.5 * (position.width - ttWidth) + scope.offsetHorizontal
               };
               break;
             case 'left':
               ttPosition = {
-                top: top,
-                left: position.left - ttWidth - scope.ttOffset
+                top: top + scope.offsetVertical,
+                left: position.left - ttWidth - scope.ttMargin + scope.offsetHorizontal
               };
               break;
             default:
               ttPosition = {
-                top: top - ttHeight - scope.ttOffset,
-                left: position.left
+                top: top - ttHeight - scope.ttMargin + scope.offsetVertical,
+                left: position.left + scope.offsetHorizontal
               };
               break;
             }

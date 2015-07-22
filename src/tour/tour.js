@@ -11,7 +11,7 @@ angular.module('angular-tour.tour', [])
     animation        : true,                   // if tips fade in
     nextLabel        : 'Next',                 // default text in the next tip button
     scrollSpeed      : 500,                    // page scrolling speed in milliseconds
-    offset           : 28,                     // how many pixels offset the tip is from the target
+    margin           : 28,                     // how many pixels margin the tip is from the target
     backDrop         : false,                  // if there is a backdrop (gray overlay) when tour starts
     useSourceScope   : false,                  // only target scope should be used (only when using virtual steps)
     containerElement : 'body'                  // default container element to parent tourtips to
@@ -190,8 +190,16 @@ angular.module('angular-tour.tour', [])
           scope.ttContainerElement = val || tourConfig.containerElement;
         });
 
-        attrs.$observe( 'tourtipOffset', function ( val ) {
-          scope.ttOffset = parseInt(val, 10) || tourConfig.offset;
+        attrs.$observe( 'tourtipMargin', function ( val ) {
+          scope.ttMargin = parseInt(val, 10) || tourConfig.margin;
+        });
+
+        attrs.$observe( 'tourtipVerticalOffset', function ( val ) {
+          scope.offsetVertical = parseInt(val, 10) || 0;
+        });
+
+        attrs.$observe( 'tourtipHorizontalOffset', function ( val ) {
+          scope.offsetHorizontal = parseInt(val, 10) || 0;
         });
 
         //defaults: null
@@ -219,7 +227,7 @@ angular.module('angular-tour.tour', [])
         scope.ttContainerElement = tourConfig.containerElement;
         scope.ttPlacement = tourConfig.placement.toLowerCase().trim();
         scope.centered = false;
-        scope.ttOffset = tourConfig.offset;
+        scope.ttMargin = tourConfig.margin;
         scope.ttSourceScope = tourConfig.useSourceScope;
         scope.ttOpen = false;
         scope.ttAnimation = tourConfig.animation;
@@ -274,38 +282,38 @@ angular.module('angular-tour.tour', [])
           switch ( scope.ttPlacement ) {
           case 'right':
             ttPosition = {
-              top: top,
-              left: position.left + position.width + scope.ttOffset
+              top: top + scope.offsetVertical,
+              left: position.left + position.width + scope.ttMargin + scope.offsetHorizontal
             };
             break;
           case 'bottom':
             ttPosition = {
-              top: top + position.height + scope.ttOffset,
-              left: position.left
+              top: top + position.height + scope.ttMargin + scope.offsetVertical,
+              left: position.left + scope.offsetHorizontal
             };
             break;
           case 'center':
             ttPosition = {
-              top: top + 0.5 * (position.height - ttHeight) + scope.ttOffset,
-              left: position.left + 0.5 * (position.width - ttWidth)
+              top: top + 0.5 * (position.height - ttHeight) + scope.ttMargin + scope.offsetVertical,
+              left: position.left + 0.5 * (position.width - ttWidth) + scope.offsetHorizontal
             };
             break;
           case 'center-top':
             ttPosition = {
-              top: top + 0.1 * (position.height - ttHeight) + scope.ttOffset,
-              left: position.left + 0.5 * (position.width - ttWidth)
+              top: top + 0.1 * (position.height - ttHeight) + scope.ttMargin + scope.offsetVertical,
+              left: position.left + 0.5 * (position.width - ttWidth) + scope.offsetHorizontal
             };
             break;
           case 'left':
             ttPosition = {
-              top: top,
-              left: position.left - ttWidth - scope.ttOffset
+              top: top + scope.offsetVertical,
+              left: position.left - ttWidth - scope.ttMargin + scope.offsetHorizontal
             };
             break;
           default:
             ttPosition = {
-              top: top - ttHeight - scope.ttOffset,
-              left: position.left
+              top: top - ttHeight - scope.ttMargin + scope.offsetVertical,
+              left: position.left + scope.offsetHorizontal
             };
             break;
           }

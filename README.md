@@ -171,10 +171,42 @@ If you'd like to edit the defaults for all your tour, you can inject tourConfig 
   animation        : true,   // if tips fade in
   nextLabel        : 'Next', // default text in the next tip button
   scrollSpeed      : 500,    // page scrolling speed in milliseconds
-  offset           : 28,     // how many pixels offset the tip is from the target
+  margin           : 28,     // margin in pixels that the tip is from the target (matches placement)
   backDrop         : false,  // should page dim out when the tour starts?
   containerElement : 'body'  // default container element to parent tourtips to
 }
+```
+
+### Positioning
+
+Tourtip positioning can be controlled globally in the previously mentioned tourConfig service via the placement property ('top', 'right', 'bottom', 'center', 'center-top'), or via the tourtip-placement attribute, which will allow you to set the placement on an individual element-by-element basis. 
+
+The distance between a tourtip and the element it is attached to can either be set globally via tourConfig.margin, or on an individual element-by-element basis using the tourtip-margin attribute. The margin will always match the placement - if the placement is top, tourtip-margin will add a margin between the tourtip and the top of the element. 
+
+There may be times, especially when transcluding or applying to conditional elements, where the tour tip's calculated x,y position at compilation might not correspond to the element's current position. In these cases you can use tourtip-offset-horizontal or tourtip-offset-vertical to override and adjust the positioning by a certain amount of pixels.
+
+```html
+
+<tour step="currentStep">
+  <p
+    tourtip="Hey! I'd like to walk you through our site, it's great"
+    tourtip-next-label="Hmmm, okay sure!"
+    tourtip-placement="top"
+    tourtip-margin="10"
+    tourtip-step="0">
+    Hi! Welcome to our site thing.
+  </p>
+  <p
+    ng-show="currentStep === 1"
+    tourtip="Behold! I am now explaining the feature..."
+    tourtip-next-label="Wow, Amazing!"
+    tourtip-placement="right"
+    tourtip-offset-vertical="-30"
+    tourtip-offset-horizontal="-26"
+    tourtip-step="1" />
+    Some cool feature... sure does need some splaining tho, dang...
+  </p>
+</tour>
 ```
 
 ### Customizing Templates

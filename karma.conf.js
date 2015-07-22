@@ -1,7 +1,9 @@
+'use strict';
+
 module.exports = function (config) {
   config.set({
     // base path, that will be used to resolve files and exclude
-    basePath : '.',
+    basePath : './',
 
     // testing framework to use (jasmine/mocha/qunit/...)
     frameworks: ['jasmine'],
@@ -28,8 +30,12 @@ module.exports = function (config) {
     // list of files / patterns to exclude
     exclude: [],
 
+    reporters: ['progress'],
+
+    colors: true,
+
     // web server port
-    port: 8080,    
+    port: 9877,
 
     // level of logging
     // possible values: LOG_DISABLE || LOG_ERROR || LOG_WARN || LOG_INFO || LOG_DEBUG

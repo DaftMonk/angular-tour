@@ -116,6 +116,8 @@ There are additional attributes that allow you to customize each tour-tip.
 
 * `use-source-scope` **(Default: false)**: Option meaningful only when using virtual steps. When set to `false` - it will use as a target scope, scope of target's element for evaluating `on-show` and `on-proceed` callbacks. When set to `true`, target's scope will be scope when resides step itself. See example below for a better explanation if you still need one.
 
+* `container-element` **(Default: "body")**: Element the tour tips are placed in. Especially practical when you have several scrollable containers you want to display tours in.
+
 Inside your tour, you also have access to two scope methods for ending and starting the tour.
 
 ```HTML
@@ -145,6 +147,7 @@ divided by page includes and different controllers you can consider using this a
     tourtip-placement="bottom"
     tourtip-element=".magic-button"
     on-show="someRandomAction()"
+    container-element="#scrollableDiv"
     tourtip-step="0" />  
   <div
     tourtip="Some other content..."
@@ -153,6 +156,7 @@ divided by page includes and different controllers you can consider using this a
     tourtip-element="#other-button"
     on-proceed="localAction()"
     use-source-scope="true"
+    container-element="#scrollableDiv"
     tourtip-step="1" />
 </tour>
 ```

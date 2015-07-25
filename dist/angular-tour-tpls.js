@@ -1,6 +1,6 @@
 /**
  * An AngularJS directive for showcasing features of your website
- * @version v0.2.2 - 2015-07-22
+ * @version v0.2.2 - 2015-07-25
  * @link https://github.com/DaftMonk/angular-tour
  * @author Tyler Henkel
  * @license MIT License, http://www.opensource.org/licenses/MIT
@@ -240,8 +240,12 @@
             var position = element[0].getBoundingClientRect();
             //make it relative against page, not the window
             var top = position.top + window.pageYOffset;
+            var containerLeft = 0;
             if (container && container[0]) {
               top = top - container[0].getBoundingClientRect().top + container[0].scrollTop;
+              if (container.css('position') === 'fixed') {
+                containerLeft = container[0].getBoundingClientRect().left;
+              }
             }
             var ttWidth = tourtip.width();
             var ttHeight = tourtip.height();
@@ -250,37 +254,37 @@
             case 'right':
               ttPosition = {
                 top: top + scope.offsetVertical,
-                left: position.left + position.width + scope.ttMargin + scope.offsetHorizontal
+                left: position.left - containerLeft + position.width + scope.ttMargin + scope.offsetHorizontal
               };
               break;
             case 'bottom':
               ttPosition = {
                 top: top + position.height + scope.ttMargin + scope.offsetVertical,
-                left: position.left + scope.offsetHorizontal
+                left: position.left - containerLeft + scope.offsetHorizontal
               };
               break;
             case 'center':
               ttPosition = {
                 top: top + 0.5 * (position.height - ttHeight) + scope.ttMargin + scope.offsetVertical,
-                left: position.left + 0.5 * (position.width - ttWidth) + scope.offsetHorizontal
+                left: position.left - containerLeft + 0.5 * (position.width - ttWidth) + scope.offsetHorizontal
               };
               break;
             case 'center-top':
               ttPosition = {
                 top: top + 0.1 * (position.height - ttHeight) + scope.ttMargin + scope.offsetVertical,
-                left: position.left + 0.5 * (position.width - ttWidth) + scope.offsetHorizontal
+                left: position.left - containerLeft + 0.5 * (position.width - ttWidth) + scope.offsetHorizontal
               };
               break;
             case 'left':
               ttPosition = {
                 top: top + scope.offsetVertical,
-                left: position.left - ttWidth - scope.ttMargin + scope.offsetHorizontal
+                left: position.left - containerLeft - ttWidth - scope.ttMargin + scope.offsetHorizontal
               };
               break;
             default:
               ttPosition = {
                 top: top - ttHeight - scope.ttMargin + scope.offsetVertical,
-                left: position.left + scope.offsetHorizontal
+                left: position.left - containerLeft + scope.offsetHorizontal
               };
               break;
             }

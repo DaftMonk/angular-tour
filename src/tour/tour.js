@@ -163,7 +163,7 @@ angular.module('angular-tour.tour', [])
  * Tourtip
  * tourtip manages the state of the tour-popup directive
  */
-.directive('tourtip', function($window, $compile, $interpolate, $timeout, scrollTo, tourConfig) {
+.directive('tourtip', function($window, $compile, $interpolate, $timeout, scrollTo, tourConfig, debounce) {
     var startSym = $interpolate.startSymbol(),
         endSym = $interpolate.endSymbol();
 
@@ -384,7 +384,7 @@ angular.module('angular-tour.tour', [])
                 if (tourConfig.backDrop)
                     focusActiveElement(targetElement);
 
-                angular.element($window).bind('resize.' + scope.$id, updatePosition);
+                angular.element($window).bind('resize.' + scope.$id, debounce(updatePosition, 50));
 
                 updatePosition();
 
@@ -546,4 +546,30 @@ angular.module('angular-tour.tour', [])
             }, speed);
         }
     };
+})
+.factory('debounce', function($timeout, $q) {
+  return function(func, wait, immediate) {
+    var timeout;
+    var deferred = $q.defer();
+    return function() {
+      var context = this, args = arguments;
+      var later = function() {
+        timeout = null;
+        if(!immediate) {
+          deferred.resolve(func.apply(context, args));
+          deferred = $q.defer();
+        }
+      };
+      var callNow = immediate && !timeout;
+      if ( timeout ) {
+        $timeout.cancel(timeout);
+      }
+      timeout = $timeout(later, wait);
+      if (callNow) {
+        deferred.resolve(func.apply(context,args));
+        deferred = $q.defer();
+      }
+      return deferred.promise;
+    };
+  };
 });

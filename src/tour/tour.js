@@ -163,7 +163,7 @@ angular.module('angular-tour.tour', [])
  * Tourtip
  * tourtip manages the state of the tour-popup directive
  */
-.directive('tourtip', function($window, $compile, $interpolate, $timeout, scrollTo, tourConfig) {
+.directive('tourtip', function($window, $compile, $interpolate, $timeout, scrollTo, tourConfig, debounce) {
     var startSym = $interpolate.startSymbol(),
         endSym = $interpolate.endSymbol();
 
@@ -268,18 +268,26 @@ angular.module('angular-tour.tour', [])
             }
 
             function calculatePosition(element, container) {
+                var minimumLeft = 0; // minimum left position of tour tip
+                var restrictRight;
                 var ttPosition;
 
                 // Get the position of the directive element
                 var position = element[0].getBoundingClientRect();
 
-                //make it relative against page, not the window
+                //make it relative against page or fixed container, not the window
                 var top = position.top + window.pageYOffset;
                 var containerLeft = 0;
                 if (container && container[0]) {
                     top = top - container[0].getBoundingClientRect().top + container[0].scrollTop;
+                    // if container is fixed, position tour tip relative to fixed container
                     if (container.css('position') === 'fixed') {
                         containerLeft = container[0].getBoundingClientRect().left;
+                    }
+                    // restrict right position if the tourtip doesn't fit in the container
+                    var containerWidth = container[0].getBoundingClientRect().width;
+                    if (tourtip.width() + position.width > containerWidth) {
+                        restrictRight = containerWidth - position.left + scope.ttMargin;
                     }
                 }
 
@@ -289,39 +297,46 @@ angular.module('angular-tour.tour', [])
                 // Calculate the tourtip's top and left coordinates to center it
                 switch (scope.ttPlacement) {
                     case 'right':
+                        var _left = position.left - containerLeft + position.width + scope.ttMargin + scope.offsetHorizontal;
                         ttPosition = {
                             top: top + scope.offsetVertical,
-                            left: position.left - containerLeft + position.width + scope.ttMargin + scope.offsetHorizontal
+                            left: _left > 0 ? _left : minimumLeft
                         };
                         break;
                     case 'bottom':
+                        var _left = position.left - containerLeft + scope.offsetHorizontal;
                         ttPosition = {
                             top: top + position.height + scope.ttMargin + scope.offsetVertical,
-                            left: position.left - containerLeft + scope.offsetHorizontal
+                            left: _left > 0 ? _left : minimumLeft
                         };
                         break;
                     case 'center':
+                        var _left = position.left - containerLeft + 0.5 * (position.width - ttWidth) + scope.offsetHorizontal;
                         ttPosition = {
                             top: top + 0.5 * (position.height - ttHeight) + scope.ttMargin + scope.offsetVertical,
-                            left: position.left - containerLeft + 0.5 * (position.width - ttWidth) + scope.offsetHorizontal
+                            left: _left > 0 ? _left : minimumLeft
                         };
                         break;
                     case 'center-top':
+                        var _left = position.left - containerLeft + 0.5 * (position.width - ttWidth) + scope.offsetHorizontal;
                         ttPosition = {
                             top: top + 0.1 * (position.height - ttHeight) + scope.ttMargin + scope.offsetVertical,
-                            left: position.left - containerLeft + 0.5 * (position.width - ttWidth) + scope.offsetHorizontal
+                            left: _left > 0 ? _left : minimumLeft
                         };
                         break;
                     case 'left':
+                        var _left = position.left - containerLeft - ttWidth - scope.ttMargin + scope.offsetHorizontal;
                         ttPosition = {
                             top: top + scope.offsetVertical,
-                            left: position.left - containerLeft - ttWidth - scope.ttMargin + scope.offsetHorizontal
+                            left: _left > 0 ? _left : minimumLeft,
+                            right: restrictRight
                         };
                         break;
                     default:
+                        var _left = position.left - containerLeft + scope.offsetHorizontal;
                         ttPosition = {
                             top: top - ttHeight - scope.ttMargin + scope.offsetVertical,
-                            left: position.left - containerLeft + scope.offsetHorizontal
+                            left: _left > 0 ? _left : minimumLeft
                         };
                         break;
                 }
@@ -369,7 +384,7 @@ angular.module('angular-tour.tour', [])
                 if (tourConfig.backDrop)
                     focusActiveElement(targetElement);
 
-                angular.element($window).bind('resize.' + scope.$id, updatePosition);
+                angular.element($window).bind('resize.' + scope.$id, debounce(updatePosition, 50));
 
                 updatePosition();
 
@@ -531,4 +546,30 @@ angular.module('angular-tour.tour', [])
             }, speed);
         }
     };
+})
+.factory('debounce', function($timeout, $q) {
+  return function(func, wait, immediate) {
+    var timeout;
+    var deferred = $q.defer();
+    return function() {
+      var context = this, args = arguments;
+      var later = function() {
+        timeout = null;
+        if(!immediate) {
+          deferred.resolve(func.apply(context, args));
+          deferred = $q.defer();
+        }
+      };
+      var callNow = immediate && !timeout;
+      if ( timeout ) {
+        $timeout.cancel(timeout);
+      }
+      timeout = $timeout(later, wait);
+      if (callNow) {
+        deferred.resolve(func.apply(context,args));
+        deferred = $q.defer();
+      }
+      return deferred.promise;
+    };
+  };
 });

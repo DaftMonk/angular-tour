@@ -117,6 +117,8 @@ There are additional attributes that allow you to customize each tour-tip.
 * `use-source-scope` **(Default: false)**: Option meaningful only when using virtual steps. When set to `false` - it will use as a target scope, scope of target's element for evaluating `on-show` and `on-proceed` callbacks. When set to `true`, target's scope will be scope when resides step itself. See example below for a better explanation if you still need one.
 
 * `tourtip-container-element` **(Default: "body")**: Element the tour tips are placed in. Especially practical when you have several scrollable containers you want to display tours in.
+* `tourtip-second-label-text` **(Default: false)**: The text for a second button that displays on the right
+* `tourtip-second-label-function` **(Default: false)**: The function called on the second button
 
 Inside your tour, you also have access to two scope methods for ending and starting the tour.
 
@@ -178,6 +180,8 @@ If you'd like to edit the defaults for all your tour, you can inject tourConfig 
   margin           : 28,     // margin in pixels that the tip is from the target (matches placement)
   backDrop         : false,  // should page dim out when the tour starts?
   containerElement : 'body'  // default container element to parent tourtips to
+  secondLabelText : false, // default to false so it is hidden if no text is entered
+  secondLabelFunction: false // default to false so no function is called
 }
 ```
 

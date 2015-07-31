@@ -128,3 +128,11 @@
   position: relative;
   background: #fff;
 }
+
+a.small.button.tour-second-label.ng-binding {
+  float: right;
+  width: 45%;
+}
+a.small.button.tour-next-tip.ng-binding {
+  width: 45%;
+}

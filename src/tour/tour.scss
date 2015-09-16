@@ -10,6 +10,10 @@
   font-weight: 400;
   max-width: 400px;
   border-radius: 10px;
+  -webkit-animation: fadeIn 0.3s both ease-in;
+  -moz-animation: fadeIn 0.3s both ease-in;
+  animation: fadeIn 0.3s both ease-in;
+
   p {
     color: #CBD0D4;
     font-size: .9em;
@@ -93,6 +97,34 @@
     cursor: pointer;
     &:hover, &:focus {
       color: #eee!important;
+    }
+  }
+
+  @-webkit-keyframes fadeIn {
+    from {
+      opacity: 0;
+    }
+
+    to {
+      opacity: 1;
+    }
+  }
+  @-moz-keyframes fadeIn {
+    from {
+      opacity: 0;
+    }
+
+    to {
+      opacity: 1;
+    }
+  }
+  @keyframes fadeIn {
+    from {
+      opacity: 0;
+    }
+
+    to {
+      opacity: 1;
     }
   }
 }

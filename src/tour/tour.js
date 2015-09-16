@@ -197,7 +197,7 @@ angular.module('angular-tour.tour', [])
             tourtip.css({ display: 'block' });
           }*/
           tourtip.css({ display: 'block' });
-          tourtip.removeClass('ng-hide');        
+          tourtip.removeClass('ng-hide');
 
           // Append it to the dom
           element.after( tourtip );
@@ -264,7 +264,7 @@ angular.module('angular-tour.tour', [])
         }
 
         function hide() {
-          tourtip.addClass('ng-hide');          
+          tourtip.addClass('ng-hide');
           angular.element($window).unbind('resize.' + scope.$id);
         }
 
@@ -302,7 +302,7 @@ angular.module('angular-tour.tour', [])
       this.map = {};
       this._array = [];
     };
-    
+
     OrderedList.prototype.set = function (key, value) {
       if (!angular.isNumber(key))
         return;
@@ -369,7 +369,7 @@ angular.module('angular-tour.tour', [])
     var orderedListFactory = function() {
       return new OrderedList();
     };
-    
+
     return orderedListFactory;
   })
 
@@ -377,15 +377,69 @@ angular.module('angular-tour.tour', [])
    * ScrollTo
    * Smoothly scroll to a dom element
    */
-  .factory('scrollTo', function($window) {
+  .factory('scrollTo', function($window, $timeout, tourConfig) {
+
+    var smooth_scroll = function(targetX, targetY, duration) {
+
+        targetX = Math.round(targetX);
+        targetY = Math.round(targetY);
+        duration = Math.round(duration);
+
+        if (duration < 0) {
+          return Promise.reject("bad duration");
+        }
+        if (duration === 0) {
+          window.scrollTo(targetX, targetY);
+          return Promise.resolve();
+        }
+
+        var start_time = Date.now(),
+          end_time = start_time + duration,
+          startLeft = window.scrollX,
+          startTop = window.scrollY,
+          distanceX = targetX - startLeft,
+          distanceY = targetY - startTop;
+
+        // based on http://en.wikipedia.org/wiki/Smoothstep
+        var smooth_step = function(start, end, point) {
+          if (point <= start) {
+            return 0;
+          }
+          if (point >= end) {
+            return 1;
+          }
+          var x = (point - start) / (end - start); // interpolation
+          return x * x * (3 - 2 * x);
+        }
+
+        return new Promise(function(resolve, reject) {
+          var scroll_frame = function() {
+            var now = Date.now(),
+              point = smooth_step(start_time, end_time, now),
+              frameLeft = Math.round(startLeft + (distanceX * point)),
+              frameTop = Math.round(startTop + (distanceY * point));
+            window.scrollTo(frameLeft, frameTop)
+            // check if we're done!
+            if (now >= end_time) {
+              resolve();
+              return;
+            }
+            // schedule next frame for execution
+            $timeout(scroll_frame, 0);
+          }
+          // boostrap the animation process
+          $timeout(scroll_frame, 0);
+        });
+    }
+
     return function(target, offsetY, offsetX, speed) {
       if(target) {
         offsetY = offsetY || -100;
         offsetX = offsetX || -100;
         speed = speed || 500;
-        $window.scrollTo(target[0].offsetLeft + offsetX, target[0].offsetTop + offsetY);        
+        smooth_scroll(target[0].offsetLeft + offsetX, target[0].offsetTop + offsetY, speed);
       } else {
-        $window.scrollTo(0, 0);
+        smooth_scroll(0, 0, speed);
       }
     };
   });

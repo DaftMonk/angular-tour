@@ -190,6 +190,7 @@ angular.module('angular-tour.tour', [])
           if ( ! scope.ttContent ) {
             return;
           }
+
           tourtip.css({
               display: 'block'
           });
@@ -433,9 +434,9 @@ angular.module('angular-tour.tour', [])
         offsetY = offsetY || -100;
         offsetX = offsetX || -100;
         speed = speed || 500;
-            smooth_scroll(target[0].offsetLeft + offsetX, target[0].offsetTop + offsetY, speed);
+        smooth_scroll(target[0].offsetLeft + offsetX, target[0].offsetTop + offsetY, speed);
       } else {
-            smooth_scroll(0, 0, speed);
+        smooth_scroll(0, 0, speed);
       }
     };
   });

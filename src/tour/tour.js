@@ -190,16 +190,10 @@ angular.module('angular-tour.tour', [])
           if ( ! scope.ttContent ) {
             return;
           }
-
-                /*if(scope.ttAnimation)
-            tourtip.fadeIn();
-          else {
-            tourtip.css({ display: 'block' });
-                }*/
-                tourtip.css({
-                    display: 'block'
-                });
-                tourtip.removeClass('ng-hide');
+            tourtip.css({
+                display: 'block'
+            });
+            tourtip.removeClass('ng-hide');
 
           // Append it to the dom
           element.after( tourtip );
@@ -213,38 +207,38 @@ angular.module('angular-tour.tour', [])
 
           var updatePosition = function() {
             // Get the position of the directive element
-                    position = targetElement[0];
+              position = targetElement[0];
 
-                    ttWidth = tourtip[0].offsetWidth;
-                    ttHeight = tourtip[0].offsetHeight;
+              ttWidth = tourtip[0].offsetWidth;
+              ttHeight = tourtip[0].offsetHeight;
 
-                    width = targetElement[0].offsetWidth;
-                    height = targetElement[0].offsetHeight;
+              width = targetElement[0].offsetWidth;
+              height = targetElement[0].offsetHeight;
 
             // Calculate the tourtip's top and left coordinates to center it
             switch ( scope.ttPlacement ) {
             case 'right':
               ttPosition = {
-                                top: position.offsetTop,
-                                left: position.offsetLeft + width + scope.ttOffset
+                top: position.offsetTop,
+                left: position.offsetLeft + width + scope.ttOffset
               };
               break;
             case 'bottom':
               ttPosition = {
-                                top: position.offsetTop + height + scope.ttOffset,
-                                left: position.offsetLeft
+                top: position.offsetTop + height + scope.ttOffset,
+                left: position.offsetLeft
               };
               break;
             case 'left':
               ttPosition = {
-                                top: position.offsetTop,
-                                left: position.offsetLeft - ttWidth - scope.ttOffset
+                top: position.offsetTop,
+                left: position.offsetLeft - ttWidth - scope.ttOffset
               };
               break;
             default:
               ttPosition = {
-                                top: position.offsetTop - ttHeight - scope.ttOffset,
-                                left: position.offsetLeft
+                top: position.offsetTop - ttHeight - scope.ttOffset,
+                left: position.offsetLeft
               };
               break;
             }
@@ -304,7 +298,7 @@ angular.module('angular-tour.tour', [])
       this.map = {};
       this._array = [];
     };
-    
+
     OrderedList.prototype.set = function (key, value) {
       if (!angular.isNumber(key))
         return;
@@ -371,7 +365,7 @@ angular.module('angular-tour.tour', [])
     var orderedListFactory = function() {
       return new OrderedList();
     };
-    
+
     return orderedListFactory;
   })
 
@@ -388,56 +382,49 @@ angular.module('angular-tour.tour', [])
         duration = Math.round(duration);
 
         if (duration < 0) {
-            return Promise.reject("bad duration");
+          return Promise.reject("bad duration");
         }
         if (duration === 0) {
-            window.scrollTo(targetX, targetY);
-            return Promise.resolve();
+          window.scrollTo(targetX, targetY);
+          return Promise.resolve();
         }
 
         var start_time = Date.now(),
-            end_time = start_time + duration,
-            startLeft = window.scrollX,
-            startTop = window.scrollY,
-            distanceX = targetX - startLeft,
-            distanceY = targetY - startTop;
+          end_time = start_time + duration,
+          startLeft = window.scrollX,
+          startTop = window.scrollY,
+          distanceX = targetX - startLeft,
+          distanceY = targetY - startTop;
 
         // based on http://en.wikipedia.org/wiki/Smoothstep
         var smooth_step = function(start, end, point) {
-            if (point <= start) {
-                return 0;
-            }
-            if (point >= end) {
-                return 1;
-            }
-            var x = (point - start) / (end - start); // interpolation
-            return x * x * (3 - 2 * x);
+          if (point <= start) {
+            return 0;
+          }
+          if (point >= end) {
+            return 1;
+          }
+          var x = (point - start) / (end - start); // interpolation
+          return x * x * (3 - 2 * x);
         }
 
         return new Promise(function(resolve, reject) {
-
-            var scroll_frame = function() {
-
-                var now = Date.now(),
-                    point = smooth_step(start_time, end_time, now),
-                    frameLeft = Math.round(startLeft + (distanceX * point)),
-                    frameTop = Math.round(startTop + (distanceY * point));
-
-
-                window.scrollTo(frameLeft, frameTop)
-
-                // check if we're done!
-                if (now >= end_time) {
-                    resolve();
-                    return;
-                }
-
-                // schedule next frame for execution
-                $timeout(scroll_frame, 0);
+          var scroll_frame = function() {
+            var now = Date.now(),
+              point = smooth_step(start_time, end_time, now),
+              frameLeft = Math.round(startLeft + (distanceX * point)),
+              frameTop = Math.round(startTop + (distanceY * point));
+            window.scrollTo(frameLeft, frameTop)
+            // check if we're done!
+            if (now >= end_time) {
+              resolve();
+              return;
             }
-
-            // boostrap the animation process
+            // schedule next frame for execution
             $timeout(scroll_frame, 0);
+          }
+          // boostrap the animation process
+          $timeout(scroll_frame, 0);
         });
     }
 

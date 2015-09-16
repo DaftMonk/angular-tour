@@ -191,9 +191,12 @@ angular.module('angular-tour.tour', [])
             return;
           }
 
-          tourtip.css({
-              display: 'block'
-          });
+          /*if(scope.ttAnimation)
+            tourtip.fadeIn();
+          else {
+            tourtip.css({ display: 'block' });
+          }*/
+          tourtip.css({ display: 'block' });
           tourtip.removeClass('ng-hide');
 
           // Append it to the dom

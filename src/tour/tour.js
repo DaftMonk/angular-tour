@@ -190,10 +190,10 @@ angular.module('angular-tour.tour', [])
           if ( ! scope.ttContent ) {
             return;
           }
-            tourtip.css({
-                display: 'block'
-            });
-            tourtip.removeClass('ng-hide');
+          tourtip.css({
+              display: 'block'
+          });
+          tourtip.removeClass('ng-hide');
 
           // Append it to the dom
           element.after( tourtip );
@@ -207,13 +207,13 @@ angular.module('angular-tour.tour', [])
 
           var updatePosition = function() {
             // Get the position of the directive element
-              position = targetElement[0];
+            position = targetElement[0];
 
-              ttWidth = tourtip[0].offsetWidth;
-              ttHeight = tourtip[0].offsetHeight;
+            ttWidth = tourtip[0].offsetWidth;
+            ttHeight = tourtip[0].offsetHeight;
 
-              width = targetElement[0].offsetWidth;
-              height = targetElement[0].offsetHeight;
+            width = targetElement[0].offsetWidth;
+            height = targetElement[0].offsetHeight;
 
             // Calculate the tourtip's top and left coordinates to center it
             switch ( scope.ttPlacement ) {
@@ -260,7 +260,7 @@ angular.module('angular-tour.tour', [])
         }
 
         function hide() {
-                tourtip.addClass('ng-hide');
+          tourtip.addClass('ng-hide');
           angular.element($window).unbind('resize.' + scope.$id);
         }
 
@@ -373,7 +373,7 @@ angular.module('angular-tour.tour', [])
    * ScrollTo
    * Smoothly scroll to a dom element
    */
-.factory('scrollTo', function($window, $timeout, tourConfig) {
+  .factory('scrollTo', function($window, $timeout, tourConfig) {
 
     var smooth_scroll = function(targetX, targetY, duration) {
 

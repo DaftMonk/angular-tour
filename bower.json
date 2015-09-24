@@ -31,12 +31,15 @@
     "package.json"
   ],
   "dependencies": {
-    "angular": "~1.2.x",
+    "angular": "~1.4.6",
     "jquery": "~2.0.3"
   },
   "devDependencies": {
-    "angular-mocks": "~1.x",
+    "angular-mocks": "~1.4.6",
     "angular-cookie": "~4.0.1"
   },
-  "license": "MIT"
+  "license": "MIT",
+  "resolutions": {
+    "angular": "~1.4.6"
+  }
 }

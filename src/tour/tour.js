@@ -163,7 +163,7 @@ angular.module('angular-tour.tour', [])
  * Tourtip
  * tourtip manages the state of the tour-popup directive
  */
-.directive('tourtip', function($window, $compile, $interpolate, $timeout, scrollTo, tourConfig, debounce) {
+.directive('tourtip', function($window, $compile, $interpolate, $timeout, scrollTo, tourConfig, debounce, $q) {
     var startSym = $interpolate.startSymbol(),
         endSym = $interpolate.endSymbol();
 
@@ -421,12 +421,13 @@ angular.module('angular-tour.tour', [])
                 if (scope.onStepProceed) {
                     var targetScope = getTargetScope();
 
-                    $timeout(function() {
-                        targetScope.$eval(scope.onStepProceed);
-                    }, 100);
+                    var onProceedResult = targetScope.$eval(scope.onStepProceed);
+                    $q.resolve(onProceedResult).then(function () {
+                      scope.setCurrentStep(scope.getCurrentStep() + 1);
+                    });
+                } else {
+                    scope.setCurrentStep(scope.getCurrentStep() + 1);
                 }
-
-                scope.setCurrentStep(scope.getCurrentStep() + 1);
             };
         }
     };

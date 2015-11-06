@@ -23,7 +23,8 @@ angular.module('angular-tour.tour', [])
  */
 .controller('TourController', function($scope, orderedList) {
     var self = this,
-        steps = self.steps = orderedList();
+        steps = self.steps = orderedList(),
+        firstCurrentStepChange = true;
 
     // we'll pass these in from the directive
     self.postTourCallback = angular.noop;
@@ -36,7 +37,11 @@ angular.module('angular-tour.tour', [])
             return self.currentStep;
         },
         function(val) {
-            self.select(val);
+            if (firstCurrentStepChange) {
+              firstCurrentStepChange = false;
+            } else {
+              self.select(val);
+            }
         }
     );
 

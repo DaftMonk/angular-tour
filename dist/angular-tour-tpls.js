@@ -1,6 +1,6 @@
 /**
  * An AngularJS directive for showcasing features of your website
- * @version v0.2.5 - 2015-11-03
+ * @version v0.2.5 - 2015-11-05
  * @link https://github.com/DaftMonk/angular-tour
  * @author Tyler Henkel
  * @license MIT License, http://www.opensource.org/licenses/MIT
@@ -32,7 +32,7 @@
     '$scope',
     'orderedList',
     function ($scope, orderedList) {
-      var self = this, steps = self.steps = orderedList();
+      var self = this, steps = self.steps = orderedList(), firstCurrentStepChange = true;
       // we'll pass these in from the directive
       self.postTourCallback = angular.noop;
       self.postStepCallback = angular.noop;
@@ -42,7 +42,11 @@
       $scope.$watch(function () {
         return self.currentStep;
       }, function (val) {
-        self.select(val);
+        if (firstCurrentStepChange) {
+          firstCurrentStepChange = false;
+        } else {
+          self.select(val);
+        }
       });
       self.select = function (nextIndex) {
         if (!angular.isNumber(nextIndex))

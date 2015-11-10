@@ -12,7 +12,7 @@
 
   <title>Angular directive for giving an interactive tour of your website</title>
 
-  <link href='http://fonts.googleapis.com/css?family=Open+Sans' rel='stylesheet' type='text/css'>
+  <link href='http://fonts.googleapis.com/css?family=Open+Sans' rel='stylesheet' type='text/css'/>
   <script src="//cdnjs.cloudflare.com/ajax/libs/rainbow/1.2.0/js/rainbow.min.js"></script>
   <script src="//cdnjs.cloudflare.com/ajax/libs/rainbow/1.2.0/js/language/html.js"></script>
   <link href="//cdnjs.cloudflare.com/ajax/libs/rainbow/1.2.0/themes/github.css" rel='stylesheet' type='text/css'>
@@ -32,10 +32,15 @@
         $scope.currentStep = curStep || 0;
 
         $scope.postTourCallback = function() {
-          console.log('tour over');
+          console.log('tour closes');
         };
 
+        $scope.tourCompleteCallback = function() {
+          console.log('tour completed');
+        }
+
         $scope.postStepCallback = function() {
+          console.log('Tour - Update Step', $scope.currentStep);
           $cookies.put('myTour', $scope.currentStep);
         };
       });
@@ -43,80 +48,67 @@
   <link rel="stylesheet" href="dist/angular-tour.css">
 </head>
 <body ng-app="demoApp" ng-controller="DemoCtrl">
-<tour step="currentStep" post-tour="postTourCallback()" post-step="postStepCallback()">
-  <a tourtip="Thanks for reading. Head over to the github page for more info."
-     tourtip-next-label="Finish"
-     tourtip-placement="left"
-     tourtip-offset="60"
-     tourtip-step="13"
-     href="https://github.com/DaftMonk/angular-tour"><img style="position: absolute; top: 0; right: 0; border: 0;" src="https://s3.amazonaws.com/github/ribbons/forkme_right_red_aa0000.png" alt="Fork me on GitHub"></a>
+
+  <a href="https://github.com/DaftMonk/angular-tour" id="e13">
+    <img style="position: absolute; top: 0; right: 0; border: 0;" src="https://s3.amazonaws.com/github/ribbons/forkme_right_red_aa0000.png" alt="Fork me on GitHub">
+  </a>
   <div class="container">
     <div>
-      <a class="logo" href="#"
-         tourtip="Angular Tour allows you to give an interactive tour to showcase the features of your website."
-         tourtip-next-label="Learn more"
-         tourtip-placement="right"
-         tourtip-offset="60"
-         tourtip-step="0"><img src="assets/logo.png"/></a>
-              <div class="social">
-                <ul class="social-buttons">
-                    <li>
-                        <iframe src="http://ghbtns.com/github-btn.html?user=daftmonk&repo=angular-tour&type=watch&count=true"
-                                allowtransparency="true" frameborder="0" scrolling="0" width="110" height="20"></iframe>
-                    </li>
-                    <li>
-                        <a href="https://twitter.com/share" class="twitter-share-button"
-                           data-hashtags="angularjs">Tweet</a>
-                        <script>!function (d, s, id) {
-                            var js, fjs = d.getElementsByTagName(s)[0];
-                            if (!d.getElementById(id)) {
-                                js = d.createElement(s);
-                                js.id = id;
-                                js.src = "//platform.twitter.com/widgets.js";
-                                fjs.parentNode.insertBefore(js, fjs);
-                            }
-                        }(document, "script", "twitter-wjs");</script>
-                    </li>
-                    <li>
-                        <!-- Place this tag where you want the +1 button to render. -->
-                        <div class="g-plusone" data-size="medium"></div>
+      <a class="logo" href="#" id="e0" ><img src="assets/logo.png"/></a>
+      <div class="social">
+        <ul class="social-buttons">
+          <li>
+            <iframe src="http://ghbtns.com/github-btn.html?user=daftmonk&repo=angular-tour&type=watch&count=true"
+              allowtransparency="true" frameborder="0" scrolling="0" width="110" height="20"></iframe>
+          </li>
+          <li>
+            <a href="https://twitter.com/share" class="twitter-share-button"
+               data-hashtags="angularjs">Tweet</a>
+            <script>!function (d, s, id) {
+                var js, fjs = d.getElementsByTagName(s)[0];
+                if (!d.getElementById(id)) {
+                    js = d.createElement(s);
+                    js.id = id;
+                    js.src = "//platform.twitter.com/widgets.js";
+                    fjs.parentNode.insertBefore(js, fjs);
+                }
+            }(document, "script", "twitter-wjs");</script>
+          </li>
+          <li>
+            <!-- Place this tag where you want the +1 button to render. -->
+            <div class="g-plusone" data-size="medium"></div>
 
-                        <!-- Place this tag after the last +1 button tag. -->
-                        <script type="text/javascript">
-                            (function () {
-                                var po = document.createElement('script');
-                                po.type = 'text/javascript';
-                                po.async = true;
-                                po.src = 'https://apis.google.com/js/plusone.js';
-                                var s = document.getElementsByTagName('script')[0];
-                                s.parentNode.insertBefore(po, s);
-                            })();
-                        </script>
-                    </li>
-                    <li>
-                      <div id="fb-root"></div>
-                      <script>(function(d, s, id) {
-                        var js, fjs = d.getElementsByTagName(s)[0];
-                        if (d.getElementById(id)) return;
-                        js = d.createElement(s); js.id = id;
-                        js.src = "//connect.facebook.net/en_US/all.js#xfbml=1&appId=1388192094757549";
-                        fjs.parentNode.insertBefore(js, fjs);
-                      }(document, 'script', 'facebook-jssdk'));</script><div class="fb-like" data-href="http://daftmonk.github.io/angular-tour/" data-layout="button_count" data-action="like" data-show-faces="true" data-share="true"></div>
-                    </li>
-                </ul>
-            </div>
+            <!-- Place this tag after the last +1 button tag. -->
+            <script type="text/javascript">
+                (function () {
+                    var po = document.createElement('script');
+                    po.type = 'text/javascript';
+                    po.async = true;
+                    po.src = 'https://apis.google.com/js/plusone.js';
+                    var s = document.getElementsByTagName('script')[0];
+                    s.parentNode.insertBefore(po, s);
+                })();
+            </script>
+          </li>
+          <li>
+            <div id="fb-root"></div>
+            <script>(function(d, s, id) {
+              var js, fjs = d.getElementsByTagName(s)[0];
+              if (d.getElementById(id)) return;
+              js = d.createElement(s); js.id = id;
+              js.src = "//connect.facebook.net/en_US/all.js#xfbml=1&appId=1388192094757549";
+              fjs.parentNode.insertBefore(js, fjs);
+            }(document, 'script', 'facebook-jssdk'));</script><div class="fb-like" data-href="http://daftmonk.github.io/angular-tour/" data-layout="button_count" data-action="like" data-show-faces="true" data-share="true"></div>
+          </li>
+        </ul>
+      </div>
     </div>
 
     <div class="row">
       <div class="col-6" style="float: left">
         <div class="title">Features</div>
 
-        <div class="block"
-            tourtip="Angular tour has some cool features."
-            tourtip-next-label="Continue"
-            tourtip-placement="right"
-            tourtip-offset="100"
-            tourtip-step="1">
+        <div class="block" id="e1" >
             <ul class="list">
               <li>Easy to use</li>
               <li>Responsive to window resizes</li>
@@ -129,12 +121,7 @@
       <div class="col-6">
         <div class="title">Supported Browsers</div>
         <div class="block">
-          <ul class="list"
-              tourtip="And is tested in all major browsers."
-              tourtip-next-label="Continue"
-              tourtip-placement="bottom"
-              tourtip-offset="200"
-              tourtip-step="2">
+          <ul class="list" id="e2">
             <li>Chrome</li>
             <li>Firefox</li>
             <li>Safari</li>
@@ -150,17 +137,8 @@
       <div class="col-4">
         <div class="tile">
           <div class="tile-title">Configuring Defaults</div>
-          <div class="tile-content"
-               tourtip="Configuration is easy, for more info check the github page."
-               tourtip-next-label="Continue"
-               tourtip-placement="bottom"
-               tourtip-offset="130"
-               tourtip-step="5">
-            <span tourtip="You can also go backwards through the DOM, like we just did."
-                  tourtip-next-label="Cool. How do I use it?"
-                  tourtip-placement="bottom"
-                  tourtip-offset="130"
-                  tourtip-step="6"></span>
+          <div class="tile-content" id="e5">
+            <span id="e6"></span>
             You can inject the <code>tourConfig</code> service into your app and modify the defaults.
           </div>
         </div>
@@ -169,12 +147,7 @@
       <div class="col-4">
         <div class="tile">
           <div class="tile-title">Customizing HTML</div>
-          <div class="tile-content"
-               tourtip="You can use your own markup."
-               tourtip-next-label="Continue"
-               tourtip-placement="bottom"
-               tourtip-offset="60"
-               tourtip-step="4">
+          <div class="tile-content" id="e4">
             HTML templates are cleanly separated, and you can easily substitute your own template.
           </div>
         </div>
@@ -183,12 +156,7 @@
       <div class="col-4">
         <div class="tile">
           <div class="tile-title">Customizing CSS</div>
-          <div class="tile-content"
-               tourtip="Easily change the look and feel."
-               tourtip-next-label="Continue"
-               tourtip-placement="bottom"
-               tourtip-offset="60"
-               tourtip-step="3">
+          <div class="tile-content" id="e3">
             A default CSS can be used for your convenience, but feel free to use your own css!
           </div>
         </div>
@@ -200,27 +168,18 @@
       <div class="col-12">
         <div class="tile">
           <div class="tile-content">
-            <div tourtip='Just add a tourtip attribute wherever you want a tip, and wrap your tourtips in a &lt;tour>.'
-                 tourtip-next-label="Continue"
-                 tourtip-placement="right"
-                 tourtip-offset="-400"
-                 tourtip-step="7">
-                 <div tourtip='A tour requires a model for the current step e.g. <tour step="currentStep">'
-                   tourtip-next-label="Continue"
-                   tourtip-placement="right"
-                   tourtip-offset="-400"
-                   tourtip-step="8">
-                   Usage example</div></div>
+            <div id="e7">
+              <div id="e8">Usage example</div>
+            </div>
 
-              <pre><code data-language="html">&lt;tour step="currentStep">
+            <pre><code data-language="html">&lt;tour step="currentStep">
   &lt;span tourtip="tip 1"> Highlighted &lt;/span>
   &lt;span tourtip="tip 2"> Elements &lt;/span>
   &lt;input tourtip="You can use it as an attribute on your element" />
   &lt;span tourtip="Full options"
         tourtip-step="3"
         tourtip-next-label="Next"
-        tourtip-placement="right"
-        tourtip-offset="60">Full options&lt;/span>
+        tourtip-placement="right">Full options&lt;/span>
 &lt;/tour></code></pre>
 
 You can also add callbacks to the <code>&lt;tour></code>:
@@ -240,12 +199,7 @@ $scope.postStepCallback = function() {
 <pre><code data-language="html">&lt;a ng-click="openTour()">Open Tour&lt;/a>
 &lt;a ng-click="closeTour()">Close Tour&lt;/a></code></pre>
             <a class="button" href="" ng-click="openTour()">Open Tour</a>
-            <a class="button" href="" ng-click="closeTour()"
-               tourtip="You can include buttons inside your tour to open and close it."
-               tourtip-next-label="How about installation?"
-               tourtip-placement="right"
-               tourtip-offset="80"
-               tourtip-step="9">Close Tour</a>
+            <a class="button" href="" ng-click="closeTour()" id="e9">Close Tour</a>
           </div>
 
         </div>
@@ -258,33 +212,106 @@ $scope.postStepCallback = function() {
       <div class="col-12">
         <div class="tile">
           <div class="tile-content">
-            <div><span tourtip="Use bower to download all the dependencies"
-                       tourtip-next-label="Continue"
-                       tourtip-placement="right"
-                       tourtip-offset="60"
-                       tourtip-step="10">Install with bower using</span></div>
+            <div><span id="e10">Install with bower using</span></div>
               <pre>bower install angular-tour</pre>
-            <div><span tourtip="Then add those to your index.html"
-                       tourtip-next-label="Continue"
-                       tourtip-placement="right"
-                       tourtip-offset="260"
-                       tourtip-step="11">Add the dependencies to your html file</span></div>
+            <div><span id="e11">Add the dependencies to your html file</span></div>
               <pre><code data-language="html">&lt;script src="bower_components/jquery/jquery.js">&lt;/script>
 &lt;script src="bower_components/angular/angular.js">&lt;/script>
 &lt;script src="bower_components/angular-tour/dist/angular-tour-tpls.min.js">&lt;/script></code></pre>
             <div>You'll also probably want to add the default stylesheet.</div>
               <pre><code data-language="html">&lt;link rel="bower_components/angular-tour/dist/angular-tour.css"/></code></pre>
-            <div><span tourtip="Lastly, add angular-tour to your module and you're good to go!"
-                       tourtip-next-label="Continue"
-                       tourtip-placement="right"
-                       tourtip-offset="100"
-                       tourtip-step="12">Lastly, add angular-tour as a dependency to your angular module</span></div>
-              <pre><code data-language="javascript">angular.module('myApp', ['angular-tour']);</pre></code>
+            <div><span id="e12">Lastly, add angular-tour as a dependency to your angular module</span></div>
+              <pre><code data-language="js">angular.module('myApp', ['angular-tour']);</pre></code>
           </div>
         </div>
       </div>
     </div>
   </div>
-</tour>
+  <tour step="currentStep" post-tour="postTourCallback()" post-step="postStepCallback()" tour-complete="tourCompleteCallback()">
+    <virtual-step
+      tourtip="Angular Tour allows you to give an interactive tour to showcase the features of your website."
+      tourtip-next-label="Learn more"
+      tourtip-placement="right"
+      tourtip-step="0"
+      tourtip-element="#e0" />
+    <virtual-step
+      tourtip="Angular tour has some cool features."
+      tourtip-next-label="Continue"
+      tourtip-placement="right"
+      tourtip-step="1"
+      tourtip-element="#e1" />
+    <virtual-step
+      tourtip="And is tested in all major browsers."
+      tourtip-next-label="Continue"
+      tourtip-placement="bottom"
+      tourtip-step="2"
+      tourtip-element="#e2" />
+    <virtual-step
+      tourtip="Configuration is easy, for more info check the github page."
+      tourtip-next-label="Continue"
+      tourtip-placement="bottom"
+      tourtip-step="5"
+      tourtip-element="#e5" />
+    <virtual-step
+      tourtip="You can also go backwards through the DOM, like we just did."
+      tourtip-next-label="Cool. How do I use it?"
+      tourtip-placement="bottom"
+      tourtip-step="6"
+      tourtip-element="#e6" />
+    <virtual-step
+      tourtip="You can use your own markup."
+      tourtip-next-label="Continue"
+      tourtip-placement="bottom"
+      tourtip-step="4"
+      tourtip-element="#e4" />
+    <virtual-step
+      tourtip="Easily change the look and feel."
+      tourtip-next-label="Continue"
+      tourtip-placement="bottom"
+      tourtip-step="3"
+      tourtip-element="#e3" />
+    <virtual-step
+      tourtip='Just add a tourtip attribute wherever you want a tip, and wrap your tourtips in a &lt;tour>.'
+      tourtip-next-label="Continue"
+      tourtip-placement="right"
+      tourtip-step="7"
+      tourtip-element="#e7" />
+    <virtual-step
+      tourtip='A tour requires a model for the current step e.g. <tour step="currentStep">'
+      tourtip-next-label="Continue"
+      tourtip-placement="right"
+      tourtip-step="8"
+      tourtip-element="#e8" />
+    <virtual-step
+      tourtip="You can include buttons inside your tour to open and close it."
+      tourtip-next-label="How about installation?"
+      tourtip-placement="right"
+      tourtip-step="9"
+      tourtip-element="#e9" />
+    <virtual-step
+      tourtip="Use bower to download all the dependencies"
+      tourtip-next-label="Continue"
+      tourtip-placement="right"
+      tourtip-step="10"
+      tourtip-element="#e10" />
+    <virtual-step
+      tourtip="Then add those to your index.html"
+      tourtip-next-label="Continue"
+      tourtip-placement="right"
+      tourtip-step="11"
+      tourtip-element="#e11" />
+    <virtual-step
+      tourtip="Lastly, add angular-tour to your module and you're good to go!"
+      tourtip-next-label="Continue"
+      tourtip-placement="right"
+      tourtip-step="12"
+      tourtip-element="#e12" />
+    <virtual-step
+      tourtip="Thanks for reading. Head over to the github page for more info."
+      tourtip-next-label="Finish"
+      tourtip-placement="left"
+      tourtip-step="13"
+      tourtip-element="#e13" />
+  </tour>
 </body>
 </html>

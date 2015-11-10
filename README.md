@@ -161,7 +161,7 @@ divided by page includes and different controllers you can consider using this a
 </tour>
 ```
 
-Name of the tag doesn't really matter. It's a normal step definition, but the element that will be used to attach to is specified by `virtual-step` attribute.
+Name of the tag doesn't really matter. It's a normal step definition, but the element that will be used to attach to is specified by `tourtip-element` attribute.
 
 ## Customization
 

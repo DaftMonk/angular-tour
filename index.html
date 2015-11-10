@@ -18,28 +18,29 @@
   <link href="//cdnjs.cloudflare.com/ajax/libs/rainbow/1.2.0/themes/github.css" rel='stylesheet' type='text/css'>
   <link rel='stylesheet' href='demoapp.css' type='text/css'>
 
-  <script src="lib/jquery/jquery.js"></script>
-  <script src="lib/angular/angular.js"></script>
-  <script src="lib/angular-cookie/angular-cookie.min.js"></script>
-    <script src="angular-tour-tpls.min.js"></script>
-    <script type="text/javascript">
-      angular.module('demoApp', ['angular-tour', 'ivpusic.cookie'])
-        .controller('DemoCtrl', function($scope, ipCookie) {
-          // load from cookie if possible, otherwise set step to 0
-          $scope.currentStep = ipCookie('myTour') || 0;
+  <script src="lib/jquery-2.1.4.min.js"></script>
+  <script src="lib/angular-1.4.7.min.js"></script>
+  <script src="lib/angular-cookies-1.4.7.min.js"></script>
+  <script src="dist/angular-tour-tpls.js"></script>
+  <script type="text/javascript">
+    angular.module('demoApp', ['angular-tour', 'ngCookies'])
+      .controller('DemoCtrl', function($scope, $cookies) {
+        var curStep = $cookies.get('myTour');
+        if(typeof curStep === 'string')
+          curStep = parseInt(curStep);
 
-          // callback for when we've finished going through the tour
-          $scope.postTourCallback = function() {
-            console.log('tour over');
-          };
+        $scope.currentStep = curStep || 0;
 
-          // optional way of saving tour progress with cookies
-          $scope.postStepCallback = function() {
-            ipCookie('myTour', $scope.currentStep, { expires: 3000 });
-          };          
-        });
-    </script>
-    <link rel="stylesheet" href="angular-tour.css">
+        $scope.postTourCallback = function() {
+          console.log('tour over');
+        };
+
+        $scope.postStepCallback = function() {
+          $cookies.put('myTour', $scope.currentStep);
+        };
+      });
+  </script>
+  <link rel="stylesheet" href="dist/angular-tour.css">
 </head>
 <body ng-app="demoApp" ng-controller="DemoCtrl">
 <tour step="currentStep" post-tour="postTourCallback()" post-step="postStepCallback()">
@@ -233,7 +234,7 @@ It is very easy to add a cookie module that remembers what step a user was on. W
 $scope.postStepCallback = function() {
   ipCookie('myTour', $scope.currentStep, { expires: 3000 });
 };
-</code></pre>    
+</code></pre>
 
         Inside your <code>&lt;tour></code> you have access to two scope methods for ending and starting the tour.
 <pre><code data-language="html">&lt;a ng-click="openTour()">Open Tour&lt;/a>

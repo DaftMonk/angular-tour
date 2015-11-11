@@ -13,9 +13,8 @@
   <title>Angular directive for giving an interactive tour of your website</title>
 
   <link href='http://fonts.googleapis.com/css?family=Open+Sans' rel='stylesheet' type='text/css'/>
-  <script src="//cdnjs.cloudflare.com/ajax/libs/rainbow/1.2.0/js/rainbow.min.js"></script>
-  <script src="//cdnjs.cloudflare.com/ajax/libs/rainbow/1.2.0/js/language/html.js"></script>
-  <link href="//cdnjs.cloudflare.com/ajax/libs/rainbow/1.2.0/themes/github.css" rel='stylesheet' type='text/css'>
+  <script src="lib/rainbow/rainbow-compiled.js"></script>
+  <link href="lib/rainbow/github.css" rel='stylesheet' type='text/css'>
   <link rel='stylesheet' href='demoapp.css' type='text/css'>
 
   <script src="lib/jquery-2.1.4.min.js"></script>
@@ -62,8 +61,7 @@
               allowtransparency="true" frameborder="0" scrolling="0" width="110" height="20"></iframe>
           </li>
           <li>
-            <a href="https://twitter.com/share" class="twitter-share-button"
-               data-hashtags="angularjs">Tweet</a>
+            <a href="https://twitter.com/share" class="twitter-share-button" data-hashtags="angularjs">Tweet</a>
             <script>!function (d, s, id) {
                 var js, fjs = d.getElementsByTagName(s)[0];
                 if (!d.getElementById(id)) {
@@ -221,7 +219,7 @@ $scope.postStepCallback = function() {
             <div>You'll also probably want to add the default stylesheet.</div>
               <pre><code data-language="html">&lt;link rel="bower_components/angular-tour/dist/angular-tour.css"/></code></pre>
             <div><span id="e12">Lastly, add angular-tour as a dependency to your angular module</span></div>
-              <pre><code data-language="js">angular.module('myApp', ['angular-tour']);</pre></code>
+              <pre><code data-language="javascript">angular.module('myApp', ['angular-tour']);</pre></code>
           </div>
         </div>
       </div>
@@ -236,7 +234,6 @@ $scope.postStepCallback = function() {
       tourtip-element="#e0" />
     <virtual-step
       tourtip="Angular tour has some cool features."
-      tourtip-next-label="Continue"
       tourtip-placement="right"
       tourtip-step="1"
       tourtip-element="#e1" />

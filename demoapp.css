@@ -173,3 +173,16 @@ code {
     padding: 5px 8px;
     line-height: 1;
 }
+
+.docs-btn {
+    font-size: 15px;
+    font-weight: bold;
+    text-decoration: none;
+    float: right;
+    color: #5F9EDF;
+    transition: all 0.2s ease-in-out;
+}
+
+.docs-btn:hover {
+    color: #1E5996;
+}

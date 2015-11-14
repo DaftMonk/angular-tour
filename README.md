@@ -34,7 +34,7 @@ Angular Tour has a dependency on jQuery.
 
 ## Setup
 
-Once bower has downloaded the dependencies for you, you'll need to make sure you add the required libraries to your index file. Your script includes should look something like this:
+Once bower has downloaded the dependencies for you, you'll need to make sure you add the required libraries to your index file. Also, ensure that jQuery is loaded prior to angular-tour, as it is a required dependency. Your script includes should look something like this:
 
 ```HTML
 <script src="bower_components/jquery/jquery.js"></script>

@@ -23,7 +23,8 @@ angular.module('angular-tour.tour', [])
  */
 .controller('TourController', function($scope, orderedList) {
     var self = this,
-        steps = self.steps = orderedList();
+        steps = self.steps = orderedList(),
+        firstCurrentStepChange = true;
 
     // we'll pass these in from the directive
     self.postTourCallback = angular.noop;
@@ -36,7 +37,11 @@ angular.module('angular-tour.tour', [])
             return self.currentStep;
         },
         function(val) {
-            self.select(val);
+            if (firstCurrentStepChange) {
+              firstCurrentStepChange = false;
+            } else {
+              self.select(val);
+            }
         }
     );
 
@@ -163,7 +168,7 @@ angular.module('angular-tour.tour', [])
  * Tourtip
  * tourtip manages the state of the tour-popup directive
  */
-.directive('tourtip', function($window, $compile, $interpolate, $timeout, scrollTo, tourConfig, debounce) {
+.directive('tourtip', function($window, $compile, $interpolate, $timeout, scrollTo, tourConfig, debounce, $q) {
     var startSym = $interpolate.startSymbol(),
         endSym = $interpolate.endSymbol();
 
@@ -421,12 +426,13 @@ angular.module('angular-tour.tour', [])
                 if (scope.onStepProceed) {
                     var targetScope = getTargetScope();
 
-                    $timeout(function() {
-                        targetScope.$eval(scope.onStepProceed);
-                    }, 100);
+                    var onProceedResult = targetScope.$eval(scope.onStepProceed);
+                    $q.resolve(onProceedResult).then(function () {
+                      scope.setCurrentStep(scope.getCurrentStep() + 1);
+                    });
+                } else {
+                    scope.setCurrentStep(scope.getCurrentStep() + 1);
                 }
-
-                scope.setCurrentStep(scope.getCurrentStep() + 1);
             };
         }
     };

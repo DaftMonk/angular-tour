@@ -1,6 +1,6 @@
 /**
  * An AngularJS directive for showcasing features of your website
- * @version v0.2.5 - 2015-10-02
+ * @version v0.2.5 - 2015-11-05
  * @link https://github.com/DaftMonk/angular-tour
  * @author Tyler Henkel
  * @license MIT License, http://www.opensource.org/licenses/MIT
@@ -22,7 +22,7 @@
     '$scope',
     'orderedList',
     function ($scope, orderedList) {
-      var self = this, steps = self.steps = orderedList();
+      var self = this, steps = self.steps = orderedList(), firstCurrentStepChange = true;
       // we'll pass these in from the directive
       self.postTourCallback = angular.noop;
       self.postStepCallback = angular.noop;
@@ -32,7 +32,11 @@
       $scope.$watch(function () {
         return self.currentStep;
       }, function (val) {
-        self.select(val);
+        if (firstCurrentStepChange) {
+          firstCurrentStepChange = false;
+        } else {
+          self.select(val);
+        }
       });
       self.select = function (nextIndex) {
         if (!angular.isNumber(nextIndex))
@@ -142,7 +146,8 @@
     'scrollTo',
     'tourConfig',
     'debounce',
-    function ($window, $compile, $interpolate, $timeout, scrollTo, tourConfig, debounce) {
+    '$q',
+    function ($window, $compile, $interpolate, $timeout, scrollTo, tourConfig, debounce, $q) {
       var startSym = $interpolate.startSymbol(), endSym = $interpolate.endSymbol();
       var template = '<div tour-popup></div>';
       return {
@@ -351,11 +356,13 @@
           scope.proceed = function () {
             if (scope.onStepProceed) {
               var targetScope = getTargetScope();
-              $timeout(function () {
-                targetScope.$eval(scope.onStepProceed);
-              }, 100);
+              var onProceedResult = targetScope.$eval(scope.onStepProceed);
+              $q.resolve(onProceedResult).then(function () {
+                scope.setCurrentStep(scope.getCurrentStep() + 1);
+              });
+            } else {
+              scope.setCurrentStep(scope.getCurrentStep() + 1);
             }
-            scope.setCurrentStep(scope.getCurrentStep() + 1);
           };
         }
       };

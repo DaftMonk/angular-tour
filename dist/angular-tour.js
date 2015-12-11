@@ -1,6 +1,6 @@
 /**
  * An AngularJS directive for showcasing features of your website
- * @version v0.2.5 - 2015-11-05
+ * @version v0.2.5 - 2015-12-10
  * @link https://github.com/DaftMonk/angular-tour
  * @author Tyler Henkel
  * @license MIT License, http://www.opensource.org/licenses/MIT
@@ -189,6 +189,10 @@
           //defaults: null
           attrs.$observe('tourtipElement', function (val) {
             scope.ttElement = val || null;
+          });
+          //defaults: null
+          attrs.$observe('tourtipTitle', function (val) {
+            scope.ttTitle = val || null;
           });
           //defaults: tourConfig.useSourceScope
           attrs.$observe('useSourceScope', function (val) {

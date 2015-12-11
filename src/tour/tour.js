@@ -224,6 +224,11 @@ angular.module('angular-tour.tour', [])
                 scope.ttElement = val || null;
             });
 
+            //defaults: null
+            attrs.$observe('tourtipTitle', function (val) {
+              scope.ttTitle = val || null;
+            });
+
             //defaults: tourConfig.useSourceScope
             attrs.$observe('useSourceScope', function(val) {
                 scope.ttSourceScope = !val ? tourConfig.useSourceScope : val === 'true';

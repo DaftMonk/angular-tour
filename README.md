@@ -118,6 +118,8 @@ There are additional attributes that allow you to customize each tour-tip.
 
 * `tourtip-container-element` **(Default: "body")**: Element the tour tips are placed in. Especially practical when you have several scrollable containers you want to display tours in.
 
+* `tourtip-title` **(Default: null)**: Title creates a separate h3 element to allow the separation of a title and it's content.
+
 Inside your tour, you also have access to two scope methods for ending and starting the tour.
 
 ```HTML

@@ -21,7 +21,7 @@ angular.module('angular-tour.tour', [])
    * TourController
    * the logic for the tour, which manages all the steps
    */
-  .controller('TourController', ['$scope', 'orderedList', 
+  .controller('TourController', ['$scope', 'orderedList',
     function($scope, orderedList) {
     
     var self = this,
@@ -38,33 +38,39 @@ angular.module('angular-tour.tour', [])
     $scope.$watch(function () {
         return self.currentStep;
       }, function (val) {
-        firstCurrentStepChange ? firstCurrentStepChange = false : self.select(val);
+        if (firstCurrentStepChange)
+          firstCurrentStepChange = false;
+        else
+          self.select(val);
       }
     );
 
     self.select = function(nextIndex) {
-        if (!angular.isNumber(nextIndex)) return;
+      if (!angular.isNumber(nextIndex)) return;
 
-        self.unselectAllSteps();
-        var step = steps.get(nextIndex);
-        if (step) { step.ttOpen = true; }
+      self.unselectAllSteps();
+      var step = steps.get(nextIndex);
+      if (step) { step.ttOpen = true; }
 
-        // update currentStep if we manually selected this index
-        if (self.currentStep !== nextIndex) { self.currentStep = nextIndex; }
+      // update currentStep if we manually selected this index
+      if (self.currentStep !== nextIndex) { self.currentStep = nextIndex; }
 
-        if (self.currentStep > -1) { self.showStepCallback(); }
+      if (self.currentStep > -1) { self.showStepCallback(); }
 
-        if (nextIndex >= steps.getCount()) { self.postTourCallback(true); }
-        
-        self.postStepCallback();
+      if (nextIndex >= steps.getCount()) { self.postTourCallback(true); }
+      
+      self.postStepCallback();
     };
 
-    self.addStep = function(step) {
-      (angular.isNumber(step.index) && !isNaN(step.index)) ? steps.set(step.index, step) : steps.push(step);
+    self.addStep = function (step) {
+      if (angular.isNumber(step.index) && !isNaN(step.index))
+        steps.set(step.index, step);
+      else
+        steps.push(step);
     };
 
     self.unselectAllSteps = function() {
-      steps.forEach(function(step) {
+      steps.forEach(function (step) {
         step.ttOpen = false;
       });
     };
@@ -89,7 +95,7 @@ angular.module('angular-tour.tour', [])
    * Tour
    * directive that allows you to control the tour
    */
-  .directive('tour', ['$parse', '$timeout', 'tourConfig', 
+  .directive('tour', ['$parse', '$timeout', 'tourConfig',
     function($parse, $timeout, tourConfig) {
     
     return {
@@ -138,7 +144,7 @@ angular.module('angular-tour.tour', [])
               var backdrop = document.getElementsByClassName('tour-backdrop');
               angular.element(backdrop).remove();
               angular.element('<div class="tour-backdrop"></div>').insertBefore('.tour-tip');
-            }, 1000)
+            }, 1000);
 
             backDrop = true;
           }
@@ -161,7 +167,7 @@ angular.module('angular-tour.tour', [])
    * Tourtip
    * tourtip manages the state of the tour-popup directive
    */
-  .directive('tourtip', ['$window', '$compile', '$interpolate', '$timeout', 'scrollTo', 'tourConfig', 'debounce', '$q', 
+  .directive('tourtip', ['$window', '$compile', '$interpolate', '$timeout', 'scrollTo', 'tourConfig', 'debounce', '$q',
     function($window, $compile, $interpolate, $timeout, scrollTo, tourConfig, debounce, $q) {
     
     var startSym = $interpolate.startSymbol(),
@@ -176,7 +182,7 @@ angular.module('angular-tour.tour', [])
       link: function(scope, element, attrs, tourCtrl) {
         
         attrs.$observe('tourtip', function(val) {
-            scope.ttContent = val;
+          scope.ttContent = val;
         });
 
         //defaults: tourConfig.placement
@@ -249,7 +255,10 @@ angular.module('angular-tour.tour', [])
         // wrap this in a time out because the tourtip won't compile right away
         $timeout(function() {
           scope.$watch('ttOpen', function(val) {
-            val ? show() : hide();
+            if (val)
+              show();
+            else
+              hide();
           });
         }, 500);
 
@@ -296,50 +305,51 @@ angular.module('angular-tour.tour', [])
           var ttHeight = tourtip.height();
 
           // Calculate the tourtip's top and left coordinates to center it
-          switch (scope.ttPlacement) {
-            case 'right':
-              var _left = position.left - containerLeft + position.width + scope.ttMargin + scope.offsetHorizontal;
-              ttPosition = {
-                top: top + scope.offsetVertical,
-                left: _left > 0 ? _left : minimumLeft
-              };
-              break;
-            case 'bottom':
-              var _left = position.left - containerLeft + scope.offsetHorizontal;
-              ttPosition = {
-                top: top + position.height + scope.ttMargin + scope.offsetVertical,
-                left: _left > 0 ? _left : minimumLeft
-              };
-              break;
-            case 'center':
-              var _left = position.left - containerLeft + 0.5 * (position.width - ttWidth) + scope.offsetHorizontal;
-              ttPosition = {
-                top: top + 0.5 * (position.height - ttHeight) + scope.ttMargin + scope.offsetVertical,
-                left: _left > 0 ? _left : minimumLeft
-              };
-              break;
-            case 'center-top':
-              var _left = position.left - containerLeft + 0.5 * (position.width - ttWidth) + scope.offsetHorizontal;
-              ttPosition = {
-                top: top + 0.1 * (position.height - ttHeight) + scope.ttMargin + scope.offsetVertical,
-                left: _left > 0 ? _left : minimumLeft
-              };
-              break;
-            case 'left':
-              var _left = position.left - containerLeft - ttWidth - scope.ttMargin + scope.offsetHorizontal;
-              ttPosition = {
-                top: top + scope.offsetVertical,
-                left: _left > 0 ? _left : minimumLeft,
-                right: restrictRight
-              };
-              break;
-            default:
-              var _left = position.left - containerLeft + scope.offsetHorizontal;
-              ttPosition = {
-                top: top - ttHeight - scope.ttMargin + scope.offsetVertical,
-                left: _left > 0 ? _left : minimumLeft
-              };
-              break;
+          var _left;
+          switch(scope.ttPlacement) {
+          case 'right':
+            _left = position.left - containerLeft + position.width + scope.ttMargin + scope.offsetHorizontal;
+            ttPosition = {
+              top: top + scope.offsetVertical,
+              left: _left > 0 ? _left : minimumLeft
+            };
+            break;
+          case 'bottom':
+            _left = position.left - containerLeft + scope.offsetHorizontal;
+            ttPosition = {
+              top: top + position.height + scope.ttMargin + scope.offsetVertical,
+              left: _left > 0 ? _left : minimumLeft
+            };
+            break;
+          case 'center':
+            _left = position.left - containerLeft + 0.5 * (position.width - ttWidth) + scope.offsetHorizontal;
+            ttPosition = {
+              top: top + 0.5 * (position.height - ttHeight) + scope.ttMargin + scope.offsetVertical,
+              left: _left > 0 ? _left : minimumLeft
+            };
+            break;
+          case 'center-top':
+            _left = position.left - containerLeft + 0.5 * (position.width - ttWidth) + scope.offsetHorizontal;
+            ttPosition = {
+              top: top + 0.1 * (position.height - ttHeight) + scope.ttMargin + scope.offsetVertical,
+              left: _left > 0 ? _left : minimumLeft
+            };
+            break;
+          case 'left':
+            _left = position.left - containerLeft - ttWidth - scope.ttMargin + scope.offsetHorizontal;
+            ttPosition = {
+              top: top + scope.offsetVertical,
+              left: _left > 0 ? _left : minimumLeft,
+              right: restrictRight
+            };
+            break;
+          default:
+            _left = position.left - containerLeft + scope.offsetHorizontal;
+            ttPosition = {
+              top: top - ttHeight - scope.ttMargin + scope.offsetVertical,
+              left: _left > 0 ? _left : minimumLeft
+            };
+            break;
           }
 
           ttPosition.top += 'px';
@@ -351,11 +361,14 @@ angular.module('angular-tour.tour', [])
         function show() {
           if (!scope.ttContent) { return; }
 
-          scope.ttAnimation ? tourtip.fadeIn() : tourtip.css({ display: 'block' });
+          if (scope.ttAnimation)
+            tourtip.fadeIn();
+          else
+            tourtip.css({ display: 'block' });
 
           var targetElement = scope.ttElement ? angular.element(scope.ttElement) : element;
 
-          if (targetElement == null || targetElement.length === 0)
+          if (targetElement === null || targetElement.length === 0)
             throw 'Target element could not be found. Selector: ' + scope.ttElement;
 
           angular.element(scope.ttContainerElement).append(tourtip);
@@ -369,8 +382,8 @@ angular.module('angular-tour.tour', [])
             tourtip.css(ttPosition);
 
             // Scroll to the tour tip
-            var ttPositionTop = parseInt(ttPosition.top),
-                ttPositionLeft = parseInt(ttPosition.left);
+            var ttPositionTop = parseInt(ttPosition.top, 10),
+                ttPositionLeft = parseInt(ttPosition.left, 10);
             scrollTo(tourtip, scope.ttContainerElement, -150, -300, tourConfig.scrollSpeed, ttPositionTop, ttPositionLeft);
           };
 
@@ -444,8 +457,8 @@ angular.module('angular-tour.tour', [])
    */
   .factory('orderedList', function() {
     var OrderedList = function() {
-        this.map = {};
-        this._array = [];
+      this.map = {};
+      this._array = [];
     };
 
     OrderedList.prototype.set = function(key, value) {

@@ -281,6 +281,8 @@ angular.module('angular-tour.tour', [])
           var minimumLeft = 0; // minimum left position of tour tip
           var restrictRight;
           var ttPosition;
+          var tourtipWidth = tourtip[0].offsetWidth;
+          var tourtipHeight = tourtip[0].offsetHeight;
 
           // Get the position of the directive element
           var position = element[0].getBoundingClientRect();
@@ -296,13 +298,13 @@ angular.module('angular-tour.tour', [])
             }
             // restrict right position if the tourtip doesn't fit in the container
             var containerWidth = container[0].getBoundingClientRect().width;
-            if (tourtip.width() + position.width > containerWidth) {
+            if (tourtipWidth + position.width > containerWidth) {
               restrictRight = containerWidth - position.left + scope.ttMargin;
             }
           }
 
-          var ttWidth = tourtip.width();
-          var ttHeight = tourtip.height();
+          var ttWidth = tourtipWidth;
+          var ttHeight = tourtipHeight;
 
           // Calculate the tourtip's top and left coordinates to center it
           var _left;
@@ -362,7 +364,7 @@ angular.module('angular-tour.tour', [])
           if (!scope.ttContent) { return; }
 
           if (scope.ttAnimation)
-            tourtip.fadeIn();
+            tourtip.css({ display: 'block' });
           else
             tourtip.css({ display: 'block' });
 
@@ -371,20 +373,19 @@ angular.module('angular-tour.tour', [])
           if (targetElement === null || targetElement.length === 0)
             throw 'Target element could not be found. Selector: ' + scope.ttElement;
 
-          angular.element(scope.ttContainerElement).append(tourtip);
+          var containerEle = document.querySelectorAll(scope.ttContainerElement);
+          angular.element(containerEle).append(tourtip);
 
           var updatePosition = function() {
 
-            var offsetElement = scope.ttContainerElement === 'body' ? undefined : angular.element(scope.ttContainerElement);
+            var offsetElement = scope.ttContainerElement === 'body' ? undefined : angular.element(containerEle);
             var ttPosition = calculatePosition(targetElement, offsetElement);
 
             // Now set the calculated positioning.
             tourtip.css(ttPosition);
 
             // Scroll to the tour tip
-            var ttPositionTop = parseInt(ttPosition.top, 10),
-                ttPositionLeft = parseInt(ttPosition.left, 10);
-            scrollTo(tourtip, scope.ttContainerElement, -150, -300, tourConfig.scrollSpeed, ttPositionTop, ttPositionLeft);
+            scrollTo(tourtip, scope.ttContainerElement, -150, -300, tourConfig.scrollSpeed);
           };
 
           if (tourConfig.backDrop) { focusActiveElement(targetElement); }
@@ -543,24 +544,73 @@ angular.module('angular-tour.tour', [])
    * Smoothly scroll to a dom element
    */
   .factory('scrollTo', function() {
-    return function(target, containerElement, offsetY, offsetX, speed, ttPositionTop, ttPositionLeft) {
+
+    var animationInProgress = false;
+
+    function _autoScroll(container, endTop, endLeft, offsetY, offsetX, speed) {
+      // if (animationInProgress) { return; }
+      
+      var currentLocation,
+          startTop = container.scrollTop,
+          startLeft = container.scrollLeft,
+          timeLapsed = 0,
+          duration = speed || 500,
+          distanceY = endTop - startTop + (offsetX || 0),
+          distanceX = endLeft - startLeft + (offsetY || 0),
+          timeProgress,
+          positionTop,
+          scrollHeight,
+          internalHeight;
+
+
+      var getEasingPattern = function(time) {
+        // easeInOutCubic: acceleration until halfway, then deceleration
+        return time < 0.5 ? (4 * time * time * time) : (time - 1) * (2 * time - 2) * (2 * time - 2) + 1;
+      };
+
+      var stopAnimation = function () {
+        currentLocation = container.scrollTop;
+        scrollHeight = container.scrollHeight;
+        internalHeight = container.clientHeight + currentLocation;
+
+        if ( positionTop === endTop || currentLocation === endTop || internalHeight >= scrollHeight) {
+          clearInterval(runAnimation);
+          animationInProgress = false;
+        }
+      };
+
+      var animateScroll = function () {
+        timeLapsed += 16;
+        timeProgress = ( timeLapsed / duration );
+        timeProgress = ( timeProgress > 1 ) ? 1 : timeProgress;
+        var multiplier = getEasingPattern(timeProgress);
+        positionTop = startTop + ( distanceY * multiplier );
+
+        // Move slightly following the easing pattern
+        container.scrollTop = positionTop;
+        container.scrollLeft = startLeft + ( distanceX * multiplier );
+        
+        // Check if we have reached our destination          
+        stopAnimation();
+      };
+
+      animationInProgress = true;
+      var runAnimation = setInterval(animateScroll, 16);
+    }
+
+    return function(target, containerSelector, offsetY, offsetX, speed) {
+      var container = document.querySelectorAll(containerSelector);
       if (target) {
         offsetY = offsetY || -100;
         offsetX = offsetX || -100;
-        speed = speed || 500;
-        $('html,' + containerElement).stop().animate({
-          scrollTop: ttPositionTop + offsetY,
-          scrollLeft: ttPositionLeft + offsetX
-        }, speed);
-      } else {
-        $('html,' + containerElement).stop().animate({
-          scrollTop: 0
-        }, speed);
       }
+      _autoScroll(container[0], target[0].offsetTop, target[0].offsetLeft, offsetY, offsetX, speed);
     };
   })
 
-  .factory('debounce', function($timeout, $q) {
+  .factory('debounce', ['$timeout', '$q',
+    function($timeout, $q) {
+    
     return function(func, wait, immediate) {
       var timeout;
       var deferred = $q.defer();
@@ -585,4 +635,4 @@ angular.module('angular-tour.tour', [])
         return deferred.promise;
       };
     };
-  });
+  }]);

@@ -168,7 +168,7 @@ angular.module('angular-tour.tour', [])
  * Tourtip
  * tourtip manages the state of the tour-popup directive
  */
-.directive('tourtip', function($window, $compile, $interpolate, $timeout, scrollTo, tourConfig, debounce, $q) {
+.directive('tourtip', function($window, $compile, $interpolate, $timeout, scrollTo, tourConfig, debounce, $q, $sce) {
     var startSym = $interpolate.startSymbol(),
         endSym = $interpolate.endSymbol();
 
@@ -180,7 +180,7 @@ angular.module('angular-tour.tour', [])
         scope: true,
         link: function(scope, element, attrs, tourCtrl) {
             attrs.$observe('tourtip', function(val) {
-                scope.ttContent = val;
+                scope.ttContent = $sce.trustAsHtml(val);
             });
 
             //defaults: tourConfig.placement

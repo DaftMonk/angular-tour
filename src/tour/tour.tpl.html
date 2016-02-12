@@ -2,7 +2,7 @@
     <span class="tour-arrow tt-{{ ttPlacement }}" ng-hide="centered"></span>
     <div class="tour-content-wrapper">
         <h3 ng-bind="ttTitle"></h3>
-        <p ng-bind="ttContent"></p>
+        <p ng-bind-html="ttContent"></p>
         <a ng-click="proceed()" ng-bind="ttNextLabel" class="small button tour-next-tip"></a>
         <a ng-click="closeTour()" class="tour-close-tip">&times;</a>
     </div>

@@ -1,6 +1,6 @@
 /**
  * An AngularJS directive for showcasing features of your website
- * @version v0.2.5 - 2015-12-10
+ * @version v0.2.5 - 2016-02-15
  * @link https://github.com/DaftMonk/angular-tour
  * @author Tyler Henkel
  * @license MIT License, http://www.opensource.org/licenses/MIT
@@ -42,11 +42,10 @@
       $scope.$watch(function () {
         return self.currentStep;
       }, function (val) {
-        if (firstCurrentStepChange) {
+        if (firstCurrentStepChange)
           firstCurrentStepChange = false;
-        } else {
+        else
           self.select(val);
-        }
       });
       self.select = function (nextIndex) {
         if (!angular.isNumber(nextIndex))
@@ -60,19 +59,19 @@
         if (self.currentStep !== nextIndex) {
           self.currentStep = nextIndex;
         }
-        if (self.currentStep > -1)
+        if (self.currentStep > -1) {
           self.showStepCallback();
+        }
         if (nextIndex >= steps.getCount()) {
           self.postTourCallback(true);
         }
         self.postStepCallback();
       };
       self.addStep = function (step) {
-        if (angular.isNumber(step.index) && !isNaN(step.index)) {
+        if (angular.isNumber(step.index) && !isNaN(step.index))
           steps.set(step.index, step);
-        } else {
+        else
           steps.push(step);
-        }
       };
       self.unselectAllSteps = function () {
         steps.forEach(function (step) {
@@ -112,9 +111,11 @@
             ctrl.currentStep = newVal;
           });
           ctrl.postTourCallback = function (completed) {
-            angular.element('.tour-backdrop').remove();
+            var backdropEle = document.getElementsByClassName('tour-backdrop');
+            var active = document.getElementsByClassName('tour-element-active');
+            angular.element(backdropEle).remove();
             backDrop = false;
-            angular.element('.tour-element-active').removeClass('tour-element-active');
+            angular.element(active).removeClass('tour-element-active');
             if (completed && angular.isDefined(attrs.tourComplete)) {
               scope.$parent.$eval(attrs.tourComplete);
             }
@@ -131,7 +132,8 @@
             if (tourConfig.backDrop) {
               angular.element(tourConfig.containerElement).append(angular.element('<div class="tour-backdrop"></div>'));
               $timeout(function () {
-                $('.tour-backdrop').remove();
+                var backdrop = document.getElementsByClassName('tour-backdrop');
+                angular.element(backdrop).remove();
                 angular.element('<div class="tour-backdrop"></div>').insertBefore('.tour-tip');
               }, 1000);
               backDrop = true;
@@ -225,11 +227,10 @@
           // wrap this in a time out because the tourtip won't compile right away
           $timeout(function () {
             scope.$watch('ttOpen', function (val) {
-              if (val) {
+              if (val)
                 show();
-              } else {
+              else
                 hide();
-              }
             });
           }, 500);
           //determining target scope. It's used only when using virtual steps and there
@@ -240,8 +241,9 @@
           function getTargetScope() {
             var targetElement = scope.ttElement ? angular.element(scope.ttElement) : element;
             var targetScope = scope;
-            if (targetElement !== element && !scope.ttSourceScope)
+            if (targetElement !== element && !scope.ttSourceScope) {
               targetScope = targetElement.scope();
+            }
             return targetScope;
           }
           function calculatePosition(element, container) {
@@ -249,6 +251,8 @@
             // minimum left position of tour tip
             var restrictRight;
             var ttPosition;
+            var tourtipWidth = tourtip[0].offsetWidth;
+            var tourtipHeight = tourtip[0].offsetHeight;
             // Get the position of the directive element
             var position = element[0].getBoundingClientRect();
             //make it relative against page or fixed container, not the window
@@ -262,44 +266,45 @@
               }
               // restrict right position if the tourtip doesn't fit in the container
               var containerWidth = container[0].getBoundingClientRect().width;
-              if (tourtip.width() + position.width > containerWidth) {
+              if (tourtipWidth + position.width > containerWidth) {
                 restrictRight = containerWidth - position.left + scope.ttMargin;
               }
             }
-            var ttWidth = tourtip.width();
-            var ttHeight = tourtip.height();
+            var ttWidth = tourtipWidth;
+            var ttHeight = tourtipHeight;
             // Calculate the tourtip's top and left coordinates to center it
+            var _left;
             switch (scope.ttPlacement) {
             case 'right':
-              var _left = position.left - containerLeft + position.width + scope.ttMargin + scope.offsetHorizontal;
+              _left = position.left - containerLeft + position.width + scope.ttMargin + scope.offsetHorizontal;
               ttPosition = {
                 top: top + scope.offsetVertical,
                 left: _left > 0 ? _left : minimumLeft
               };
               break;
             case 'bottom':
-              var _left = position.left - containerLeft + scope.offsetHorizontal;
+              _left = position.left - containerLeft + scope.offsetHorizontal;
               ttPosition = {
                 top: top + position.height + scope.ttMargin + scope.offsetVertical,
                 left: _left > 0 ? _left : minimumLeft
               };
               break;
             case 'center':
-              var _left = position.left - containerLeft + 0.5 * (position.width - ttWidth) + scope.offsetHorizontal;
+              _left = position.left - containerLeft + 0.5 * (position.width - ttWidth) + scope.offsetHorizontal;
               ttPosition = {
                 top: top + 0.5 * (position.height - ttHeight) + scope.ttMargin + scope.offsetVertical,
                 left: _left > 0 ? _left : minimumLeft
               };
               break;
             case 'center-top':
-              var _left = position.left - containerLeft + 0.5 * (position.width - ttWidth) + scope.offsetHorizontal;
+              _left = position.left - containerLeft + 0.5 * (position.width - ttWidth) + scope.offsetHorizontal;
               ttPosition = {
                 top: top + 0.1 * (position.height - ttHeight) + scope.ttMargin + scope.offsetVertical,
                 left: _left > 0 ? _left : minimumLeft
               };
               break;
             case 'left':
-              var _left = position.left - containerLeft - ttWidth - scope.ttMargin + scope.offsetHorizontal;
+              _left = position.left - containerLeft - ttWidth - scope.ttMargin + scope.offsetHorizontal;
               ttPosition = {
                 top: top + scope.offsetVertical,
                 left: _left > 0 ? _left : minimumLeft,
@@ -307,7 +312,7 @@
               };
               break;
             default:
-              var _left = position.left - containerLeft + scope.offsetHorizontal;
+              _left = position.left - containerLeft + scope.offsetHorizontal;
               ttPosition = {
                 top: top - ttHeight - scope.ttMargin + scope.offsetVertical,
                 left: _left > 0 ? _left : minimumLeft
@@ -322,26 +327,26 @@
             if (!scope.ttContent) {
               return;
             }
-            if (scope.ttAnimation)
-              tourtip.fadeIn();
-            else {
-              tourtip.css({ display: 'block' });
-            }
+            tourtip.css({
+              opacity: 1,
+              visibility: 'visible'
+            });
             var targetElement = scope.ttElement ? angular.element(scope.ttElement) : element;
-            if (targetElement == null || targetElement.length === 0)
+            if (targetElement === null || targetElement.length === 0)
               throw 'Target element could not be found. Selector: ' + scope.ttElement;
-            angular.element(scope.ttContainerElement).append(tourtip);
+            var containerEle = document.querySelectorAll(scope.ttContainerElement);
+            angular.element(containerEle).append(tourtip);
             var updatePosition = function () {
-              var offsetElement = scope.ttContainerElement === 'body' ? undefined : angular.element(scope.ttContainerElement);
+              var offsetElement = scope.ttContainerElement === 'body' ? undefined : angular.element(containerEle);
               var ttPosition = calculatePosition(targetElement, offsetElement);
               // Now set the calculated positioning.
               tourtip.css(ttPosition);
               // Scroll to the tour tip
-              var ttPositionTop = parseInt(ttPosition.top), ttPositionLeft = parseInt(ttPosition.left);
-              scrollTo(tourtip, scope.ttContainerElement, -150, -300, tourConfig.scrollSpeed, ttPositionTop, ttPositionLeft);
+              scrollTo(tourtip, scope.ttContainerElement, -150, -300, tourConfig.scrollSpeed);
             };
-            if (tourConfig.backDrop)
+            if (tourConfig.backDrop) {
               focusActiveElement(targetElement);
+            }
             angular.element($window).bind('resize.' + scope.$id, debounce(updatePosition, 50));
             updatePosition();
             if (scope.onStepShow) {
@@ -357,9 +362,11 @@
             angular.element($window).unbind('resize.' + scope.$id);
           }
           function focusActiveElement(el) {
-            angular.element('.tour-element-active').removeClass('tour-element-active');
-            if (!scope.centered)
+            var activeEle = document.getElementsByClassName('tour-element-active');
+            angular.element(activeEle).removeClass('tour-element-active');
+            if (!scope.centered) {
               el.addClass('tour-element-active');
+            }
           }
           // Make sure tooltip is destroyed and removed.
           scope.$on('$destroy', function onDestroyTourtip() {
@@ -461,21 +468,77 @@
       return new OrderedList();
     };
     return orderedListFactory;
-  }).factory('scrollTo', function () {
-    return function (target, containerElement, offsetY, offsetX, speed, ttPositionTop, ttPositionLeft) {
-      if (target) {
-        offsetY = offsetY || -100;
-        offsetX = offsetX || -100;
-        speed = speed || 500;
-        $('html,' + containerElement).stop().animate({
-          scrollTop: ttPositionTop + offsetY,
-          scrollLeft: ttPositionLeft + offsetX
-        }, speed);
-      } else {
-        $('html,' + containerElement).stop().animate({ scrollTop: 0 }, speed);
+  }).factory('scrollTo', [
+    '$interval',
+    function ($interval) {
+      var animationInProgress = false;
+      function getEasingPattern(time) {
+        return time < 0.5 ? 4 * time * time * time : (time - 1) * (2 * time - 2) * (2 * time - 2) + 1;  // default easeInOutCubic transition
       }
-    };
-  }).factory('debounce', [
+      function _autoScroll(container, endTop, endLeft, offsetY, offsetX, speed) {
+        if (animationInProgress) {
+          return;
+        }
+        speed = speed || 500;
+        offsetY = offsetY || 0;
+        offsetX = offsetX || 0;
+        // Set some boundaries in case the offset wants us to scroll to impossible locations
+        var finalY = endTop + offsetY;
+        if (finalY < 0) {
+          finalY = 0;
+        } else if (finalY > container.scrollHeight) {
+          finalY = container.scrollHeight;
+        }
+        var finalX = endLeft + offsetX;
+        if (finalX < 0) {
+          finalX = 0;
+        } else if (finalX > container.scrollWidth) {
+          finalX = container.scrollWidth;
+        }
+        var startTop = container.scrollTop, startLeft = container.scrollLeft, timeLapsed = 0, distanceY = finalY - startTop,
+          // If we're going up, this will be a negative number
+          distanceX = finalX - startLeft, currentPositionY, currentPositionX, timeProgress;
+        var stopAnimation = function () {
+          // If we have reached our destination clear the interval
+          if (currentPositionY === finalY && currentPositionX === finalX) {
+            $interval.cancel(runAnimation);
+            animationInProgress = false;
+          }
+        };
+        var animateScroll = function () {
+          timeLapsed += 16;
+          // get percentage of progress to the specified speed (e.g. 16/500). Should always be between 0 and 1
+          timeProgress = timeLapsed / speed;
+          // Make a check and set back to 1 if we went over (e.g. 512/500)
+          timeProgress = timeProgress > 1 ? 1 : timeProgress;
+          // Number between 0 and 1 corresponding to the animation pattern
+          var multiplier = getEasingPattern(timeProgress);
+          // Calculate the distance to travel in this step. It is the total distance times a percentage of what we will move
+          var translateY = distanceY * multiplier;
+          var translateX = distanceX * multiplier;
+          // Assign to the shorthand variables
+          currentPositionY = startTop + translateY;
+          currentPositionX = startLeft + translateX;
+          // Move slightly following the easing pattern
+          container.scrollTop = currentPositionY;
+          container.scrollLeft = currentPositionX;
+          // Check if we have reached our destination          
+          stopAnimation();
+        };
+        animationInProgress = true;
+        // Kicks off the function
+        var runAnimation = $interval(animateScroll, 16);
+      }
+      return function (target, containerSelector, offsetY, offsetX, speed) {
+        var container = document.querySelectorAll(containerSelector);
+        if (target) {
+          offsetY = offsetY || -100;
+          offsetX = offsetX || -100;
+        }
+        _autoScroll(container[0], target[0].offsetTop, target[0].offsetLeft, offsetY, offsetX, speed);
+      };
+    }
+  ]).factory('debounce', [
     '$timeout',
     '$q',
     function ($timeout, $q) {

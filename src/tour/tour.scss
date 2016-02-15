@@ -1,9 +1,17 @@
 .tour-tip {
-  display: none;
+  opacity: 0;
+  visibility: hidden;
+
+  -webkit-transition: opacity 0.6s, visibility 0.6s cubic-bezier(0.345, 0, 0.25, 1);
+     -moz-transition: opacity 0.6s, visibility 0.6s cubic-bezier(0.345, 0, 0.25, 1);
+      -ms-transition: opacity 0.6s, visibility 0.6s cubic-bezier(0.345, 0, 0.25, 1);
+       -o-transition: opacity 0.6s, visibility 0.6s cubic-bezier(0.345, 0, 0.25, 1);
+          transition: opacity 0.6s, visibility 0.6s cubic-bezier(0.345, 0, 0.25, 1);
+
   position: absolute;
   background: #1C252E;
   color: #FFF;
-  z-index: 101;
+  z-index: 121 !important;
   top: 0;
   left: 2.5%;
   font-family: inherit;

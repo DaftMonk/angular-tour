@@ -543,59 +543,70 @@ angular.module('angular-tour.tour', [])
    * ScrollTo
    * Smoothly scroll to a dom element
    */
-  .factory('scrollTo', function() {
+  .factory('scrollTo', ['$interval', function($interval) {
 
     var animationInProgress = false;
 
-    function _autoScroll(container, endTop, endLeft, offsetY, offsetX, speed) {
-      // if (animationInProgress) { return; }
+    function getEasingPattern (time) {
+      return time < 0.5 ? (4 * time * time * time) : (time - 1) * (2 * time - 2) * (2 * time - 2) + 1; // default easeInOutCubic transition
+    };
+
+    function _autoScroll (container, endTop, endLeft, offsetY, offsetX, speed) {
       
-      var currentLocation,
-          startTop = container.scrollTop,
+      if (animationInProgress) { return; }
+      
+      var startTop = container.scrollTop,
           startLeft = container.scrollLeft,
           timeLapsed = 0,
           duration = speed || 500,
-          distanceY = endTop - startTop + (offsetX || 0),
-          distanceX = endLeft - startLeft + (offsetY || 0),
-          timeProgress,
-          positionTop,
-          scrollHeight,
-          internalHeight;
+          offsetY = offsetY || 0,
+          offsetX = offsetX || 0;
+          
+      // Set some boundaries in case the offset wants us to scroll to impossible locations
+      var finalY = endTop + offsetY;
+      if (finalY < 0) { finalY = 0; } else if (finalY > container.scrollHeight) { finalY = container.scrollHeight; }
+      var finalX = endLeft + offsetX;
+      if (finalX < 0) { finalX = 0; } else if (finalX > container.scrollWidth) { finalX = container.scrollWidth; }
 
+      var distanceY = finalY - startTop, // If we're going up, this will be a negative number
+          distanceX = finalX - startLeft,
+          currentPositionY,
+          currentPositionX,
+          timeProgress;
 
-      var getEasingPattern = function(time) {
-        // easeInOutCubic: acceleration until halfway, then deceleration
-        return time < 0.5 ? (4 * time * time * time) : (time - 1) * (2 * time - 2) * (2 * time - 2) + 1;
-      };
 
       var stopAnimation = function () {
-        currentLocation = container.scrollTop;
-        scrollHeight = container.scrollHeight;
-        internalHeight = container.clientHeight + currentLocation;
-
-        if ( positionTop === endTop || currentLocation === endTop || internalHeight >= scrollHeight) {
-          clearInterval(runAnimation);
+        // If we have reached our destination clear the interval
+        if (currentPositionY === finalY && currentPositionX === finalX) {
+          $interval.cancel(runAnimation);
           animationInProgress = false;
         }
       };
 
       var animateScroll = function () {
         timeLapsed += 16;
+        // get percentage of progress to the specified speed (e.g. 16/500). Should always be between 0 and 1
         timeProgress = ( timeLapsed / duration );
+        // Make a check and set back to 1 if we went over (e.g. 512/500)
         timeProgress = ( timeProgress > 1 ) ? 1 : timeProgress;
+        // Number between 0 and 1 corresponding to the animation pattern
         var multiplier = getEasingPattern(timeProgress);
-        positionTop = startTop + ( distanceY * multiplier );
-
+        // Calculate the distance to travel in this step. It is the total distance times a percentage of what we will move
+        var translateY = distanceY * multiplier;
+        var translateX = distanceX * multiplier;
+        // Assign to the shorthand variables
+        currentPositionY = startTop + translateY;
+        currentPositionX = startLeft + translateX;
         // Move slightly following the easing pattern
-        container.scrollTop = positionTop;
-        container.scrollLeft = startLeft + ( distanceX * multiplier );
-        
+        container.scrollTop = currentPositionY;
+        container.scrollLeft = currentPositionX;
         // Check if we have reached our destination          
         stopAnimation();
       };
 
       animationInProgress = true;
-      var runAnimation = setInterval(animateScroll, 16);
+      // Kicks off the function
+      var runAnimation = $interval(animateScroll, 16);
     }
 
     return function(target, containerSelector, offsetY, offsetX, speed) {
@@ -606,7 +617,7 @@ angular.module('angular-tour.tour', [])
       }
       _autoScroll(container[0], target[0].offsetTop, target[0].offsetLeft, offsetY, offsetX, speed);
     };
-  })
+  }])
 
   .factory('debounce', ['$timeout', '$q',
     function($timeout, $q) {

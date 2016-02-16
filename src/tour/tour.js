@@ -12,7 +12,7 @@ angular.module('angular-tour.tour', [])
     nextLabel: 'Next', // default text in the next tip button
     scrollSpeed: 500, // page scrolling speed in milliseconds
     margin: 28, // how many pixels margin the tip is from the target
-    backDrop: true, // if there is a backdrop (gray overlay) when tour starts
+    backDrop: false, // if there is a backdrop (gray overlay) when tour starts
     useSourceScope: false, // only target scope should be used (only when using virtual steps)
     containerElement: 'body' // default container element to parent tourtips to
   })
@@ -138,19 +138,19 @@ angular.module('angular-tour.tour', [])
 
         ctrl.showStepCallback = function() {
           if (tourConfig.backDrop) {
-            var div = document.createElement('div');
-            div.className = 'tour-backdrop';
-            var container = document.querySelector(tourConfig.containerElement);
-            angular.element(container).append(angular.element(div));
+            // var div = document.createElement('div');
+            // div.className = 'tour-backdrop';
+            // var container = document.querySelector(tourConfig.containerElement);
+            // angular.element(container).append(angular.element(div));
 
             $timeout(function() {
               var backdrop = document.getElementsByClassName('tour-backdrop');
-              var tooltip = document.getElementsByClassName('tour-tip');
+              var tooltip = document.getElementsByClassName('tour-tip')[0];
               var div = document.createElement('div');
               div.className = 'tour-backdrop';
               angular.element(backdrop).remove();
               tooltip.parentNode.insertBefore(div, tooltip);
-            }, 1000);
+            }, 501);
 
             backDrop = true;
           }
@@ -369,7 +369,7 @@ angular.module('angular-tour.tour', [])
         function show() {
           if (!scope.ttContent) { return; }
 
-          tourtip.css({ opacity: 1, visibility: 'visible' });
+          tourtip.addClass('show');
 
           var targetElement = scope.ttElement ? angular.element(scope.ttElement) : element;
 
@@ -409,6 +409,7 @@ angular.module('angular-tour.tour', [])
 
         function hide() {
           tourtip.detach();
+          tourtip.removeClass('show');
           angular.element($window).unbind('resize.' + scope.$id);
         }
 

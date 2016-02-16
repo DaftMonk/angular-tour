@@ -1,11 +1,12 @@
 .tour-tip {
   opacity: 0;
   visibility: hidden;
-  -webkit-transition: opacity 0.6s, visibility 0.6s cubic-bezier(0.345, 0, 0.25, 1);
-  -moz-transition: opacity 0.6s, visibility 0.6s cubic-bezier(0.345, 0, 0.25, 1);
-  -ms-transition: opacity 0.6s, visibility 0.6s cubic-bezier(0.345, 0, 0.25, 1);
-  -o-transition: opacity 0.6s, visibility 0.6s cubic-bezier(0.345, 0, 0.25, 1);
-  transition: opacity 0.6s, visibility 0.6s cubic-bezier(0.345, 0, 0.25, 1);
+  display: block;
+  -webkit-transition: visibility 0s, opacity 0.6s cubic-bezier(0.345, 0, 0.25, 1);
+  -moz-transition: visibility 0s, opacity 0.6s cubic-bezier(0.345, 0, 0.25, 1);
+  -ms-transition: visibility 0s, opacity 0.6s cubic-bezier(0.345, 0, 0.25, 1);
+  -o-transition: visibility 0s, opacity 0.6s cubic-bezier(0.345, 0, 0.25, 1);
+  transition: visibility 0s, opacity 0.6s cubic-bezier(0.345, 0, 0.25, 1);
   position: absolute;
   background: #1C252E;
   color: #FFF;
@@ -16,6 +17,9 @@
   font-weight: 400;
   max-width: 400px;
   border-radius: 10px; }
+  .tour-tip.show {
+    opacity: 1;
+    visibility: visible; }
   .tour-tip p {
     color: #CBD0D4;
     font-size: .9em;

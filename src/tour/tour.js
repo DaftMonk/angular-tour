@@ -369,8 +369,6 @@ angular.module('angular-tour.tour', [])
         function show() {
           if (!scope.ttContent) { return; }
 
-          tourtip.addClass('show');
-
           var targetElement = scope.ttElement ? angular.element(scope.ttElement) : element;
 
           if (targetElement === null || targetElement.length === 0)
@@ -397,6 +395,9 @@ angular.module('angular-tour.tour', [])
 
           updatePosition();
 
+          // CSS class must be added after the element is already on the DOM otherwise it won't animate (fade in).
+          tourtip.addClass('show');
+
           if (scope.onStepShow) {
             var targetScope = getTargetScope();
 
@@ -408,8 +409,8 @@ angular.module('angular-tour.tour', [])
         }
 
         function hide() {
-          tourtip.detach();
           tourtip.removeClass('show');
+          tourtip.detach();
           angular.element($window).unbind('resize.' + scope.$id);
         }
 

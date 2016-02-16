@@ -1,6 +1,6 @@
 /**
  * An AngularJS directive for showcasing features of your website
- * @version v0.2.5 - 2016-02-15
+ * @version v0.2.5 - 2016-02-16
  * @link https://github.com/DaftMonk/angular-tour
  * @author Tyler Henkel
  * @license MIT License, http://www.opensource.org/licenses/MIT
@@ -120,12 +120,18 @@
           };
           ctrl.showStepCallback = function () {
             if (tourConfig.backDrop) {
-              angular.element(tourConfig.containerElement).append(angular.element('<div class="tour-backdrop"></div>'));
+              // var div = document.createElement('div');
+              // div.className = 'tour-backdrop';
+              // var container = document.querySelector(tourConfig.containerElement);
+              // angular.element(container).append(angular.element(div));
               $timeout(function () {
                 var backdrop = document.getElementsByClassName('tour-backdrop');
+                var tooltip = document.getElementsByClassName('tour-tip')[0];
+                var div = document.createElement('div');
+                div.className = 'tour-backdrop';
                 angular.element(backdrop).remove();
-                angular.element('<div class="tour-backdrop"></div>').insertBefore('.tour-tip');
-              }, 1000);
+                tooltip.parentNode.insertBefore(div, tooltip);
+              }, 501);
               backDrop = true;
             }
           };
@@ -317,10 +323,6 @@
             if (!scope.ttContent) {
               return;
             }
-            tourtip.css({
-              opacity: 1,
-              visibility: 'visible'
-            });
             var targetElement = scope.ttElement ? angular.element(scope.ttElement) : element;
             if (targetElement === null || targetElement.length === 0)
               throw 'Target element could not be found. Selector: ' + scope.ttElement;
@@ -339,6 +341,8 @@
             }
             angular.element($window).bind('resize.' + scope.$id, debounce(updatePosition, 50));
             updatePosition();
+            // CSS class must be added after the element is already on the DOM otherwise it won't animate (fade in).
+            tourtip.addClass('show');
             if (scope.onStepShow) {
               var targetScope = getTargetScope();
               //fancy! Let's make on show action not instantly, but after a small delay
@@ -348,6 +352,7 @@
             }
           }
           function hide() {
+            tourtip.removeClass('show');
             tourtip.detach();
             angular.element($window).unbind('resize.' + scope.$id);
           }

@@ -1,6 +1,6 @@
 {
   "name": "angular-tour",
-  "version": "0.2.5",
+  "version": "0.3.0",
   "description": "An AngularJS directive for showcasing features of your website",
   "keywords": [
     "angularjs",
@@ -20,7 +20,7 @@
     "url": "git://github.com/DaftMonk/angular-tour.git"
   },
   "main": [
-    "./dist/angular-tour-tpls.min.js",
+    "./dist/angular-tour-tpls.js",
     "./dist/angular-tour.css"
   ],
   "ignore": [
@@ -34,8 +34,7 @@
     "package.json"
   ],
   "dependencies": {
-    "angular": "~1.4.6",
-    "jquery": "~2.0.3"
+    "angular": "^1.5.0"
   },
   "devDependencies": {
     "angular-mocks": "~1.4.6",
@@ -43,6 +42,6 @@
   },
   "license": "MIT",
   "resolutions": {
-    "angular": "~1.4.6"
+    "angular": "^1.5"
   }
 }

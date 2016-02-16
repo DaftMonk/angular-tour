@@ -441,27 +441,32 @@ describe('Directive: tour', function () {
   });
 
   describe('scroll service', function() {
-    var target, scope, scrollTo;
+    var div, target, body, scope, scrollTo;
 
     beforeEach(inject(function (_scrollTo_) {
       scope = $rootScope.$new();
       scrollTo = _scrollTo_;
-
-      target = angular.element('<div id=\"target\" style=\"position:absolute; top:500px;\"></div>');
-      $('body').height(window.innerHeight*2).append(target);
+      div = document.createElement('div');
+      div.style.position = 'absolute';
+      div.style.top = '500px';
+      target = angular.element(div);
+      body = angular.element(document).find('body')
+      body[0].style.height = (window.innerHeight*3).toString() + 'px';
+      body.append(target);
       window.scrollTo(0, 0);
     }));
 
     it('should scroll to position', function () {
-      expect($(window).scrollTop()).toEqual(0);
+      expect( body[0].scrollTop ).toEqual(0);
+      debugger;
 
-      scrollTo(target, 'body', -100, -100, 500, 200, 0);
+      scrollTo(target, 'body', -100, -100, 500);
       waitsFor(function() {
-        return $(window).scrollTop() === 100;
+        return body.scrollTop === 100;
       }, 'Current position to be 100px');
 
       runs(function() {
-        expect($(window).scrollTop()).toEqual(100);
+        expect( body.scrollTop ).toEqual(100);
       });
     });
   });

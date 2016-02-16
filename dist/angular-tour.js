@@ -130,6 +130,10 @@
                 var div = document.createElement('div');
                 div.className = 'tour-backdrop';
                 angular.element(backdrop).remove();
+                // When the tour ends simply remove the backdrop and return.
+                if (!angular.isDefined(tooltip)) {
+                  return;
+                }
                 tooltip.parentNode.insertBefore(div, tooltip);
               }, 501);
               backDrop = true;
@@ -235,7 +239,8 @@
           //however, when using virtual steps, whose steps can be placed in different
           //controller, so it affects scope, which will be used to run this action against.
           function getTargetScope() {
-            var targetElement = scope.ttElement ? angular.element(scope.ttElement) : element;
+            var target = document.querySelectorAll(scope.ttElement);
+            var targetElement = scope.ttElement ? angular.element(target) : element;
             var targetScope = scope;
             if (targetElement !== element && !scope.ttSourceScope) {
               targetScope = targetElement.scope();
@@ -323,7 +328,8 @@
             if (!scope.ttContent) {
               return;
             }
-            var targetElement = scope.ttElement ? angular.element(scope.ttElement) : element;
+            var target = document.querySelectorAll(scope.ttElement);
+            var targetElement = scope.ttElement ? angular.element(target) : element;
             if (targetElement === null || targetElement.length === 0)
               throw 'Target element could not be found. Selector: ' + scope.ttElement;
             var containerEle = document.querySelectorAll(scope.ttContainerElement);

@@ -138,10 +138,6 @@ angular.module('angular-tour.tour', [])
 
         ctrl.showStepCallback = function() {
           if (tourConfig.backDrop) {
-            // var div = document.createElement('div');
-            // div.className = 'tour-backdrop';
-            // var container = document.querySelector(tourConfig.containerElement);
-            // angular.element(container).append(angular.element(div));
 
             $timeout(function() {
               var backdrop = document.getElementsByClassName('tour-backdrop');
@@ -582,16 +578,16 @@ angular.module('angular-tour.tour', [])
           currentPositionX,
           timeProgress;
 
-
-      var stopAnimation = function () {
+      function stopAnimation() {
         // If we have reached our destination clear the interval
         if (currentPositionY === finalY && currentPositionX === finalX) {
           $interval.cancel(runAnimation);
           animationInProgress = false;
         }
-      };
+      }
 
-      var animateScroll = function () {
+      function animateScroll() {
+        console.log('called');
         timeLapsed += 16;
         // get percentage of progress to the specified speed (e.g. 16/500). Should always be between 0 and 1
         timeProgress = ( timeLapsed / speed );
@@ -610,7 +606,7 @@ angular.module('angular-tour.tour', [])
         container.scrollLeft = currentPositionX;
         // Check if we have reached our destination          
         stopAnimation();
-      };
+      }
 
       animationInProgress = true;
       // Kicks off the function
@@ -619,10 +615,8 @@ angular.module('angular-tour.tour', [])
 
     return function(target, containerSelector, offsetY, offsetX, speed) {
       var container = document.querySelectorAll(containerSelector);
-      if (target) {
-        offsetY = offsetY || -100;
-        offsetX = offsetX || -100;
-      }
+      offsetY = offsetY || -100;
+      offsetX = offsetX || -100;
       _autoScroll(container[0], target[0].offsetTop, target[0].offsetLeft, offsetY, offsetX, speed);
     };
   }])

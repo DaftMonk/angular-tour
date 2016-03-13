@@ -1,5 +1,5 @@
 {
-  "name": "angular-tour",
+  "name": "angular-tour-no-jquery",
   "version": "0.3.0",
   "description": "An AngularJS directive for showcasing features of your website",
   "keywords": [
@@ -8,16 +8,16 @@
     "angular",
     "module"
   ],
-  "homepage": "https://github.com/DaftMonk/angular-tour",
-  "bugs": "https://github.com/DaftMonk/angular-tour/issues",
+  "homepage": "https://github.com/david-meza/angular-tour",
+  "bugs": "https://github.com/david-meza/angular-tour/issues",
   "author": {
     "name": "Tyler Henkel",
     "email": "",
-    "url": "https://github.com/DaftMonk"
+    "url": "https://github.com/david-meza"
   },
   "repository": {
     "type": "git",
-    "url": "git://github.com/DaftMonk/angular-tour.git"
+    "url": "git@github.com:david-meza/angular-tour.git"
   },
   "main": [
     "./dist/angular-tour-tpls.js",

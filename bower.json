@@ -1,23 +1,25 @@
 {
-  "name": "angular-tour-no-jquery",
-  "version": "0.3.0",
+  "name": "angular-tour",
+  "version": "0.2.5",
   "description": "An AngularJS directive for showcasing features of your website",
   "keywords": [
     "angularjs",
     "directive",
     "angular",
-    "module"
+    "module",
+    "tour",
+    "walkthrough"
   ],
-  "homepage": "https://github.com/david-meza/angular-tour",
-  "bugs": "https://github.com/david-meza/angular-tour/issues",
+  "homepage": "https://github.com/DaftMonk/angular-tour",
+  "bugs": "https://github.com/DaftMonk/angular-tour/issues",
   "author": {
-    "name": "David Meza",
+    "name": "Tyler Henkel",
     "email": "",
-    "url": "https://github.com/david-meza"
+    "url": "https://github.com/DaftMonk"
   },
   "repository": {
     "type": "git",
-    "url": "git@github.com:david-meza/angular-tour.git"
+    "url": "git@github.com:DaftMonk/angular-tour.git"
   },
   "main": [
     "./dist/angular-tour-tpls.js",

@@ -6,7 +6,9 @@
     "angularjs",
     "directive",
     "angular",
-    "module"
+    "module",
+    "tour",
+    "walkthrough"
   ],
   "homepage": "https://github.com/DaftMonk/angular-tour",
   "bugs": "https://github.com/DaftMonk/angular-tour/issues",

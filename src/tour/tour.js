@@ -245,6 +245,7 @@ angular.module('angular-tour.tour', [])
             scope.ttSourceScope = tourConfig.useSourceScope;
             scope.ttOpen = false;
             scope.ttAnimation = tourConfig.animation;
+            scope.ttCount = $('[tourtip]').length;
             scope.index = parseInt(attrs.tourtipStep, 10);
 
             var tourtip = $compile(template)(scope);

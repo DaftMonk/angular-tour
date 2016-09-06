@@ -3,6 +3,7 @@
     <div class="tour-content-wrapper">
         <h3 ng-bind="ttTitle"></h3>
         <p ng-bind="ttContent"></p>
+        <span class="tour-progress">{{index+1}}/{{ttCount}}</span>
         <a ng-click="proceed()" ng-bind="ttNextLabel" class="small button tour-next-tip"></a>
         <a ng-click="closeTour()" class="tour-close-tip">&times;</a>
     </div>

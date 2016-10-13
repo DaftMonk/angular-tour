@@ -102,9 +102,9 @@
             ctrl.currentStep = newVal;
           });
           ctrl.postTourCallback = function (completed) {
-            angular.element('.tour-backdrop').remove();
+            angular.element(document.querySelector('.tour-backdrop')).remove();
             backDrop = false;
-            angular.element('.tour-element-active').removeClass('tour-element-active');
+            angular.element(document.querySelector('.tour-element-active')).removeClass('tour-element-active');
             if (completed && angular.isDefined(attrs.tourComplete)) {
               scope.$parent.$eval(attrs.tourComplete);
             }
@@ -347,7 +347,7 @@
             angular.element($window).unbind('resize.' + scope.$id);
           }
           function focusActiveElement(el) {
-            angular.element('.tour-element-active').removeClass('tour-element-active');
+            angular.element(document.querySelector('.tour-element-active')).removeClass('tour-element-active');
             if (!scope.centered)
               el.addClass('tour-element-active');
           }

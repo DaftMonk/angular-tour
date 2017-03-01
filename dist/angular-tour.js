@@ -252,12 +252,12 @@
               }
               // restrict right position if the tourtip doesn't fit in the container
               var containerWidth = container[0].getBoundingClientRect().width;
-              if (tourtip.width() + position.width > containerWidth) {
+              if ($(tourtip).width() + position.width > containerWidth) {
                 restrictRight = containerWidth - position.left + scope.ttMargin;
               }
             }
-            var ttWidth = tourtip.width();
-            var ttHeight = tourtip.height();
+            var ttWidth = tourtip.width() || $(tourtip).width();
+            var ttHeight = tourtip.height() || $(tourtip).height();
             // Calculate the tourtip's top and left coordinates to center it
             switch (scope.ttPlacement) {
             case 'right':

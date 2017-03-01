@@ -1,6 +1,6 @@
 /**
  * An AngularJS directive for showcasing features of your website
- * @version v0.2.5 - 2015-12-10
+ * @version v0.2.6 - 2017-03-01
  * @link https://github.com/DaftMonk/angular-tour
  * @author Tyler Henkel
  * @license MIT License, http://www.opensource.org/licenses/MIT
@@ -119,7 +119,7 @@
           };
           ctrl.showStepCallback = function () {
             if (tourConfig.backDrop) {
-              angular.element(tourConfig.containerElement).append(angular.element('<div class="tour-backdrop"></div>'));
+              angular.element(document.querySelector(tourConfig.containerElement)).append(angular.element('<div class="tour-backdrop"></div>'));
               $timeout(function () {
                 $('.tour-backdrop').remove();
                 angular.element('<div class="tour-backdrop"></div>').insertBefore('.tour-tip');
@@ -317,12 +317,12 @@
             else {
               tourtip.css({ display: 'block' });
             }
-            var targetElement = scope.ttElement ? angular.element(scope.ttElement) : element;
+            var targetElement = scope.ttElement ? angular.element(document.querySelector(scope.ttElement)) : element;
             if (targetElement == null || targetElement.length === 0)
               throw 'Target element could not be found. Selector: ' + scope.ttElement;
-            angular.element(scope.ttContainerElement).append(tourtip);
+            angular.element(document.querySelector(scope.ttContainerElement)).append(tourtip);
             var updatePosition = function () {
-              var offsetElement = scope.ttContainerElement === 'body' ? undefined : angular.element(scope.ttContainerElement);
+              var offsetElement = scope.ttContainerElement === 'body' ? undefined : angular.element(document.querySelector(scope.ttContainerElement));
               var ttPosition = calculatePosition(targetElement, offsetElement);
               // Now set the calculated positioning.
               tourtip.css(ttPosition);

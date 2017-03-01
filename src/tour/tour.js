@@ -140,7 +140,7 @@ angular.module('angular-tour.tour', [])
 
             ctrl.showStepCallback = function() {
                 if (tourConfig.backDrop) {
-                    angular.element(tourConfig.containerElement).append(angular.element('<div class="tour-backdrop"></div>'));
+                    angular.element(document.querySelector(tourConfig.containerElement)).append(angular.element('<div class="tour-backdrop"></div>'));
 
                     $timeout(function() {
                         $('.tour-backdrop').remove();
@@ -268,7 +268,7 @@ angular.module('angular-tour.tour', [])
             //however, when using virtual steps, whose steps can be placed in different
             //controller, so it affects scope, which will be used to run this action against.
             function getTargetScope() {
-                var targetElement = scope.ttElement ? angular.element(scope.ttElement) : element;
+                var targetElement = scope.ttElement ? angular.element(document.querySelector(scope.ttElement)) : element;
 
                 var targetScope = scope;
                 if (targetElement !== element && !scope.ttSourceScope)
@@ -375,11 +375,11 @@ angular.module('angular-tour.tour', [])
                 if (targetElement == null || targetElement.length === 0)
                     throw 'Target element could not be found. Selector: ' + scope.ttElement;
 
-                angular.element(scope.ttContainerElement).append(tourtip);
+                angular.element(document.querySelector(scope.ttContainerElement)).append(tourtip);
 
                 var updatePosition = function() {
 
-                    var offsetElement = scope.ttContainerElement === 'body' ? undefined : angular.element(scope.ttContainerElement);
+                    var offsetElement = scope.ttContainerElement === 'body' ? undefined : angular.element(document.querySelector(scope.ttContainerElement));
                     var ttPosition = calculatePosition(targetElement, offsetElement);
 
                     // Now set the calculated positioning.

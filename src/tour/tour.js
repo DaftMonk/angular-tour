@@ -120,9 +120,9 @@ angular.module('angular-tour.tour', [])
             });
 
             ctrl.postTourCallback = function(completed) {
-                angular.element('.tour-backdrop').remove();
+                angular.element(document.querySelector('.tour-backdrop')).remove();
                 backDrop = false;
-                angular.element('.tour-element-active').removeClass('tour-element-active');
+                angular.element(document.querySelector('.tour-element-active')).removeClass('tour-element-active');
 
                 if (completed && angular.isDefined(attrs.tourComplete)) {
                     scope.$parent.$eval(attrs.tourComplete);
@@ -140,7 +140,7 @@ angular.module('angular-tour.tour', [])
 
             ctrl.showStepCallback = function() {
                 if (tourConfig.backDrop) {
-                    angular.element(tourConfig.containerElement).append(angular.element('<div class="tour-backdrop"></div>'));
+                    angular.element(document.querySelector(tourConfig.containerElement)).append(angular.element('<div class="tour-backdrop"></div>'));
 
                     $timeout(function() {
                         $('.tour-backdrop').remove();
@@ -268,7 +268,7 @@ angular.module('angular-tour.tour', [])
             //however, when using virtual steps, whose steps can be placed in different
             //controller, so it affects scope, which will be used to run this action against.
             function getTargetScope() {
-                var targetElement = scope.ttElement ? angular.element(scope.ttElement) : element;
+                var targetElement = scope.ttElement ? angular.element(document.querySelector(scope.ttElement)) : element;
 
                 var targetScope = scope;
                 if (targetElement !== element && !scope.ttSourceScope)
@@ -296,13 +296,13 @@ angular.module('angular-tour.tour', [])
                     }
                     // restrict right position if the tourtip doesn't fit in the container
                     var containerWidth = container[0].getBoundingClientRect().width;
-                    if (tourtip.width() + position.width > containerWidth) {
+                    if ($(tourtip).width() + position.width > containerWidth) {
                         restrictRight = containerWidth - position.left + scope.ttMargin;
                     }
                 }
 
-                var ttWidth = tourtip.width();
-                var ttHeight = tourtip.height();
+                var ttWidth = tourtip.width ? tourtip.width() : $(tourtip).width();
+                var ttHeight = tourtip.height ? tourtip.height() : $(tourtip).height();
 
                 // Calculate the tourtip's top and left coordinates to center it
                 switch (scope.ttPlacement) {
@@ -370,16 +370,16 @@ angular.module('angular-tour.tour', [])
                     });
                 }
 
-                var targetElement = scope.ttElement ? angular.element(scope.ttElement) : element;
+                var targetElement = scope.ttElement ? angular.element(document.querySelector(scope.ttElement)) : element;
 
                 if (targetElement == null || targetElement.length === 0)
                     throw 'Target element could not be found. Selector: ' + scope.ttElement;
 
-                angular.element(scope.ttContainerElement).append(tourtip);
+                angular.element(document.querySelector(scope.ttContainerElement)).append(tourtip);
 
                 var updatePosition = function() {
 
-                    var offsetElement = scope.ttContainerElement === 'body' ? undefined : angular.element(scope.ttContainerElement);
+                    var offsetElement = scope.ttContainerElement === 'body' ? undefined : angular.element(document.querySelector(scope.ttContainerElement));
                     var ttPosition = calculatePosition(targetElement, offsetElement);
 
                     // Now set the calculated positioning.
@@ -414,7 +414,7 @@ angular.module('angular-tour.tour', [])
             }
 
             function focusActiveElement(el) {
-                angular.element('.tour-element-active').removeClass('tour-element-active');
+                angular.element(document.querySelector('.tour-element-active')).removeClass('tour-element-active');
 
                 if (!scope.centered)
                     el.addClass('tour-element-active');

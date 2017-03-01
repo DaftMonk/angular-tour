@@ -370,7 +370,7 @@ angular.module('angular-tour.tour', [])
                     });
                 }
 
-                var targetElement = scope.ttElement ? angular.element(scope.ttElement) : element;
+                var targetElement = scope.ttElement ? angular.element(document.querySelector(scope.ttElement)) : element;
 
                 if (targetElement == null || targetElement.length === 0)
                     throw 'Target element could not be found. Selector: ' + scope.ttElement;

@@ -228,7 +228,7 @@
           //however, when using virtual steps, whose steps can be placed in different
           //controller, so it affects scope, which will be used to run this action against.
           function getTargetScope() {
-            var targetElement = scope.ttElement ? angular.element(scope.ttElement) : element;
+            var targetElement = scope.ttElement ? angular.element(document.querySelector(scope.ttElement)) : element;
             var targetScope = scope;
             if (targetElement !== element && !scope.ttSourceScope)
               targetScope = targetElement.scope();

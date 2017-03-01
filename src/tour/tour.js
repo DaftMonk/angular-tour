@@ -301,8 +301,8 @@ angular.module('angular-tour.tour', [])
                     }
                 }
 
-                var ttWidth = tourtip.width() || $(tourtip).width();
-                var ttHeight = tourtip.height() || $(tourtip).height();
+                var ttWidth = tourtip.width ? tourtip.width() : $(tourtip).width();
+                var ttHeight = tourtip.height ? tourtip.height() : $(tourtip).height();
 
                 // Calculate the tourtip's top and left coordinates to center it
                 switch (scope.ttPlacement) {

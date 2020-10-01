@@ -20,11 +20,14 @@ Has been tested in
 * Chrome
 * Firefox
 * Safari
+* Brave
 * Internet Explorer 9+
 
 ## Installation
 
 To install run
+
+Linux, Windows & Mac
 
 ```zsh
 bower install angular-tour

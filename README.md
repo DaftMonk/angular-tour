@@ -239,3 +239,4 @@ The easiest way to add your own template is to use the script directive:
 ## License
 
 This project is licensed under the [MIT license](http://opensource.org/licenses/MIT).
+# Thanks.

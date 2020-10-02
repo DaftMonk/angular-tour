@@ -1,10 +1,10 @@
 # Angular Tour - [AngularJS](http://angularjs.org/) directive for giving a tour of your website.
 
-## Demo
+## Demo.
 
 Want to see it in action? Visit <http://daftmonk.github.io/angular-tour/>
 
-## Showcase features of your website
+## Showcase features of your website.
 
 Give an interactive tour to showcase the features of your website. 
 
@@ -13,7 +13,7 @@ Give an interactive tour to showcase the features of your website.
   * Smoothly scrolls to each step
   * Control the placement for each tour tip
 
-## Supported browsers
+## Supported browsers.
 
 Has been tested in 
 
@@ -22,7 +22,7 @@ Has been tested in
 * Safari
 * Internet Explorer 9+
 
-## Installation
+## Installation Steps.
 
 To install run
 

@@ -1,25 +1,22 @@
 html {
-    background: -webkit-linear-gradient(bottom, #6DBCDB 20%, #639AC9 100%);
-    background: -ms-linear-gradient(bottom, #6DBCDB 20%, #639AC9 100%);
-    background: linear-gradient(to bottom, #6DBCDB 20%, #639AC9 100%);
+    background: green;
 }
 
 html, body {
-    font-family: 'Open Sans', sans-serif;
     margin: 0;
     padding: 0;
     position: relative;
-    color: #464637;
+    color: black;
     min-height: 100%;
     font-size: 20px;
     font-weight: 300;
 }
 
 h1 {
-    color: #fff;
-    font-size: 20px;
-    font-weight: 300;
-    text-align: center;
+    color: red;
+    font-size: 40px;
+    font-weight: 900;
+    text-align: left;
 }
 
 ul {

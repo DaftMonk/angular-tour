@@ -1,7 +1,7 @@
 html {
-    background: -webkit-linear-gradient(bottom, #6DBCDB 20%, #639AC9 100%);
-    background: -ms-linear-gradient(bottom, #6DBCDB 20%, #639AC9 100%);
-    background: linear-gradient(to bottom, #6DBCDB 20%, #639AC9 100%);
+    background: -webkit-linear-gradient(bottom, #00c2ff 20%, #0691fe 100%);
+    background: -ms-linear-gradient(bottom, #00c2ff 20%, #0691fe 100%);
+    background: linear-gradient(to bottom, #00c2ff 20%, #0691fe 100%);
 }
 
 html, body {
@@ -103,7 +103,7 @@ ul {
     margin: 8px 20px 10px 0;
     padding: 5px 10px;
     min-width: 10px;
-    background-color: #5F9EDF;
+    background-color: #1dd5db;
     text-align: center;
     text-decoration: none;
     transition: background-color 300ms ease-out;

@@ -1,7 +1,5 @@
 html {
-    background: -webkit-linear-gradient(bottom, #6DBCDB 20%, #639AC9 100%);
-    background: -ms-linear-gradient(bottom, #6DBCDB 20%, #639AC9 100%);
-    background: linear-gradient(to bottom, #6DBCDB 20%, #639AC9 100%);
+    background: #FFC51B;
 }
 
 html, body {
@@ -81,7 +79,8 @@ ul {
     padding: 3px 10px;
     display: inline-block;
     position: relative;
-    background-color: #3D5580;
+    font-family: 'Open Sans', sans-serif;
+    background-color: orange;
     z-index: 3;
 }
 .title-xl {

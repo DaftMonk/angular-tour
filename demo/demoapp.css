@@ -1,7 +1,5 @@
 html {
-    background: -webkit-linear-gradient(bottom, #6DBCDB 20%, #639AC9 100%);
-    background: -ms-linear-gradient(bottom, #6DBCDB 20%, #639AC9 100%);
-    background: linear-gradient(to bottom, #6DBCDB 20%, #639AC9 100%);
+    background: #8b0000;
 }
 
 html, body {
@@ -81,7 +79,7 @@ ul {
     padding: 3px 10px;
     display: inline-block;
     position: relative;
-    background-color: #3D5580;
+    background-color: #cc3333;
     z-index: 3;
 }
 .title-xl {
@@ -103,14 +101,14 @@ ul {
     margin: 8px 20px 10px 0;
     padding: 5px 10px;
     min-width: 10px;
-    background-color: #5F9EDF;
+    background-color: #cc3333;
     text-align: center;
     text-decoration: none;
     transition: background-color 300ms ease-out;
 }
 
 .button:hover {
-    background-color: #477edf;
+    background-color: #cc3333;
 }
 
 .tile {
